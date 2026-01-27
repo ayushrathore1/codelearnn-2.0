@@ -1,0 +1,322 @@
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth API
+export const authAPI = {
+  register: (data) => api.post('/auth/register', data),
+  login: (data) => api.post('/auth/login', data),
+  sendOTP: (email) => api.post('/auth/send-otp', { email }),
+  verifyOTP: (email, otp) => api.post('/auth/verify-otp', { email, otp }),
+  getMe: () => api.get('/auth/me'),
+  updateDetails: (data) => api.put('/auth/updatedetails', data),
+  updatePassword: (data) => api.put('/auth/updatepassword', data),
+  logout: () => api.get('/auth/logout')
+};
+
+// Contact API
+export const contactAPI = {
+  submit: (data) => api.post('/contact', data)
+};
+
+// Free Resources API
+export const freeResourcesAPI = {
+  // Get all resources with filters
+  getAll: (params = {}) => api.get('/free-resources', { params }),
+  
+  // Get resource by ID
+  getById: (id) => api.get(`/free-resources/${id}`),
+  
+  // Get resources by category
+  getByCategory: (category, params = {}) => 
+    api.get(`/free-resources/category/${category}`, { params }),
+  
+  // Get all categories with stats
+  getCategories: () => api.get('/free-resources/categories'),
+  
+  // ===== COURSES =====
+  // Get all courses
+  getCourses: (params = {}) => api.get('/free-resources/courses', { params }),
+  
+  // Get course by slug with lectures
+  getCourseBySlug: (slug) => api.get(`/free-resources/courses/${slug}`),
+  
+  // Get C programming resources
+  getCProgramming: (params = {}) => api.get('/free-resources/c-programming', { params }),
+  
+  // Analyze a YouTube URL
+  analyzeVideo: (url) => api.post('/free-resources/analyze', { url }),
+  
+  // Admin: Create resource
+  create: (data) => api.post('/free-resources', data),
+  
+  // Admin: Add from analysis
+  addFromAnalysis: (analysisResult, category, additionalData = {}) =>
+    api.post('/free-resources/add-from-analysis', { 
+      analysisResult, 
+      category, 
+      additionalData 
+    }),
+  
+  // Admin: Update resource
+  update: (id, data) => api.put(`/free-resources/${id}`, data),
+  
+  // Admin: Delete resource
+  delete: (id) => api.delete(`/free-resources/${id}`),
+  
+  // Admin: Refresh statistics
+  refreshStats: (id) => api.post(`/free-resources/${id}/refresh`),
+  
+  // Admin: Re-evaluate with AI
+  reEvaluate: (id) => api.post(`/free-resources/${id}/evaluate`)
+};
+
+// Career Domain Explorer API
+export const careerAPI = {
+  // Analyze keyword and get career domains
+  exploreKeyword: (keyword, location = 'India') => api.post('/career/explore', { keyword, location }),
+  
+  // Get detailed info about a specific domain
+  getDomainDetails: (domainName, parentKeyword) => 
+    api.get(`/career/domain/${encodeURIComponent(domainName)}`, { 
+      params: { parentKeyword } 
+    }),
+  
+  // Get detailed info about a specific job role
+  getJobRoleDetails: (roleName, domain) => 
+    api.get(`/career/job-role/${encodeURIComponent(roleName)}`, { 
+      params: { domain } 
+    }),
+  
+  // Search for jobs
+  searchJobs: (keyword, options = {}) => 
+    api.get('/career/jobs/search', { 
+      params: { keyword, ...options } 
+    }),
+  
+  // Get trending tech domains (AI-generated)
+  getTrending: () => api.get('/career/trending'),
+  
+  // Get popular searched keywords (from database)
+  getPopular: (limit = 12) => api.get('/career/popular', { params: { limit } }),
+  
+  // Health check
+  healthCheck: () => api.get('/career/health')
+};
+
+// Learning Paths API (Vault)
+export const learningPathsAPI = {
+  // Get all learning paths with filters
+  getAll: (params = {}) => api.get('/learning-paths', { params }),
+  
+  // Get learning path by ID or slug
+  getById: (idOrSlug) => api.get(`/learning-paths/${idOrSlug}`),
+  
+  // Get domains with counts
+  getDomains: () => api.get('/learning-paths/domains'),
+  
+  // Admin: Create learning path
+  create: (data) => api.post('/learning-paths', data),
+  
+  // Admin: Update learning path
+  update: (id, data) => api.put(`/learning-paths/${id}`, data),
+  
+  // Admin: Delete learning path
+  delete: (id) => api.delete(`/learning-paths/${id}`),
+  
+  // Enroll in a path (increment count)
+  enroll: (id) => api.post(`/learning-paths/${id}/enroll`)
+};
+
+// Vault API (Universal Resources)
+export const vaultAPI = {
+  // Get all resources with filters
+  getAll: (params = {}) => api.get('/vault', { params }),
+  
+  // Get resource by ID
+  getById: (id) => api.get(`/vault/${id}`),
+  
+  // Get featured resources
+  getFeatured: (limit = 10) => api.get('/vault/featured', { params: { limit } }),
+  
+  // Get all categories
+  getCategories: (params = {}) => api.get('/vault/categories', { params }),
+  
+  // Get topics by domain
+  getTopics: (domain) => api.get(`/vault/topics/${domain}`),
+  
+  // Get all domains with counts
+  getDomains: () => api.get('/vault/domains'),
+  
+  // Create resource (auth required)
+  create: (data) => api.post('/vault', data),
+  
+  // Bulk import resources (auth required)
+  bulkImport: (resources) => api.post('/vault/bulk', { resources }),
+  
+  // Update resource (auth required)
+  update: (id, data) => api.put(`/vault/${id}`, data),
+  
+  // Delete resource (auth required)
+  delete: (id) => api.delete(`/vault/${id}`)
+};
+
+// Progress API (User Learning Progress)
+export const progressAPI = {
+  // Get user's full progress
+  getMyProgress: () => api.get('/progress/me'),
+  
+  // Get learning stats
+  getStats: () => api.get('/progress/stats'),
+  
+  // Get saved/bookmarked resources
+  getSaved: (params = {}) => api.get('/progress/saved', { params }),
+  
+  // Get in-progress resources
+  getInProgress: () => api.get('/progress/in-progress'),
+  
+  // Get completed resources
+  getCompleted: (params = {}) => api.get('/progress/completed', { params }),
+  
+  // Start a resource
+  startResource: (resourceId) => api.post('/progress/start', { resourceId }),
+  
+  // Update progress on a resource
+  updateProgress: (resourceId, progress, timeSpent = 0) => 
+    api.put('/progress/update', { resourceId, progress, timeSpent }),
+  
+  // Complete a resource
+  completeResource: (resourceId, rating = null, notes = '', timeSpent = 0) =>
+    api.post('/progress/complete', { resourceId, rating, notes, timeSpent }),
+  
+  // Save/bookmark a resource
+  saveResource: (resourceId) => api.post('/progress/save', { resourceId }),
+  
+  // Remove bookmark
+  unsaveResource: (resourceId) => api.delete(`/progress/save/${resourceId}`),
+  
+  // Check resource status for current user
+  checkResource: (resourceId) => api.get(`/progress/check/${resourceId}`)
+};
+
+// Personalized Learning Path API (AI-generated)
+export const personalizedPathAPI = {
+  // Generate a new personalized path
+  generate: (data) => api.post('/personalized-path/generate', data),
+  
+  // Get user's paths
+  getMyPaths: (status = null) => 
+    api.get('/personalized-path/my-paths', { params: status ? { status } : {} }),
+  
+  // Get path by ID
+  getById: (id) => api.get(`/personalized-path/${id}`),
+  
+  // Complete a resource in a path
+  completeResource: (pathId, milestoneIndex, resourceId) =>
+    api.post(`/personalized-path/${pathId}/complete-resource`, { milestoneIndex, resourceId }),
+  
+  // Update path status (pause/resume)
+  updateStatus: (id, status) => api.put(`/personalized-path/${id}/status`, { status }),
+  
+  // Delete/abandon path
+  delete: (id) => api.delete(`/personalized-path/${id}`)
+};
+
+// Waitlist API
+export const waitlistAPI = {
+  // Join waitlist
+  join: (email, source = 'homepage') => api.post('/waitlist', { email, source }),
+  
+  // Get waitlist count
+  getCount: () => api.get('/waitlist/count')
+};
+
+// Blogs API
+export const blogsAPI = {
+  // Get all published blogs with filters
+  getAll: (params = {}) => api.get('/blogs', { params }),
+  
+  // Get blog by slug or ID
+  getBySlug: (slug) => api.get(`/blogs/${slug}`),
+  
+  // Get categories with counts
+  getCategories: () => api.get('/blogs/categories'),
+  
+  // Get user's own blogs
+  getMyBlogs: (params = {}) => api.get('/blogs/user/my-blogs', { params }),
+  
+  // Create blog
+  create: (data) => api.post('/blogs', data),
+  
+  // Update blog
+  update: (id, data) => api.put(`/blogs/${id}`, data),
+  
+  // Delete blog
+  delete: (id) => api.delete(`/blogs/${id}`),
+  
+  // Toggle like
+  like: (id) => api.post(`/blogs/${id}/like`)
+};
+
+// Opportunities API
+export const opportunitiesAPI = {
+  // Get all opportunities with filters
+  getAll: (params = {}) => api.get('/opportunities', { params }),
+  
+  // Get featured opportunities
+  getFeatured: (limit = 5) => api.get('/opportunities/featured', { params: { limit } }),
+  
+  // Get opportunity by slug or ID
+  getBySlug: (slug) => api.get(`/opportunities/${slug}`),
+  
+  // Get types with counts
+  getTypes: () => api.get('/opportunities/types'),
+  
+  // Get user's own opportunities
+  getMyOpportunities: (params = {}) => api.get('/opportunities/user/my-opportunities', { params }),
+  
+  // Create opportunity
+  create: (data) => api.post('/opportunities', data),
+  
+  // Update opportunity
+  update: (id, data) => api.put(`/opportunities/${id}`, data),
+  
+  // Delete opportunity
+  delete: (id) => api.delete(`/opportunities/${id}`)
+};
+
+export default api;
+

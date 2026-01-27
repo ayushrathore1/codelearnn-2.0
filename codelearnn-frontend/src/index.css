@@ -1,0 +1,284 @@
+/* Import Google Fonts - 2025 Modern Tech Stack */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CodeLearnn Theme System 2.0 (2025 Pivot)
+   Theme: Future Tech (Obsidian/Acid Lime)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* Colors */
+  --color-bg-base: var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  
+  --color-primary: var(--primary);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
+  
+  /* Semantic Colors */
+  --color-success: #00F0FF; /* Cyber Cyan */
+  --color-warning: #FFD600; /* Industrial Yellow */
+  --color-danger: #FF2E2E; /* Alert Red */
+
+  /* Fonts */
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Effects */
+  --shadow-glow: 0 0 40px -10px var(--primary-glow);
+  --shadow-surface: 0 20px 40px -20px rgba(0,0,0,0.8);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME VARIABLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Dark Neon / Obsidian (Default) */
+  --bg-base: #030303;      /* True Void */
+  --bg-surface: #0A0A0A;   /* Obsidian */
+  --bg-elevated: #121212;  /* Deep Graphite */
+  
+  --border: #1F1F22;
+  --border-hover: #3F3F46;
+
+  --primary: #CCFF00;      /* Acid Lime */
+  --primary-glow: rgba(204, 255, 0, 0.4);
+  --secondary: #7C3AED;    /* Deep Violet */
+
+  --text-main: #FAFAFA;
+  --text-muted: #A1A1AA;   /* Zinc 400 */
+  --text-dim: #52525B;     /* Zinc 600 */
+  
+  --logo-gradient: linear-gradient(180deg, #FFFFFF 0%, #D4D4D8 100%); /* White to Zinc-300 */
+}
+
+[data-theme="light-aurora"] {
+  --bg-base: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F1F5F9;
+
+  --border: #E2E8F0;
+  --border-hover: #CBD5E1;
+
+  --primary: #0EA5E9;      /* Sky Blue */
+  --primary-glow: rgba(14, 165, 233, 0.3);
+  --secondary: #6366F1;    /* Indigo */
+
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --text-dim: #94A3B8;
+  
+  --logo-gradient: linear-gradient(180deg, #1E293B 0%, #475569 100%); /* Slate-800 to Slate-600 */
+}
+
+[data-theme="midnight-pro"] {
+  --bg-base: #000000;
+  --bg-surface: #050505;
+  --bg-elevated: #0A0A0A;
+
+  --border: #141414;
+  --border-hover: #262626;
+
+  --primary: #FFFFFF;      /* Stark White */
+  --primary-glow: rgba(255, 255, 255, 0.3);
+  --secondary: #333333;
+
+  --text-main: #FFFFFF;
+  --text-muted: #666666;
+  --text-dim: #404040;
+  
+  --logo-gradient: linear-gradient(180deg, #FFFFFF 0%, #A3A3A3 100%); /* White to Neutral-400 */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-muted);
+  font-family: 'Manrope', system-ui, sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+  font-size: 17px;
+}
+
+::selection {
+  background-color: var(--primary);
+  color: black;
+}
+
+/* Modern Grid Background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODERN COMPONENT CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Buttons */
+.btn-primary {
+  background: var(--primary);
+  color: black;
+  font-weight: 700;
+  padding: 0.875rem 2rem;
+  border-radius: 4px; /* Sharper corners for modern look */
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px var(--primary-glow);
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: 4px;
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-main);
+  background: var(--bg-elevated);
+}
+
+/* Cards (Bento Style) */
+.card-bento {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.card-bento:hover {
+  border-color: var(--border-hover);
+}
+
+/* Glow spotlight effect container */
+.spotlight-group:hover .card-bento::after {
+  opacity: 1;
+}
+
+/* Text Gradients */
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-main) 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #FFFFFF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Professional Metallic Brand Text (Static, Premium) */
+.text-metallic {
+  background: var(--logo-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* Fallback managed by background-clip */
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  filter: drop-shadow(0 0 8px rgba(var(--color-primary-glow), 0.1));
+}
+
+/* Hover overrides need to reset background-clip to allow normal color transition */
+.group:hover .text-metallic {
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: unset !important;
+  color: unset !important; /* Remove transparent, allow utility classes to set color */
+}
+
+/* Specific hover colors for logo parts */
+.group:hover .text-metallic.group-hover\:text-text-main {
+  color: var(--text-main) !important;
+}
+
+.group:hover .text-metallic.group-hover\:text-primary {
+  color: var(--primary) !important;
+}
+
+/* Utilities */
+.section {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.container-custom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.badge-pro {
+  background: #1A1A1A;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Locked Content Blur */
+.locked-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, var(--bg-base) 90%);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 2rem;
+  z-index: 10;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
