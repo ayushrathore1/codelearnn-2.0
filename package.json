@@ -1,0 +1,12 @@
+{
+  "name": "codelearnn",
+  "version": "1.0.0",
+  "description": "CodeLearnn API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "cd codelearnn-backend && npm install"
+  },
+  "author": "SereniTech",
+  "license": "MIT"
+}
