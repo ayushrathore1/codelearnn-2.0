@@ -15,6 +15,14 @@ connectDB();
 
 const app = express();
 
+// Check if production environment
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Trust proxy for accurate IP detection behind Nginx/Load Balancer (Hostinger)
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 // Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -28,8 +36,8 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Handle preflight OPTIONS requests explicitly
-app.options('*', (req, res) => {
+// Handle preflight OPTIONS requests explicitly (Express 5 compatible)
+app.options(/(.*)/, (req, res) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -124,6 +132,11 @@ app.get('/', (req, res) => {
     version: '2.0.0',
     documentation: '/api/health'
   });
+});
+
+// Health check at root level for hosting providers (Hostinger)
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy' });
 });
 
 // Error handler middleware
