@@ -28,15 +28,32 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
+// Handle preflight OPTIONS requests explicitly
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
 // Enable CORS - Allow both production and development origins
 app.use(cors({
-  origin: [
-    'https://codelearnn.com', 
-    'https://www.codelearnn.com',
-    'http://localhost:5173', 
-    'http://localhost:3000', 
-    'http://127.0.0.1:5173'
-  ],
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'https://codelearnn.com', 
+      'https://www.codelearnn.com',
+      'http://localhost:5173', 
+      'http://localhost:3000', 
+      'http://127.0.0.1:5173'
+    ];
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins for now to debug
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
