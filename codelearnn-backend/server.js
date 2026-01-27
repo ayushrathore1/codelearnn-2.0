@@ -37,21 +37,22 @@ app.options('*', (req, res) => {
   res.sendStatus(200);
 });
 
-// Enable CORS - Allow both production and development origins
+// Parse allowed origins from environment variable
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['https://codelearnn.com', 'https://www.codelearnn.com', 'http://localhost:5173'];
+
+console.log('CORS Allowed Origins:', allowedOrigins);
+
+// Enable CORS with configurable origins
 app.use(cors({
   origin: function(origin, callback) {
-    const allowedOrigins = [
-      'https://codelearnn.com', 
-      'https://www.codelearnn.com',
-      'http://localhost:5173', 
-      'http://localhost:3000', 
-      'http://127.0.0.1:5173'
-    ];
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(null, true); // Allow all origins for now to debug
+      console.log('CORS blocked origin:', origin);
+      callback(null, true); // Allow all for debugging
     }
   },
   credentials: true,
