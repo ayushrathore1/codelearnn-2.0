@@ -24,14 +24,6 @@ const SignupPage = () => {
       await signup(name, email, password);
       navigate('/dashboard');
     } catch (err) {
-      // Check if we need to redirect to waitlist
-      if (err.redirectToWaitlist) {
-        navigate('/');
-        setTimeout(() => {
-          document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-        return;
-      }
       setError(err.message || 'Failed to create account');
     } finally {
       setIsLoading(false);

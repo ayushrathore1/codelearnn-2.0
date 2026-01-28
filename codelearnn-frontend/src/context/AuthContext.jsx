@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../services/api';
+import { setCharchaToken, removeCharchaToken } from '../services/charchaApi';
 
 const AuthContext = createContext(null);
 
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        removeCharchaToken(); // Also clear Charcha token
       }
     }
     setLoading(false);
@@ -51,16 +53,21 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await authAPI.login({ email, password });
-      const { token, user } = response.data;
+      const { token, user, charchaToken } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       setUser(user);
+      
+      // Store Charcha token if available (SSO integration)
+      if (charchaToken) {
+        setCharchaToken(charchaToken);
+      }
+      
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message || 'Login failed';
-      const redirectToWaitlist = err.response?.data?.redirectToWaitlist || false;
       setError(message);
-      throw { success: false, message, redirectToWaitlist };
+      throw { success: false, message };
     }
   };
 
@@ -68,16 +75,21 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await authAPI.register({ name, email, password, subscribedNewsletter });
-      const { token, user } = response.data;
+      const { token, user, charchaToken } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       setUser(user);
+      
+      // Store Charcha token if available (SSO integration)
+      if (charchaToken) {
+        setCharchaToken(charchaToken);
+      }
+      
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message || 'Registration failed';
-      const redirectToWaitlist = err.response?.data?.redirectToWaitlist || false;
       setError(message);
-      throw { success: false, message, redirectToWaitlist };
+      throw { success: false, message };
     }
   };
 
@@ -88,10 +100,9 @@ export const AuthProvider = ({ children }) => {
       return { success: true, message: response.data.message };
     } catch (err) {
       const message = err.response?.data?.message || 'Failed to send OTP';
-      const redirectToWaitlist = err.response?.data?.redirectToWaitlist || false;
       const waitTime = err.response?.data?.waitTime || null;
       setError(message);
-      throw { success: false, message, redirectToWaitlist, waitTime };
+      throw { success: false, message, waitTime };
     }
   };
 
@@ -99,10 +110,16 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await authAPI.verifyOTP(email, otp);
-      const { token, user } = response.data;
+      const { token, user, charchaToken } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       setUser(user);
+      
+      // Store Charcha token if available (SSO integration)
+      if (charchaToken) {
+        setCharchaToken(charchaToken);
+      }
+      
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message || 'Verification failed';
@@ -115,6 +132,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    removeCharchaToken(); // Also clear Charcha token (SSO)
     setUser(null);
   };
 
@@ -145,3 +163,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export default AuthContext;
+

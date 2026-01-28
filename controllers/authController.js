@@ -2,27 +2,13 @@ const User = require('../models/User');
 const Otp = require('../models/Otp');
 const asyncHandler = require('../middleware/async');
 const { sendOTPEmail, generateOTP } = require('../services/emailService');
-
-// Whitelist of allowed emails (admin access only during beta)
-const ALLOWED_EMAILS = [
-  'engineeratcodelearnn@gmail.com',
-  'rathoreayush512@gmail.com'
-];
+const { syncUserToCharcha, getCharchaToken, isCharchaConfigured } = require('../services/charchaService');
 
 // @desc    Register user
 // @route   POST /api/auth/register
-// @access  Public (restricted to whitelist)
+// @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password, subscribedNewsletter } = req.body;
-
-  // Check if email is in whitelist
-  if (!ALLOWED_EMAILS.includes(email?.toLowerCase())) {
-    return res.status(403).json({
-      success: false,
-      message: 'Registration is currently invite-only. Join the waitlist to get notified when we launch!',
-      redirectToWaitlist: true
-    });
-  }
 
   // Check if user exists with this email
   const existingUser = await User.findOne({ email });
@@ -56,12 +42,21 @@ exports.register = asyncHandler(async (req, res, next) => {
     subscribedNewsletter: subscribedNewsletter || false
   });
 
-  sendTokenResponse(user, 201, res);
+  // Sync user to Charcha (SSO integration)
+  let charchaToken = null;
+  if (isCharchaConfigured()) {
+    const charchaResult = await syncUserToCharcha(user);
+    if (charchaResult.success) {
+      charchaToken = charchaResult.token;
+    }
+  }
+
+  sendTokenResponse(user, 201, res, charchaToken);
 });
 
 // @desc    Login user
 // @route   POST /api/auth/login
-// @access  Public (restricted to whitelist)
+// @access  Public
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -70,15 +65,6 @@ exports.login = asyncHandler(async (req, res, next) => {
     return res.status(400).json({
       success: false,
       message: 'Please provide an email and password'
-    });
-  }
-
-  // Check if email is in whitelist
-  if (!ALLOWED_EMAILS.includes(email?.toLowerCase())) {
-    return res.status(403).json({
-      success: false,
-      message: 'Access is currently invite-only. Join the waitlist to get notified when we launch!',
-      redirectToWaitlist: true
     });
   }
 
@@ -118,7 +104,16 @@ exports.login = asyncHandler(async (req, res, next) => {
     });
   }
 
-  sendTokenResponse(user, 200, res);
+  // Get Charcha token (SSO integration)
+  let charchaToken = null;
+  if (isCharchaConfigured()) {
+    const charchaResult = await getCharchaToken(user);
+    if (charchaResult.success) {
+      charchaToken = charchaResult.token;
+    }
+  }
+
+  sendTokenResponse(user, 200, res, charchaToken);
 });
 
 // @desc    Get current logged in user
@@ -190,15 +185,6 @@ exports.sendOTP = asyncHandler(async (req, res, next) => {
     return res.status(400).json({
       success: false,
       message: 'Please provide an email'
-    });
-  }
-
-  // Check if email is in whitelist
-  if (!ALLOWED_EMAILS.includes(email?.toLowerCase())) {
-    return res.status(403).json({
-      success: false,
-      message: 'Access is currently invite-only. Join the waitlist to get notified when we launch!',
-      redirectToWaitlist: true
     });
   }
 
@@ -316,7 +302,16 @@ exports.verifyOTP = asyncHandler(async (req, res, next) => {
     });
   }
 
-  sendTokenResponse(user, 200, res);
+  // Get Charcha token (SSO integration)
+  let charchaToken = null;
+  if (isCharchaConfigured()) {
+    const charchaResult = await getCharchaToken(user);
+    if (charchaResult.success) {
+      charchaToken = charchaResult.token;
+    }
+  }
+
+  sendTokenResponse(user, 200, res, charchaToken);
 });
 
 // @desc    Logout user / clear cookie
@@ -331,11 +326,11 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 // Helper function to get token from model, create cookie and send response
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = (user, statusCode, res, charchaToken = null) => {
   // Create token
   const token = user.getSignedJwtToken();
 
-  res.status(statusCode).json({
+  const responseData = {
     success: true,
     token,
     user: {
@@ -345,5 +340,12 @@ const sendTokenResponse = (user, statusCode, res) => {
       avatarIndex: user.avatarIndex,
       subscribedNewsletter: user.subscribedNewsletter
     }
-  });
+  };
+
+  // Include Charcha token if available
+  if (charchaToken) {
+    responseData.charchaToken = charchaToken;
+  }
+
+  res.status(statusCode).json(responseData);
 };

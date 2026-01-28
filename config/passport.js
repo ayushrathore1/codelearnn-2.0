@@ -1,12 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
-
-// Whitelist of allowed emails (admin access only during beta)
-const ALLOWED_EMAILS = [
-  'engineeratcodelearnn@gmail.com',
-  'rathoreayush512@gmail.com'
-];
+const { syncUserToCharcha, isCharchaConfigured } = require('../services/charchaService');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -32,15 +27,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0]?.value?.toLowerCase();
-        
-        // Check if email is in whitelist
-        if (!ALLOWED_EMAILS.includes(email)) {
-          // Return error with special flag for frontend to handle
-          return done(null, false, { 
-            message: 'Access is currently invite-only. Join the waitlist!',
-            redirectToWaitlist: true 
-          });
-        }
+        let isNewUser = false;
         
         // Check if user already exists with this Google ID
         let user = await User.findOne({ googleId: profile.id });
@@ -68,6 +55,17 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
           avatarUrl: profile.photos[0]?.value,
           password: Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
         });
+        isNewUser = true;
+        
+        // Sync new user to Charcha (SSO integration)
+        if (isNewUser && isCharchaConfigured()) {
+          try {
+            await syncUserToCharcha(user);
+          } catch (syncError) {
+            console.error('Charcha sync error during OAuth:', syncError.message);
+            // Don't fail OAuth if Charcha sync fails
+          }
+        }
         
         done(null, user);
       } catch (err) {

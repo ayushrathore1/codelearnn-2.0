@@ -12,6 +12,7 @@ const {
   verifyOTP
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
+const { getCharchaToken, isCharchaConfigured } = require('../services/charchaService');
 
 const router = express.Router();
 
@@ -38,7 +39,7 @@ router.get('/google', (req, res, next) => {
   })(req, res, next);
 });
 
-router.get('/google/callback', (req, res, next) => {
+router.get('/google/callback', async (req, res, next) => {
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     return res.redirect(`${frontendUrl}/login?error=google_not_configured`);
@@ -46,18 +47,13 @@ router.get('/google/callback', (req, res, next) => {
   
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   
-  passport.authenticate('google', { session: false }, (err, user, info) => {
+  passport.authenticate('google', { session: false }, async (err, user, info) => {
     // Handle authentication errors
     if (err) {
       return res.redirect(`${frontendUrl}/login?error=google_auth_failed`);
     }
     
-    // Handle whitelist rejection - user is false with info containing redirectToWaitlist
-    if (!user && info?.redirectToWaitlist) {
-      return res.redirect(`${frontendUrl}/?waitlist_redirect=true#waitlist`);
-    }
-    
-    // Handle other auth failures
+    // Handle auth failures
     if (!user) {
       return res.redirect(`${frontendUrl}/login?error=google_auth_failed`);
     }
@@ -65,10 +61,26 @@ router.get('/google/callback', (req, res, next) => {
     // Generate JWT token for the authenticated user
     const token = user.getSignedJwtToken();
     
-    // Redirect to frontend with token
-    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
+    // Get Charcha token (SSO integration)
+    let charchaToken = '';
+    if (isCharchaConfigured()) {
+      try {
+        const charchaResult = await getCharchaToken(user);
+        if (charchaResult.success) {
+          charchaToken = charchaResult.token;
+        }
+      } catch (charchaErr) {
+        console.error('Charcha token error during OAuth:', charchaErr.message);
+      }
+    }
+    
+    // Redirect to frontend with tokens
+    let redirectUrl = `${frontendUrl}/auth/callback?token=${token}`;
+    if (charchaToken) {
+      redirectUrl += `&charchaToken=${charchaToken}`;
+    }
+    res.redirect(redirectUrl);
   })(req, res, next);
 });
 
 module.exports = router;
-

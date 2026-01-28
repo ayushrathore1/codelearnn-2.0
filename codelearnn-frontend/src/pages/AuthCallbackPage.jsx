@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { setCharchaToken } from '../services/charchaApi';
 import Loader from '../components/common/Loader';
 
 /**
@@ -14,6 +15,7 @@ const AuthCallbackPage = () => {
 
   useEffect(() => {
     const token = searchParams.get('token');
+    const charchaToken = searchParams.get('charchaToken');
     const error = searchParams.get('error');
 
     if (error) {
@@ -22,8 +24,13 @@ const AuthCallbackPage = () => {
     }
 
     if (token) {
-      // Store the token
+      // Store the CodeLearnn token
       localStorage.setItem('token', token);
+      
+      // Store the Charcha token if available (SSO integration)
+      if (charchaToken) {
+        setCharchaToken(charchaToken);
+      }
       
       // Fetch user data and update context
       const fetchUser = async () => {

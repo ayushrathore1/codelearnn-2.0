@@ -35,13 +35,6 @@ const LoginPage = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      if (err.redirectToWaitlist) {
-        navigate('/');
-        setTimeout(() => {
-          document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-        return;
-      }
       setError(err.message || 'Failed to log in');
     } finally {
       setIsLoading(false);
@@ -58,13 +51,6 @@ const LoginPage = () => {
       setOtpStep('verify');
       setCountdown(60);
     } catch (err) {
-      if (err.redirectToWaitlist) {
-        navigate('/');
-        setTimeout(() => {
-          document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-        return;
-      }
       if (err.waitTime) {
         setCountdown(err.waitTime);
       }
