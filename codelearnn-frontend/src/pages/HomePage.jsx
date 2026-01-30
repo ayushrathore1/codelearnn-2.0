@@ -23,6 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faYoutube, faLinkedin} from '@fortawesome/free-brands-svg-icons';
 import { waitlistAPI } from '../services/api';
+import SEO from '../components/common/SEO';
 
 // Check if we're in development mode (localhost or Vite dev server)
 const isDevelopment = window.location.hostname === 'localhost' || 
@@ -195,6 +196,22 @@ const HomePage = () => {
 
   return (
     <main className="min-h-screen selection:bg-primary selection:text-black">
+      <SEO 
+        title="Home"
+        description="The Learning Operating System for Engineering Students. Stop learning random tutorials and start building a real career with structured roadmaps and AI guidance."
+        keywords="coding roadmap, engineering career, learn to code, full stack development, system design, data structures"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "CodeLearnn",
+          "url": "https://codelearnn.com",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://codelearnn.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }}
+      />
       {/* ═══════════════════════════════════════════════════════════════════
           HERO SECTION - ABOVE THE FOLD
           ═══════════════════════════════════════════════════════════════════ */}
