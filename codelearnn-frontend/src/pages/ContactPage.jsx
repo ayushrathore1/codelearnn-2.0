@@ -1,22 +1,12 @@
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faEnvelope, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { faFacebook, faTwitter, faInstagram, faGithub, faYoutube, faLinkedin, faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import ContactForm from '../components/forms/ContactForm';
-
-const socialLinks = [
-  { icon: faFacebook, href: '#', label: 'Facebook' },
-  { icon: faTwitter, href: 'https://x.com/ayushrathore_27', label: 'Twitter' },
-  { icon: faInstagram, href: 'https://www.instagram.com/ayush.rathore27', label: 'Instagram' },
-  { icon: faGithub, href: 'https://github.com/ayushrathore1', label: 'GitHub' },
-  { icon: faYoutube, href: '#', label: 'YouTube' },
-  { icon: faLinkedin, href: '#', label: 'LinkedIn' },
-  { icon: faDiscord, href: '#', label: 'Discord' }
-];
 
 const ContactPage = () => {
   return (
-    <main className="bg-bg-base min-h-screen pt-24">
+    <main className="bg-bg-base min-h-screen pt-24 pb-16">
       {/* Hero Section */}
       <section className="section text-center">
         <motion.div
@@ -24,12 +14,11 @@ const ContactPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-primary font-mono text-sm mb-4">Get In Touch</p>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-text-main mb-6">
-            Contact Us
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">
+            CONTACT US
           </h1>
-          <p className="text-text-muted text-lg max-w-2xl mx-auto">
-            Have questions or feedback? We'd love to hear from you!
+          <p className="text-text-muted text-lg max-w-2xl mx-auto mb-8">
+            We're happy to hear from you.
           </p>
         </motion.div>
       </section>
@@ -42,57 +31,64 @@ const ContactPage = () => {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="card-bento p-8"
+            className="flex flex-col justify-center space-y-8" 
           >
-            <h2 className="text-2xl font-heading font-bold text-text-main mb-6 flex items-center gap-3">
-              <span className="text-primary font-mono text-lg">01.</span>
-              Get In Touch
-            </h2>
-            
-            <div className="space-y-6">
-              <div className="flex items-start gap-4 text-text-muted">
-                <FontAwesomeIcon icon={faMapMarkerAlt} className="text-primary text-xl mt-1" />
-                <div>
-                  <h4 className="text-text-main font-medium">Location</h4>
-                  <p>Jaipur, Rajasthan, India</p>
-                </div>
-              </div>
+            <div className="card-bento p-8 space-y-8">
+                <p className="text-lg text-text-muted">
+                    Whether you have questions, feedback, partnership inquiries, or support requests, feel free to reach out.
+                </p>
 
-              <div className="flex items-start gap-4 text-text-muted">
-                <FontAwesomeIcon icon={faEnvelope} className="text-primary text-xl mt-1" />
-                <div>
-                  <h4 className="text-text-main font-medium">Email</h4>
-                  <p>engineeratcodelearnn@gmail.com</p>
+                <div className="space-y-6">
+                <div className="flex items-start gap-4 text-text-muted group">
+                    <div className="w-10 h-10 rounded-lg bg-bg-elevated border border-border flex items-center justify-center text-primary group-hover:bg-primary/10 transition-colors">
+                        <FontAwesomeIcon icon={faEnvelope} />
+                    </div>
+                    <div>
+                    <h4 className="text-text-main font-medium text-lg mb-1">Email</h4>
+                    <a href="mailto:engineeratcodelearnn@gmail.com" className="text-primary hover:underline">
+                        engineeratcodelearnn@gmail.com
+                    </a>
+                    </div>
                 </div>
-              </div>
 
-              <div className="flex items-start gap-4 text-text-muted">
-                <FontAwesomeIcon icon={faPhone} className="text-primary text-xl mt-1" />
-                <div>
-                  <h4 className="text-text-main font-medium">Phone</h4>
-                  <p>+91 7488605560</p>
-                  <p>+91 6377805448</p>
+                <div className="flex items-start gap-4 text-text-muted group">
+                    <div className="w-10 h-10 rounded-lg bg-bg-elevated border border-border flex items-center justify-center text-primary group-hover:bg-primary/10 transition-colors">
+                        <FontAwesomeIcon icon={faLinkedin} />
+                    </div>
+                    <div>
+                    <h4 className="text-text-main font-medium text-lg mb-1">LinkedIn</h4>
+                    <a 
+                        href="https://www.linkedin.com/in/ayushrathore1" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-primary hover:underline"
+                    >
+                        https://www.linkedin.com/in/ayushrathore1
+                    </a>
+                    </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Social Links */}
-            <div className="mt-8">
-              <h3 className="text-text-main font-medium mb-4">Follow Us</h3>
-              <div className="flex gap-3 flex-wrap">
-                {socialLinks.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-text-muted bg-bg-elevated border border-border hover:text-primary hover:border-primary hover:-translate-y-1 transition-all duration-200"
-                  >
-                    <FontAwesomeIcon icon={social.icon} />
-                  </a>
-                ))}
-              </div>
+                <div className="flex items-start gap-4 text-text-muted group">
+                     {/* Using a simple building icon or similar for Company if FontAwesome building icon is not imported, 
+                         but since I can't easily see all available icons, I'll stick to a generic container or just text if icon is missing.
+                         However, I'll use a placeholder div that looks like an icon container.
+                      */}
+                    <div className="w-10 h-10 rounded-lg bg-bg-elevated border border-border flex items-center justify-center text-primary font-bold group-hover:bg-primary/10 transition-colors">
+                        🏢
+                    </div>
+                    <div>
+                    <h4 className="text-text-main font-medium text-lg mb-1">Company</h4>
+                    <p className="text-white">Elytron</p>
+                    <p className="text-sm">(Product: CodeLearnn)</p>
+                    </div>
+                </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/10">
+                    <p className="text-text-muted italic">
+                        We aim to respond to all queries within a reasonable timeframe.
+                    </p>
+                </div>
             </div>
           </motion.div>
 
@@ -103,8 +99,7 @@ const ContactPage = () => {
             viewport={{ once: true }}
             className="card-bento p-8"
           >
-            <h2 className="text-2xl font-heading font-bold text-text-main mb-6 flex items-center gap-3">
-              <span className="text-primary font-mono text-lg">02.</span>
+            <h2 className="text-2xl font-heading font-bold text-text-main mb-6">
               Send A Message
             </h2>
             <ContactForm />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -16,10 +16,14 @@ import {
   faCheckCircle,
   faLock,
   faEye,
-  faEyeSlash
+  faEyeSlash,
+  faCode,
+  faTrophy,
+  faSpinner,
+  faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/AuthContext';
-import { authAPI } from '../services/api';
+import { authAPI, progressAPI } from '../services/api';
 
 // Security Tab Component with Password Change
 const SecurityTab = ({ user }) => {
@@ -193,22 +197,205 @@ const SecurityTab = ({ user }) => {
   );
 };
 
+// Skills Card Component
+const SkillsCard = ({ skills, isLoading }) => {
+  if (isLoading) {
+    return (
+      <motion.div className="card-bento p-6">
+        <div className="flex items-center justify-center h-32">
+          <FontAwesomeIcon icon={faSpinner} className="text-2xl text-primary animate-spin" />
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (!skills || skills.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="card-bento p-6"
+      >
+        <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+          <FontAwesomeIcon icon={faCode} className="text-primary" />
+          Skills
+        </h3>
+        <p className="text-sm text-text-muted text-center py-8">
+          Complete courses and resources to build your skill profile!
+        </p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-bento p-6"
+    >
+      <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+        <FontAwesomeIcon icon={faCode} className="text-primary" />
+        Top Skills
+      </h3>
+      <div className="space-y-3">
+        {skills.slice(0, 5).map((skill, i) => (
+          <div key={skill.skillName || i}>
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-sm font-medium text-text-main">{skill.displayName || skill.skillName}</span>
+              <span className="text-xs text-primary capitalize">{skill.level}</span>
+            </div>
+            <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500" 
+                style={{ width: `${skill.score || 0}%` }}
+              ></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
+
+// Progress Card Component  
+const ProgressCard = ({ inProgress, isLoading }) => {
+  if (isLoading) {
+    return (
+      <motion.div className="card-bento p-6">
+        <div className="flex items-center justify-center h-32">
+          <FontAwesomeIcon icon={faSpinner} className="text-2xl text-primary animate-spin" />
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (!inProgress || inProgress.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="card-bento p-6"
+      >
+        <h3 className="text-lg font-bold text-text-main mb-6 flex items-center gap-2">
+          <FontAwesomeIcon icon={faBookOpen} className="text-primary" />
+          Current Progress
+        </h3>
+        <p className="text-sm text-text-muted text-center py-8">
+          Start learning to see your progress here!
+        </p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 }}
+      className="card-bento p-6"
+    >
+      <h3 className="text-lg font-bold text-text-main mb-6 flex items-center gap-2">
+        <FontAwesomeIcon icon={faBookOpen} className="text-primary" />
+        Current Progress
+      </h3>
+      
+      <div className="space-y-6">
+        {inProgress.slice(0, 3).map((item, i) => {
+          const resource = item.resource || {};
+          const progressPercent = item.progress || 0;
+          
+          return (
+            <div key={item._id || i}>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-text-main truncate pr-4">
+                  {resource.title || 'Learning Resource'}
+                </span>
+                <span className="text-xs text-primary flex-shrink-0">
+                  {progressPercent}% Complete
+                </span>
+              </div>
+              <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden">
+                <div 
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    i % 2 === 0 ? 'bg-primary' : 'bg-secondary'
+                  }`}
+                  style={{ width: `${progressPercent}%` }}
+                ></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+};
+
 const ProfilePage = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState(null);
+  const [progress, setProgress] = useState(null);
+  const [skills, setSkills] = useState([]);
 
-  // Mock user data if not available
-  const userData = user || {
-    name: 'Alex Developer',
-    email: 'alex@example.com',
-    joinDate: 'January 2025',
-    avatar: null,
-    stats: {
-      xp: 1250,
-      streak: 5,
-      completedLessons: 24,
-      hoursLearning: 18
-    }
+  // Fetch user data on mount
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        
+        // Fetch progress stats
+        const [statsRes, progressRes] = await Promise.all([
+          progressAPI.getStats().catch(() => ({ data: { data: null } })),
+          progressAPI.getMyProgress().catch(() => ({ data: { data: null } }))
+        ]);
+
+        setStats(statsRes.data?.data);
+        setProgress(progressRes.data?.data);
+
+        // Try to fetch skills (new API)
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/skills/top?limit=5`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          if (response.ok) {
+            const skillsData = await response.json();
+            setSkills(skillsData.data || []);
+          }
+        } catch (skillErr) {
+          console.log('Skills API not available yet');
+        }
+
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
+
+  // Format join date
+  const formatJoinDate = (dateString) => {
+    if (!dateString) return 'Recently';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  };
+
+  // Calculate hours from minutes
+  const formatHours = (minutes) => {
+    if (!minutes) return 0;
+    return Math.round(minutes / 60);
   };
 
   const tabs = [
@@ -220,6 +407,14 @@ const ProfilePage = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
+  };
+
+  // Use real data or defaults
+  const displayStats = {
+    xp: stats?.xp || progress?.stats?.xp || 0,
+    streak: stats?.currentStreak || progress?.stats?.currentStreak || 0,
+    completedLessons: stats?.totalCompleted || progress?.stats?.totalCompleted || progress?.completedResources?.length || 0,
+    hoursLearning: formatHours(stats?.totalTimeSpent || progress?.stats?.totalTimeSpent || 0)
   };
 
   return (
@@ -239,8 +434,8 @@ const ProfilePage = () => {
               
               <div className="relative z-10 mt-8">
                 <div className="w-24 h-24 rounded-full bg-bg-elevated border-4 border-bg-base mx-auto mb-4 flex items-center justify-center relative group cursor-pointer">
-                  {userData.avatar ? (
-                    <img src={userData.avatar} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                  {user?.avatarUrl ? (
+                    <img src={user.avatarUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
                   ) : (
                     <FontAwesomeIcon icon={faUser} className="text-3xl text-text-dim" />
                   )}
@@ -249,11 +444,12 @@ const ProfilePage = () => {
                   </div>
                 </div>
                 
-                <h2 className="text-xl font-bold text-text-main mb-1">{userData.name}</h2>
-                <p className="text-sm text-text-muted mb-4">{userData.email}</p>
+                <h2 className="text-xl font-bold text-text-main mb-1">{user?.name || 'User'}</h2>
+                <p className="text-sm text-text-muted mb-4">{user?.email || ''}</p>
                 
                 <div className="flex items-center justify-center gap-2 text-xs text-text-dim mb-6">
-                  <span>Joined {userData.joinDate}</span>
+                  <FontAwesomeIcon icon={faCalendarAlt} className="text-primary" />
+                  <span>Joined {formatJoinDate(user?.createdAt)}</span>
                 </div>
 
                 <div className="w-full h-px bg-border mb-6"></div>
@@ -293,10 +489,10 @@ const ProfilePage = () => {
                 {/* Stats Grid */}
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
-                    { label: 'Total XP', value: userData.stats?.xp, icon: faAward, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
-                    { label: 'Day Streak', value: userData.stats?.streak, icon: faFire, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-                    { label: 'Lessons', value: userData.stats?.completedLessons, icon: faCheckCircle, color: 'text-primary', bg: 'bg-primary/10' },
-                    { label: 'Hours', value: userData.stats?.hoursLearning, icon: faHistory, color: 'text-secondary', bg: 'bg-secondary/10' },
+                    { label: 'Total XP', value: displayStats.xp, icon: faAward, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
+                    { label: 'Day Streak', value: displayStats.streak, icon: faFire, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: 'Completed', value: displayStats.completedLessons, icon: faCheckCircle, color: 'text-primary', bg: 'bg-primary/10' },
+                    { label: 'Hours', value: displayStats.hoursLearning, icon: faHistory, color: 'text-secondary', bg: 'bg-secondary/10' },
                   ].map((stat, i) => (
                     <motion.div
                       key={i}
@@ -309,47 +505,67 @@ const ProfilePage = () => {
                         <FontAwesomeIcon icon={stat.icon} />
                       </div>
                       <div>
-                        <div className="text-2xl font-bold text-text-main">{stat.value}</div>
+                        <div className="text-2xl font-bold text-text-main">
+                          {isLoading ? (
+                            <FontAwesomeIcon icon={faSpinner} className="text-lg animate-spin" />
+                          ) : (
+                            stat.value
+                          )}
+                        </div>
                         <div className="text-xs text-text-muted uppercase tracking-wider">{stat.label}</div>
                       </div>
                     </motion.div>
                   ))}
                 </div>
 
-                {/* Progress Card */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="card-bento p-6"
-                >
-                  <h3 className="text-lg font-bold text-text-main mb-6 flex items-center gap-2">
-                    <FontAwesomeIcon icon={faBookOpen} className="text-primary" />
-                    Current Progress
-                  </h3>
-                  
-                  <div className="space-y-6">
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium text-text-main">Full Stack Developer Path</span>
-                            <span className="text-xs text-primary">65% Complete</span>
-                      </div>
-                      <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden">
-                        <div className="h-full bg-primary w-[65%] rounded-full"></div>
-                      </div>
-                    </div>
+                {/* Skills Card */}
+                <SkillsCard skills={skills} isLoading={isLoading} />
 
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium text-text-main">React Advanced Patterns</span>
-                        <span className="text-xs text-secondary">32% Complete</span>
-                      </div>
-                      <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden">
-                        <div className="h-full bg-secondary w-[32%] rounded-full"></div>
-                      </div>
+                {/* Progress Card */}
+                <ProgressCard 
+                  inProgress={progress?.inProgressResources} 
+                  isLoading={isLoading} 
+                />
+
+                {/* Recent Activity */}
+                {progress?.completedResources?.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="card-bento p-6"
+                  >
+                    <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
+                      <FontAwesomeIcon icon={faTrophy} className="text-yellow-400" />
+                      Recently Completed
+                    </h3>
+                    <div className="space-y-3">
+                      {progress.completedResources.slice(0, 5).map((item, i) => {
+                        const resource = item.resource || {};
+                        return (
+                          <div key={item._id || i} className="flex items-center gap-3 p-3 bg-bg-elevated rounded-lg">
+                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                              <FontAwesomeIcon icon={faCheckCircle} className="text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-text-main truncate">
+                                {resource.title || 'Completed Resource'}
+                              </p>
+                              <p className="text-xs text-text-muted">
+                                {item.completedAt ? new Date(item.completedAt).toLocaleDateString() : 'Recently'}
+                              </p>
+                            </div>
+                            {item.rating && (
+                              <div className="text-yellow-400 text-sm">
+                                {'★'.repeat(item.rating)}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                )}
               </div>
             )}
 
@@ -365,7 +581,7 @@ const ProfilePage = () => {
                     <label className="block text-sm font-medium text-text-muted mb-2">Display Name</label>
                     <input 
                       type="text" 
-                      defaultValue={userData.name}
+                      defaultValue={user?.name || ''}
                       className="w-full bg-bg-base border border-border rounded-lg px-4 py-3 text-text-main focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
@@ -373,7 +589,7 @@ const ProfilePage = () => {
                     <label className="block text-sm font-medium text-text-muted mb-2">Email Address</label>
                     <div className="w-full bg-bg-elevated border border-border rounded-lg px-4 py-3 text-text-dim flex items-center gap-2">
                       <FontAwesomeIcon icon={faEnvelope} className="text-text-dim" />
-                      <span>{userData.email}</span>
+                      <span>{user?.email || ''}</span>
                       <span className="ml-auto text-xs text-text-dim bg-bg-base px-2 py-1 rounded">Cannot be changed</span>
                     </div>
                     <p className="text-xs text-text-dim mt-1">Email address cannot be changed for security reasons.</p>
@@ -386,7 +602,7 @@ const ProfilePage = () => {
             )}
 
             {activeTab === 'security' && (
-              <SecurityTab user={userData} />
+              <SecurityTab user={user} />
             )}
           </div>
         </motion.div>

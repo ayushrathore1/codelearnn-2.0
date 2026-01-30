@@ -322,5 +322,68 @@ export const opportunitiesAPI = {
   delete: (id) => api.delete(`/opportunities/${id}`)
 };
 
+// Skills API (User skill tracking)
+export const skillsAPI = {
+  // Get user's skills
+  getMySkills: (params = {}) => api.get('/skills/me', { params }),
+  
+  // Get user's top skills
+  getTopSkills: (limit = 10) => api.get('/skills/top', { params: { limit } }),
+  
+  // Get skill gaps for a target role
+  getSkillGaps: (targetRole) => api.get(`/skills/gaps/${encodeURIComponent(targetRole)}`),
+  
+  // Get specific skill details
+  getSkill: (skillName) => api.get(`/skills/${encodeURIComponent(skillName)}`),
+  
+  // Get skill categories
+  getCategories: () => api.get('/skills/meta/categories'),
+  
+  // Get popular skills
+  getPopularSkills: () => api.get('/skills/meta/popular')
+};
+
+// Events API (User activity tracking)
+export const eventsAPI = {
+  // Get recent activity
+  getRecent: (limit = 20) => api.get('/events/recent', { params: { limit } }),
+  
+  // Get learning stats
+  getLearningStats: () => api.get('/events/stats/learning'),
+  
+  // Get activity summary
+  getSummary: (startDate, endDate) => api.get('/events/summary', { params: { startDate, endDate } }),
+  
+  // Get activity heatmap
+  getHeatmap: (days = 365) => api.get('/events/heatmap', { params: { days } })
+};
+
+// Career Journey API
+export const journeyAPI = {
+  // Get active journey
+  getActive: () => api.get('/journey/active'),
+  
+  // Get journey overview (dashboard data)
+  getOverview: () => api.get('/journey/overview'),
+  
+  // Get full roadmap
+  getRoadmap: () => api.get('/journey/roadmap'),
+  
+  // Get next recommended actions
+  getNextActions: () => api.get('/journey/next-actions'),
+  
+  // Get journey history/timeline
+  getHistory: (limit = 20) => api.get('/journey/history', { params: { limit } }),
+  
+  // Start a new journey
+  start: (career, preferences) => api.post('/journey/start', { career, preferences }),
+  
+  // Complete a resource
+  completeResource: (phaseId, resourceId) => api.post('/journey/resource/complete', { phaseId, resourceId }),
+  
+  // Pause/Resume journey
+  togglePause: () => api.post('/journey/toggle-pause')
+};
+
 export default api;
 

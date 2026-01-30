@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faSearch, 
@@ -29,11 +30,20 @@ import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 // API
 import { careerAPI } from '../services/api';
 
+// Components
+import StartJourneyModal from '../components/StartJourneyModal';
+
+// Context
+import { useCareerJourney } from '../context/CareerJourneyContext';
+
 /**
  * CareerExplorerPage - Premium Developer Theme
  * "Command Center" for career initialization
  */
 const CareerExplorerPage = () => {
+  const navigate = useNavigate();
+  const { journey, hasActiveJourney } = useCareerJourney();
+  
   // Data states
   const [keyword, setKeyword] = useState('');
   const [location, setLocation] = useState('India');
@@ -55,6 +65,10 @@ const CareerExplorerPage = () => {
   
   const [error, setError] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
+  
+  // Journey modal state
+  const [showJourneyModal, setShowJourneyModal] = useState(false);
+  const [selectedCareer, setSelectedCareer] = useState(null);
 
   // Load dashboard data on mount
   useEffect(() => {
@@ -555,18 +569,11 @@ const CareerExplorerPage = () => {
                   {/* Trending Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
                     {trendingDomains?.domains?.map((domain, idx) => (
-                      <motion.button
+                      <motion.div
                         key={domain.name}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.1 }}
-                        onClick={() => {
-                          setKeyword(domain.name);
-                          setTimeout(() => {
-                            const searchBtn = document.querySelector('form button[type="submit"]');
-                            searchBtn?.click();
-                          }, 100);
-                        }}
                         className="bg-bg-surface hover:bg-bg-elevated border border-border hover:border-secondary/50 rounded-xl p-5 text-left transition-all group relative overflow-hidden"
                       >
                          <div className="absolute top-0 right-0 w-20 h-20 bg-secondary/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-secondary/10 transition-colors"></div>
@@ -582,14 +589,23 @@ const CareerExplorerPage = () => {
                            </span>
                          </div>
                          
-                         <h3 className="text-lg font-bold text-text-main mb-2 group-hover:text-secondary transition-colors">
+                         <h3 
+                           className="text-lg font-bold text-text-main mb-2 group-hover:text-secondary transition-colors cursor-pointer"
+                           onClick={() => {
+                             setKeyword(domain.name);
+                             setTimeout(() => {
+                               const searchBtn = document.querySelector('form button[type="submit"]');
+                               searchBtn?.click();
+                             }, 100);
+                           }}
+                         >
                            {domain.name}
                          </h3>
                          <p className="text-sm text-text-muted mb-4 line-clamp-2 leading-relaxed">
                            {domain.description}
                          </p>
                          
-                         <div className="flex items-center justify-between pt-4 border-t border-border">
+                         <div className="flex items-center justify-between pt-4 border-t border-border mb-4">
                            <div className="font-mono text-xs text-text-muted">
                              <div className="text-[10px] text-text-dim mb-0.5">COMPENSATION</div>
                              <span className="text-text-main">${domain.avgSalaryUSD?.toLocaleString()}</span>
@@ -599,7 +615,20 @@ const CareerExplorerPage = () => {
                              <span className="text-secondary">+{domain.growthRate}</span>
                            </div>
                          </div>
-                      </motion.button>
+                         
+                         {/* Start Journey Button */}
+                         <button
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             setSelectedCareer(domain);
+                             setShowJourneyModal(true);
+                           }}
+                           className="w-full py-2.5 bg-primary hover:bg-primary/90 text-bg-base text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                         >
+                           <FontAwesomeIcon icon={faRocket} />
+                           Start {domain.name} Journey
+                         </button>
+                      </motion.div>
                     ))}
                   </div>
 
@@ -647,6 +676,35 @@ const CareerExplorerPage = () => {
 
         </AnimatePresence>
       </section>
+      
+      {/* Start Journey Modal */}
+      <StartJourneyModal 
+        isOpen={showJourneyModal}
+        onClose={() => {
+          setShowJourneyModal(false);
+          setSelectedCareer(null);
+        }}
+        career={selectedCareer}
+      />
+      
+      {/* Active Journey Banner */}
+      {hasActiveJourney() && (
+        <div className="fixed bottom-6 right-6 z-40">
+          <Link
+            to="/my-career-journey"
+            className="flex items-center gap-3 px-4 py-3 bg-primary text-bg-base rounded-xl shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-lg bg-bg-base/20 flex items-center justify-center">
+              <FontAwesomeIcon icon={faRocket} className="text-lg" />
+            </div>
+            <div className="text-left">
+              <div className="text-sm font-bold">Continue Journey</div>
+              <div className="text-xs opacity-80">{journey?.career?.title}</div>
+            </div>
+            <FontAwesomeIcon icon={faChevronDown} className="transform -rotate-90 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+      )}
     </main>
   );
 };
