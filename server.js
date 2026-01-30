@@ -39,7 +39,7 @@ app.use(helmet({
 // Parse allowed origins from environment variable
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-  : ['https://codelearnn.com', 'https://www.codelearnn.com', 'http://localhost:5173'];
+  : ['https://codelearnn.com', 'https://www.codelearnn.com', 'http://localhost:5173', 'https://codelearnn.com/', 'https://www.codelearnn.com/', 'https://charcha.codelearnn.com/', 'https://www.charcha.codelearnn.com/', 'https://charcha.codelearnn.com', 'https://www.charcha.codelearnn.com', 'https://charcha.codelearnn.com/', 'https://www.charcha.codelearnn.com/'];
 
 console.log('CORS Allowed Origins:', allowedOrigins);
 
@@ -69,7 +69,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Handle preflight OPTIONS requests explicitly for all routes
-app.options('*', cors(corsOptions));
+// Note: Express 5.x requires named wildcard parameters
+app.options('/{*path}', cors(corsOptions));
 
 // Compression for responses
 app.use(compression());
