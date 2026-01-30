@@ -11,7 +11,7 @@ const waitlistSchema = new mongoose.Schema({
   },
   source: {
     type: String,
-    enum: ['homepage', 'pro-modal', 'navbar'],
+    enum: ['homepage', 'homepage-mobile', 'pro-modal', 'navbar'],
     default: 'homepage'
   },
   createdAt: {
