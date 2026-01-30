@@ -262,7 +262,7 @@ export const personalizedPathAPI = {
 // Waitlist API
 export const waitlistAPI = {
   // Join waitlist
-  join: (email, source = 'homepage') => api.post('/waitlist', { email, source }),
+  join: (email, source = 'homepage', refCode = null) => api.post('/waitlist', { email, source, refCode }),
   
   // Get waitlist count
   getCount: () => api.get('/waitlist/count')

@@ -50,15 +50,32 @@ const HomePage = () => {
     }
   }, [location, navigate]);
 
-  const handleJoinWaitlist = async (e) => {
-    e.preventDefault();
-    if (!email || waitlistStatus === 'loading') return;
+  // Capture referral code on mount
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      localStorage.setItem('referralCode', refCode);
+    }
+  }, [location]);
 
+  const handleWaitlistSubmit = async (e) => {
+    e.preventDefault();
     setWaitlistStatus('loading');
+    setWaitlistMessage('');
+    
     try {
-      const response = await waitlistAPI.join(email, 'homepage');
-      setWaitlistStatus('success');
-      setWaitlistMessage(response.data.message || "🎉 You're in! Check your email for next steps.");
+      const source = window.innerWidth < 768 ? 'homepage-mobile' : 'homepage';
+      // Get referral code from storage
+      const refCode = localStorage.getItem('referralCode');
+      
+      const response = await waitlistAPI.join(email, source, refCode);
+      
+      setWaitlistStatus(response.data.alreadyExists ? 'success' : 'success');
+      setWaitlistMessage(response.data.message);
+      
+      // If successful, maybe show their own referral link?
+      // For now, clear email field
       setEmail('');
     } catch (error) {
       setWaitlistStatus('error');
@@ -686,7 +703,7 @@ const HomePage = () => {
                 <p className="text-sm text-text-muted">Share with friends to skip the waitlist line!</p>
               </motion.div>
             ) : (
-              <form onSubmit={handleJoinWaitlist} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                 <input
                   type="email"
                   placeholder="your.email@college.edu"

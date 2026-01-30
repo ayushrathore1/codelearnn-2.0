@@ -17,6 +17,18 @@ const waitlistSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  referralCode: {
+    type: String,
+    unique: true
+  },
+  referrals: {
+    type: Number,
+    default: 0
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Waitlist'
   }
 });
 
