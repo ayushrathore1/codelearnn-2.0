@@ -1,6 +1,9 @@
 const UserProgress = require('../models/UserProgress');
 const Resource = require('../models/Resource');
 const asyncHandler = require('../middleware/async');
+const EventService = require('../services/EventService');
+const SkillService = require('../services/SkillService');
+const cacheService = require('../services/CacheService');
 
 /**
  * @desc    Get user's progress
@@ -63,6 +66,14 @@ exports.startResource = asyncHandler(async (req, res) => {
 
   const progress = await UserProgress.getOrCreate(req.user.id);
   await progress.startResource(resourceId);
+
+  // Record event
+  await EventService.resourceStarted(
+    req.user.id,
+    resourceId,
+    resource.title,
+    resource.sourceType
+  );
 
   res.status(200).json({
     success: true,
@@ -130,10 +141,29 @@ exports.completeResource = asyncHandler(async (req, res) => {
   }
   await resource.save();
 
+  // Record completion event
+  await EventService.resourceCompleted(
+    req.user.id,
+    resourceId,
+    resource.title,
+    resource.sourceType,
+    timeSpent || 0
+  );
+
+  // Update skills based on resource tags
+  let skillUpdates = [];
+  if (resource.tags && resource.tags.length > 0) {
+    skillUpdates = await SkillService.updateFromVideoCompletion(req.user.id, resource.tags);
+  }
+
+  // Invalidate progress cache
+  await cacheService.invalidateUserProgress(req.user.id);
+
   res.status(200).json({
     success: true,
     message: 'Resource completed',
-    xpEarned: 50
+    xpEarned: 50,
+    skillUpdates: skillUpdates.length > 0 ? skillUpdates : undefined
   });
 });
 

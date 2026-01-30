@@ -45,6 +45,114 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+
+  // Subscription & Premium Features
+  subscription: {
+    tier: {
+      type: String,
+      enum: ['free', 'premium', 'pro'],
+      default: 'free'
+    },
+    stripeCustomerId: String,
+    stripeSubscriptionId: String,
+    currentPeriodStart: Date,
+    currentPeriodEnd: Date,
+    status: {
+      type: String,
+      enum: ['active', 'cancelled', 'past_due', 'trialing', 'incomplete'],
+      default: 'active'
+    },
+    cancelAtPeriodEnd: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  // Career & Learning Goals
+  careerGoal: {
+    title: String,        // e.g., "Full Stack Developer"
+    targetRole: String,   // e.g., "Senior Software Engineer"
+    targetCompany: String,
+    targetSalary: Number,
+    targetDate: Date,
+    currentLevel: {
+      type: String,
+      enum: ['student', 'entry', 'junior', 'mid', 'senior', 'lead', 'other'],
+      default: 'student'
+    }
+  },
+
+  // Profile Settings
+  profile: {
+    headline: String,           // e.g., "Aspiring Full Stack Developer"
+    bio: {
+      type: String,
+      maxlength: 500
+    },
+    location: String,
+    website: String,
+    linkedinUrl: String,
+    githubUsername: String,
+    isPublic: {
+      type: Boolean,
+      default: false
+    },
+    publicSlug: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+    showEmail: {
+      type: Boolean,
+      default: false
+    },
+    showSkills: {
+      type: Boolean,
+      default: true
+    },
+    showProjects: {
+      type: Boolean,
+      default: true
+    },
+    showProgress: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  // Notification Preferences
+  notifications: {
+    email: {
+      dailyReminder: { type: Boolean, default: true },
+      weeklyProgress: { type: Boolean, default: true },
+      newFeatures: { type: Boolean, default: true },
+      streakReminder: { type: Boolean, default: true },
+      projectUpdates: { type: Boolean, default: true }
+    },
+    push: {
+      enabled: { type: Boolean, default: false },
+      dailyReminder: { type: Boolean, default: false },
+      streakReminder: { type: Boolean, default: true }
+    },
+    preferredTime: {
+      type: String,
+      default: '09:00' // HH:mm format
+    },
+    timezone: {
+      type: String,
+      default: 'Asia/Kolkata'
+    }
+  },
+
+  // Usage Limits (for free tier tracking)
+  usageLimits: {
+    aiAnalysisCount: { type: Number, default: 0 },
+    aiAnalysisResetAt: Date,
+    quizAttempts: { type: Number, default: 0 },
+    quizAttemptsResetAt: Date,
+    pathsEnrolled: { type: Number, default: 0 }
+  },
+
   createdAt: {
     type: Date,
     default: Date.now
@@ -75,6 +183,173 @@ userSchema.methods.getSignedJwtToken = function() {
 // Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Check if user has premium access
+userSchema.methods.isPremium = function() {
+  return ['premium', 'pro'].includes(this.subscription?.tier);
+};
+
+// Check if user has pro access
+userSchema.methods.isPro = function() {
+  return this.subscription?.tier === 'pro';
+};
+
+// Check subscription status
+userSchema.methods.hasActiveSubscription = function() {
+  if (this.subscription?.tier === 'free') return true;
+  return this.subscription?.status === 'active' || this.subscription?.status === 'trialing';
+};
+
+// Get tier limits
+userSchema.methods.getTierLimits = function() {
+  const limits = {
+    free: {
+      aiAnalysisPerMonth: 10,
+      quizzesPerMonth: 5,
+      maxPaths: 3,
+      codingChallenges: false,
+      teamFeatures: false,
+      profileExport: false
+    },
+    premium: {
+      aiAnalysisPerMonth: -1, // unlimited
+      quizzesPerMonth: -1,
+      maxPaths: -1,
+      codingChallenges: true,
+      teamFeatures: true,
+      profileExport: true
+    },
+    pro: {
+      aiAnalysisPerMonth: -1,
+      quizzesPerMonth: -1,
+      maxPaths: -1,
+      codingChallenges: true,
+      teamFeatures: true,
+      profileExport: true,
+      mentorship: true,
+      apiAccess: true,
+      certificates: true
+    }
+  };
+  
+  return limits[this.subscription?.tier || 'free'];
+};
+
+// Check if user can use a feature (returns { allowed: bool, reason: string })
+userSchema.methods.canUseFeature = function(feature) {
+  const limits = this.getTierLimits();
+  
+  switch (feature) {
+    case 'ai_analysis':
+      if (limits.aiAnalysisPerMonth === -1) return { allowed: true };
+      const analysisCount = this.usageLimits?.aiAnalysisCount || 0;
+      const resetNeeded = !this.usageLimits?.aiAnalysisResetAt || 
+        new Date() > new Date(this.usageLimits.aiAnalysisResetAt);
+      if (resetNeeded || analysisCount < limits.aiAnalysisPerMonth) {
+        return { allowed: true };
+      }
+      return { 
+        allowed: false, 
+        reason: `Free tier limit: ${limits.aiAnalysisPerMonth} AI analyses per month`,
+        upgradeRequired: true 
+      };
+      
+    case 'quiz':
+      if (limits.quizzesPerMonth === -1) return { allowed: true };
+      const quizCount = this.usageLimits?.quizAttempts || 0;
+      const quizResetNeeded = !this.usageLimits?.quizAttemptsResetAt || 
+        new Date() > new Date(this.usageLimits.quizAttemptsResetAt);
+      if (quizResetNeeded || quizCount < limits.quizzesPerMonth) {
+        return { allowed: true };
+      }
+      return { 
+        allowed: false, 
+        reason: `Free tier limit: ${limits.quizzesPerMonth} quizzes per month`,
+        upgradeRequired: true 
+      };
+      
+    case 'coding_challenge':
+      if (!limits.codingChallenges) {
+        return { allowed: false, reason: 'Coding challenges are a Premium feature', upgradeRequired: true };
+      }
+      return { allowed: true };
+      
+    case 'team':
+      if (!limits.teamFeatures) {
+        return { allowed: false, reason: 'Team features require Premium', upgradeRequired: true };
+      }
+      return { allowed: true };
+      
+    case 'enroll_path':
+      if (limits.maxPaths === -1) return { allowed: true };
+      const pathCount = this.usageLimits?.pathsEnrolled || 0;
+      if (pathCount < limits.maxPaths) {
+        return { allowed: true };
+      }
+      return { 
+        allowed: false, 
+        reason: `Free tier limit: ${limits.maxPaths} concurrent learning paths`,
+        upgradeRequired: true 
+      };
+      
+    default:
+      return { allowed: true };
+  }
+};
+
+// Increment usage counter
+userSchema.methods.incrementUsage = async function(feature) {
+  const now = new Date();
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  
+  switch (feature) {
+    case 'ai_analysis':
+      // Reset if new month
+      if (!this.usageLimits.aiAnalysisResetAt || now > this.usageLimits.aiAnalysisResetAt) {
+        this.usageLimits.aiAnalysisCount = 1;
+        this.usageLimits.aiAnalysisResetAt = nextMonth;
+      } else {
+        this.usageLimits.aiAnalysisCount += 1;
+      }
+      break;
+      
+    case 'quiz':
+      if (!this.usageLimits.quizAttemptsResetAt || now > this.usageLimits.quizAttemptsResetAt) {
+        this.usageLimits.quizAttempts = 1;
+        this.usageLimits.quizAttemptsResetAt = nextMonth;
+      } else {
+        this.usageLimits.quizAttempts += 1;
+      }
+      break;
+      
+    case 'enroll_path':
+      this.usageLimits.pathsEnrolled += 1;
+      break;
+  }
+  
+  return this.save();
+};
+
+// Generate public profile slug
+userSchema.methods.generatePublicSlug = function() {
+  if (!this.profile) this.profile = {};
+  
+  // Generate from name + random suffix
+  const baseSlug = this.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  
+  const randomSuffix = Math.random().toString(36).substring(2, 8);
+  this.profile.publicSlug = `${baseSlug}-${randomSuffix}`;
+  
+  return this.profile.publicSlug;
+};
+
+// Static: Find by public slug
+userSchema.statics.findByPublicSlug = function(slug) {
+  return this.findOne({ 'profile.publicSlug': slug, 'profile.isPublic': true });
 };
 
 module.exports = mongoose.model('User', userSchema);

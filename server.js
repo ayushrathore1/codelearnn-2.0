@@ -6,12 +6,20 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
+const cacheService = require('./services/CacheService');
 
 // Load env vars
 dotenv.config();
 
 // Connect to database
 connectDB();
+
+// Initialize cache service (Redis via Upstash)
+cacheService.initialize().then(connected => {
+  if (connected) {
+    console.log('🚀 Cache layer ready');
+  }
+});
 
 const app = express();
 
@@ -121,6 +129,9 @@ const vaultRoutes = require('./routes/vault');
 const waitlistRoutes = require('./routes/waitlist');
 const blogRoutes = require('./routes/blogs');
 const opportunityRoutes = require('./routes/opportunities');
+const skillsRoutes = require('./routes/skills');
+const eventsRoutes = require('./routes/events');
+const journeyRoutes = require('./routes/journey');
 
 // Mount routers
 app.use('/api/auth', authRoutes);
@@ -135,6 +146,9 @@ app.use('/api/vault', vaultRoutes);
 app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/opportunities', opportunityRoutes);
+app.use('/api/skills', skillsRoutes);
+app.use('/api/events', eventsRoutes);
+app.use('/api/journey', journeyRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
