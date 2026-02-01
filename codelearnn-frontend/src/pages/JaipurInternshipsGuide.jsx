@@ -505,7 +505,7 @@ const CompanyCard = ({ company, index }) => {
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="w-full p-6 md:p-8 text-left flex items-start gap-5 hover:bg-bg-base/50 transition-colors touch-action-manipulation"
-          style={{ touchAction: 'manipulation' }}
+          style={{ touchAction: "manipulation" }}
         >
           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center text-bg-base font-bold text-xl shrink-0">
             {index + 1}
@@ -533,220 +533,219 @@ const CompanyCard = ({ company, index }) => {
         {/* Expanded content - CSS transition for instant response */}
         <div
           className={`overflow-hidden transition-all duration-200 ease-out ${
-            isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+            isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
           }`}
-          style={{ willChange: isExpanded ? 'max-height, opacity' : 'auto' }}
+          style={{ willChange: isExpanded ? "max-height, opacity" : "auto" }}
         >
           {isExpanded && (
             <div className="px-6 md:px-8 pb-8 space-y-6 border-t border-border pt-6">
-                {/* Best For */}
-                <div>
-                  <h4 className="text-base font-semibold text-secondary mb-3 flex items-center gap-2">
-                    <FontAwesomeIcon icon={faUsers} />
-                    Best For
-                  </h4>
-                  <p className="text-text-secondary text-base leading-relaxed">
-                    {company.bestFor}
-                  </p>
-                </div>
+              {/* Best For */}
+              <div>
+                <h4 className="text-base font-semibold text-secondary mb-3 flex items-center gap-2">
+                  <FontAwesomeIcon icon={faUsers} />
+                  Best For
+                </h4>
+                <p className="text-text-secondary text-base leading-relaxed">
+                  {company.bestFor}
+                </p>
+              </div>
 
-                {/* Internship Style */}
-                <div>
-                  <h4 className="text-base font-semibold text-primary mb-3 flex items-center gap-2">
-                    <FontAwesomeIcon icon={faBuilding} />
-                    Internship Style
-                  </h4>
-                  <p className="text-text-secondary text-base leading-relaxed">
-                    {company.style}
-                  </p>
-                </div>
+              {/* Internship Style */}
+              <div>
+                <h4 className="text-base font-semibold text-primary mb-3 flex items-center gap-2">
+                  <FontAwesomeIcon icon={faBuilding} />
+                  Internship Style
+                </h4>
+                <p className="text-text-secondary text-base leading-relaxed">
+                  {company.style}
+                </p>
+              </div>
 
-                {/* Email Template */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-base font-semibold text-green-400 flex items-center gap-2">
-                      <FontAwesomeIcon icon={faEnvelope} />
-                      Email Template
-                    </h4>
-                    <button
-                      onClick={copyTemplate}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/10 text-secondary text-sm font-medium hover:bg-secondary/20 transition-colors"
+              {/* Email Template */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-base font-semibold text-green-400 flex items-center gap-2">
+                    <FontAwesomeIcon icon={faEnvelope} />
+                    Email Template
+                  </h4>
+                  <button
+                    onClick={copyTemplate}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/10 text-secondary text-sm font-medium hover:bg-secondary/20 transition-colors"
+                  >
+                    <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+                    {copied ? "Copied!" : "Copy Template"}
+                  </button>
+                </div>
+                <pre className="bg-bg-base p-5 rounded-xl text-sm text-text-secondary overflow-x-auto whitespace-pre-wrap font-mono border border-border leading-relaxed">
+                  {company.emailTemplate}
+                </pre>
+              </div>
+
+              {/* Resume Focus */}
+              <div>
+                <h4 className="text-base font-semibold text-amber-400 mb-3 flex items-center gap-2">
+                  <FontAwesomeIcon icon={faFileAlt} />
+                  Resume Focus
+                </h4>
+                <p className="text-text-secondary text-base leading-relaxed">
+                  {company.resumeFocus}
+                </p>
+              </div>
+
+              {/* Contact Information - Blog Style */}
+              <div className="bg-bg-base rounded-xl border border-border p-5">
+                <h4 className="text-base font-semibold text-cyan-400 mb-4 flex items-center gap-2">
+                  <FontAwesomeIcon icon={faGlobe} />
+                  Contact & Links
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Website */}
+                  {company.website && (
+                    <a
+                      href={company.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-secondary/10 border border-border hover:border-secondary/30 transition-all group"
                     >
-                      <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                      {copied ? "Copied!" : "Copy Template"}
-                    </button>
-                  </div>
-                  <pre className="bg-bg-base p-5 rounded-xl text-sm text-text-secondary overflow-x-auto whitespace-pre-wrap font-mono border border-border leading-relaxed">
-                    {company.emailTemplate}
-                  </pre>
-                </div>
-
-                {/* Resume Focus */}
-                <div>
-                  <h4 className="text-base font-semibold text-amber-400 mb-3 flex items-center gap-2">
-                    <FontAwesomeIcon icon={faFileAlt} />
-                    Resume Focus
-                  </h4>
-                  <p className="text-text-secondary text-base leading-relaxed">
-                    {company.resumeFocus}
-                  </p>
-                </div>
-
-                {/* Contact Information - Blog Style */}
-                <div className="bg-bg-base rounded-xl border border-border p-5">
-                  <h4 className="text-base font-semibold text-cyan-400 mb-4 flex items-center gap-2">
-                    <FontAwesomeIcon icon={faGlobe} />
-                    Contact & Links
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Website */}
-                    {company.website && (
-                      <a
-                        href={company.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-secondary/10 border border-border hover:border-secondary/30 transition-all group"
-                      >
-                        <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                          <FontAwesomeIcon
-                            icon={faGlobe}
-                            className="text-blue-400"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-text-primary group-hover:text-secondary transition-colors">
-                            Website
-                          </div>
-                          <div className="text-xs text-text-tertiary truncate">
-                            {
-                              company.website
-                                .replace("https://", "")
-                                .replace("http://", "")
-                                .split("/")[0]
-                            }
-                          </div>
-                        </div>
+                      <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
                         <FontAwesomeIcon
-                          icon={faExternalLinkAlt}
-                          className="text-text-tertiary text-xs"
+                          icon={faGlobe}
+                          className="text-blue-400"
                         />
-                      </a>
-                    )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-text-primary group-hover:text-secondary transition-colors">
+                          Website
+                        </div>
+                        <div className="text-xs text-text-tertiary truncate">
+                          {
+                            company.website
+                              .replace("https://", "")
+                              .replace("http://", "")
+                              .split("/")[0]
+                          }
+                        </div>
+                      </div>
+                      <FontAwesomeIcon
+                        icon={faExternalLinkAlt}
+                        className="text-text-tertiary text-xs"
+                      />
+                    </a>
+                  )}
 
-                    {/* Internship/Careers Page */}
-                    {company.internshipPage && (
+                  {/* Internship/Careers Page */}
+                  {company.internshipPage && (
+                    <a
+                      href={company.internshipPage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-green-500/10 border border-border hover:border-green-500/30 transition-all group"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                        <FontAwesomeIcon
+                          icon={faGraduationCap}
+                          className="text-green-400"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-text-primary group-hover:text-green-400 transition-colors">
+                          Internship Page
+                        </div>
+                        <div className="text-xs text-text-tertiary">
+                          Apply here directly
+                        </div>
+                      </div>
+                      <FontAwesomeIcon
+                        icon={faExternalLinkAlt}
+                        className="text-text-tertiary text-xs"
+                      />
+                    </a>
+                  )}
+
+                  {/* Email */}
+                  {company.email && (
+                    <a
+                      href={`mailto:${company.email}`}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-amber-500/10 border border-border hover:border-amber-500/30 transition-all group"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                        <FontAwesomeIcon
+                          icon={faEnvelope}
+                          className="text-amber-400"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-text-primary group-hover:text-amber-400 transition-colors">
+                          Email HR
+                        </div>
+                        <div className="text-xs text-text-tertiary truncate">
+                          {company.email}
+                        </div>
+                      </div>
+                    </a>
+                  )}
+
+                  {/* LinkedIn */}
+                  {company.linkedin && (
+                    <a
+                      href={company.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-[#0A66C2]/10 border border-border hover:border-[#0A66C2]/30 transition-all group"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-[#0A66C2]/20 flex items-center justify-center">
+                        <FontAwesomeIcon
+                          icon={faLinkedinIn}
+                          className="text-[#0A66C2]"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-text-primary group-hover:text-[#0A66C2] transition-colors">
+                          LinkedIn
+                        </div>
+                        <div className="text-xs text-text-tertiary">
+                          Connect & message
+                        </div>
+                      </div>
+                      <FontAwesomeIcon
+                        icon={faExternalLinkAlt}
+                        className="text-text-tertiary text-xs"
+                      />
+                    </a>
+                  )}
+
+                  {/* Phone Numbers */}
+                  {company.phones &&
+                    company.phones.length > 0 &&
+                    company.phones.map((phone, idx) => (
                       <a
-                        href={company.internshipPage}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-green-500/10 border border-border hover:border-green-500/30 transition-all group"
+                        key={idx}
+                        href={`tel:${phone.replace(/\s/g, "")}`}
+                        className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-purple-500/10 border border-border hover:border-purple-500/30 transition-all group"
                       >
-                        <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
                           <FontAwesomeIcon
-                            icon={faGraduationCap}
-                            className="text-green-400"
+                            icon={faPhone}
+                            className="text-purple-400"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-text-primary group-hover:text-green-400 transition-colors">
-                            Internship Page
+                          <div className="text-sm font-medium text-text-primary group-hover:text-purple-400 transition-colors">
+                            Call/WhatsApp
                           </div>
                           <div className="text-xs text-text-tertiary">
-                            Apply here directly
-                          </div>
-                        </div>
-                        <FontAwesomeIcon
-                          icon={faExternalLinkAlt}
-                          className="text-text-tertiary text-xs"
-                        />
-                      </a>
-                    )}
-
-                    {/* Email */}
-                    {company.email && (
-                      <a
-                        href={`mailto:${company.email}`}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-amber-500/10 border border-border hover:border-amber-500/30 transition-all group"
-                      >
-                        <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                          <FontAwesomeIcon
-                            icon={faEnvelope}
-                            className="text-amber-400"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-text-primary group-hover:text-amber-400 transition-colors">
-                            Email HR
-                          </div>
-                          <div className="text-xs text-text-tertiary truncate">
-                            {company.email}
+                            {phone}
                           </div>
                         </div>
                       </a>
-                    )}
-
-                    {/* LinkedIn */}
-                    {company.linkedin && (
-                      <a
-                        href={company.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-[#0A66C2]/10 border border-border hover:border-[#0A66C2]/30 transition-all group"
-                      >
-                        <div className="w-10 h-10 rounded-lg bg-[#0A66C2]/20 flex items-center justify-center">
-                          <FontAwesomeIcon
-                            icon={faLinkedinIn}
-                            className="text-[#0A66C2]"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-text-primary group-hover:text-[#0A66C2] transition-colors">
-                            LinkedIn
-                          </div>
-                          <div className="text-xs text-text-tertiary">
-                            Connect & message
-                          </div>
-                        </div>
-                        <FontAwesomeIcon
-                          icon={faExternalLinkAlt}
-                          className="text-text-tertiary text-xs"
-                        />
-                      </a>
-                    )}
-
-                    {/* Phone Numbers */}
-                    {company.phones &&
-                      company.phones.length > 0 &&
-                      company.phones.map((phone, idx) => (
-                        <a
-                          key={idx}
-                          href={`tel:${phone.replace(/\s/g, "")}`}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-bg-elevated hover:bg-purple-500/10 border border-border hover:border-purple-500/30 transition-all group"
-                        >
-                          <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                            <FontAwesomeIcon
-                              icon={faPhone}
-                              className="text-purple-400"
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-text-primary group-hover:text-purple-400 transition-colors">
-                              Call/WhatsApp
-                            </div>
-                            <div className="text-xs text-text-tertiary">
-                              {phone}
-                            </div>
-                          </div>
-                        </a>
-                      ))}
-                  </div>
+                    ))}
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
-   
+    </div>
   );
 };
 
@@ -808,7 +807,7 @@ const JaipurInternshipsGuide = () => {
       {/* Floating Share Sidebar - Desktop only */}
       <aside
         className="fixed left-8 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-3 animate-fade-in-left"
-        style={{ animationDelay: '300ms' }}
+        style={{ animationDelay: "300ms" }}
       >
         <span className="text-xs text-text-tertiary font-medium mb-2 text-center">
           Share
@@ -853,9 +852,14 @@ const JaipurInternshipsGuide = () => {
       <button
         onClick={scrollToTop}
         className={`fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-gradient-to-r from-secondary to-primary text-bg-base shadow-lg shadow-secondary/25 flex items-center justify-center active:scale-95 transition-all duration-150 ${
-          showScrollTop ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-75 pointer-events-none'
+          showScrollTop
+            ? "opacity-100 scale-100 pointer-events-auto"
+            : "opacity-0 scale-75 pointer-events-none"
         }`}
-        style={{ touchAction: 'manipulation', willChange: 'transform, opacity' }}
+        style={{
+          touchAction: "manipulation",
+          willChange: "transform, opacity",
+        }}
         aria-hidden={!showScrollTop}
       >
         <FontAwesomeIcon icon={faArrowUp} />
@@ -881,7 +885,7 @@ const JaipurInternshipsGuide = () => {
           {/* Title */}
           <h1
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-text-primary mb-6 max-w-4xl mx-auto leading-tight animate-fade-in-up"
-            style={{ animationDelay: '50ms' }}
+            style={{ animationDelay: "50ms" }}
           >
             Internship & Training Opportunities in{" "}
             <span className="text-gradient">Jaipur</span>
@@ -890,7 +894,7 @@ const JaipurInternshipsGuide = () => {
           {/* Subtitle */}
           <p
             className="text-xl md:text-2xl text-text-secondary text-center max-w-3xl mx-auto mb-10 leading-relaxed animate-fade-in-up"
-            style={{ animationDelay: '100ms' }}
+            style={{ animationDelay: "100ms" }}
           >
             A curated list of companies that run training/internship programs or
             accept junior trainees. Complete with email templates, resume tips,
@@ -900,7 +904,7 @@ const JaipurInternshipsGuide = () => {
           {/* Stats */}
           <div
             className="flex flex-wrap justify-center gap-8 mb-12 animate-fade-in-up"
-            style={{ animationDelay: '150ms' }}
+            style={{ animationDelay: "150ms" }}
           >
             <div className="text-center">
               <div className="text-3xl font-bold text-secondary">
@@ -927,7 +931,7 @@ const JaipurInternshipsGuide = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-full bg-bg-elevated border border-border flex items-center justify-center text-text-secondary active:scale-95 transition-transform duration-75"
-              style={{ touchAction: 'manipulation' }}
+              style={{ touchAction: "manipulation" }}
             >
               <FontAwesomeIcon icon={faTwitter} className="text-lg" />
             </a>
@@ -936,7 +940,7 @@ const JaipurInternshipsGuide = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-full bg-bg-elevated border border-border flex items-center justify-center text-text-secondary active:scale-95 transition-transform duration-75"
-              style={{ touchAction: 'manipulation' }}
+              style={{ touchAction: "manipulation" }}
             >
               <FontAwesomeIcon icon={faLinkedinIn} className="text-lg" />
             </a>
@@ -945,13 +949,13 @@ const JaipurInternshipsGuide = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-full bg-bg-elevated border border-border flex items-center justify-center text-text-secondary active:scale-95 transition-transform duration-75"
-              style={{ touchAction: 'manipulation' }}
+              style={{ touchAction: "manipulation" }}
             >
               <FontAwesomeIcon icon={faWhatsapp} className="text-lg" />
             </a>
             <button
               onClick={copyLink}
-              style={{ touchAction: 'manipulation' }}
+              style={{ touchAction: "manipulation" }}
               className={`w-12 h-12 rounded-full bg-bg-elevated border border-border flex items-center justify-center active:scale-95 transition-transform duration-75 ${
                 copied ? "text-green-400" : "text-text-secondary"
               }`}
@@ -1044,7 +1048,7 @@ const JaipurInternshipsGuide = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <button
                 onClick={copyLink}
-                style={{ touchAction: 'manipulation' }}
+                style={{ touchAction: "manipulation" }}
                 className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 rounded-xl bg-gradient-to-r from-secondary to-primary text-bg-base font-semibold md:hover:shadow-[0_0_40px_-5px_var(--secondary-glow)] active:scale-95 transition-all duration-75 text-sm md:text-base"
               >
                 <FontAwesomeIcon icon={faShare} />
@@ -1054,7 +1058,7 @@ const JaipurInternshipsGuide = () => {
                 href="https://wa.me/?text=Check%20out%20this%20amazing%20internship%20guide%20for%20Jaipur%20companies!"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ touchAction: 'manipulation' }}
+                style={{ touchAction: "manipulation" }}
                 className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 rounded-xl bg-bg-elevated border border-border text-text-primary font-semibold hover:border-secondary/50 active:scale-95 transition-all duration-75 text-sm md:text-base"
               >
                 <FontAwesomeIcon icon={faWhatsapp} />

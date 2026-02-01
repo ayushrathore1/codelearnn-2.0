@@ -8,12 +8,6 @@ import {
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 
-// Check if we're in development mode
-const isDevelopment =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1" ||
-  import.meta.env.DEV === true;
-
 const Footer = () => {
   const productLinks = [
     { label: "Careers", path: "/career" },
@@ -40,6 +34,10 @@ const Footer = () => {
   const resourceLinks = [
     { label: "Blogs", path: "/blogs" },
     { label: "Opportunities", path: "/opportunities" },
+    {
+      label: "Jaipur Internships Guide",
+      path: "/resources/jaipur-internships-guide",
+    },
   ];
 
   const socialLinks = [
@@ -65,19 +63,7 @@ const Footer = () => {
     },
   ];
 
-  // Scroll to waitlist section
-  const scrollToWaitlist = (e) => {
-    e.preventDefault();
-    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // Get link props - in production, redirect to waitlist for product links
-  const _getProductLinkProps = (path) => {
-    if (isDevelopment) {
-      return { as: Link, to: path };
-    }
-    return { as: "a", href: "#waitlist", onClick: scrollToWaitlist };
-  };
+  // Footer links are always clickable; protected routes handle auth gating.
 
   return (
     <footer className="bg-bg-base border-t border-border pt-16 pb-8">
@@ -119,26 +105,15 @@ const Footer = () => {
               Product
             </h4>
             <div className="space-y-3">
-              {productLinks.map((link, index) =>
-                isDevelopment ? (
-                  <Link
-                    key={index}
-                    to={link.path}
-                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={index}
-                    href="#waitlist"
-                    onClick={scrollToWaitlist}
-                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
-                  >
-                    {link.label}
-                  </a>
-                ),
-              )}
+              {productLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  to={link.path}
+                  className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -148,26 +123,15 @@ const Footer = () => {
               Tools
             </h4>
             <div className="space-y-3">
-              {toolLinks.map((link, index) =>
-                isDevelopment ? (
-                  <Link
-                    key={index}
-                    to={link.path}
-                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={index}
-                    href="#waitlist"
-                    onClick={scrollToWaitlist}
-                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
-                  >
-                    {link.label}
-                  </a>
-                ),
-              )}
+              {toolLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  to={link.path}
+                  className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -195,26 +159,15 @@ const Footer = () => {
               Resources
             </h4>
             <div className="space-y-3">
-              {resourceLinks.map((link, index) =>
-                isDevelopment ? (
-                  <Link
-                    key={index}
-                    to={link.path}
-                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={index}
-                    href="#waitlist"
-                    onClick={scrollToWaitlist}
-                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
-                  >
-                    {link.label}
-                  </a>
-                ),
-              )}
+              {resourceLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  to={link.path}
+                  className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
 
               <h4 className="font-heading font-semibold text-text-main text-sm uppercase tracking-wider mt-6 mb-4">
                 Other

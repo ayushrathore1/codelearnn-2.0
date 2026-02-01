@@ -99,7 +99,10 @@ const ConditionalHeader = () => {
   const { isAuthenticated } = useAuth();
 
   // Standalone pages with NO header/navbar (for waitlist/coming soon mode)
-  const standalonePages = ["/resources/jaipur-internships-guide"];
+  const standalonePages = [
+    "/resources/jaipur-internships-guide",
+    "/jaipur-internships-guide",
+  ];
   const isStandalonePage = standalonePages.some((path) =>
     location.pathname.startsWith(path),
   );
@@ -151,7 +154,10 @@ const ConditionalFooter = () => {
   const location = useLocation();
 
   // Standalone pages with NO footer (for waitlist/coming soon mode)
-  const standalonePages = ["/resources/jaipur-internships-guide"];
+  const standalonePages = [
+    "/resources/jaipur-internships-guide",
+    "/jaipur-internships-guide",
+  ];
   const isStandalonePage = standalonePages.some((path) =>
     location.pathname.startsWith(path),
   );
@@ -218,6 +224,10 @@ function AppContent() {
             {/* These are special pages open during waitlist/coming soon phase */}
             <Route
               path="/resources/jaipur-internships-guide"
+              element={<JaipurInternshipsGuide />}
+            />
+            <Route
+              path="/jaipur-internships-guide"
               element={<JaipurInternshipsGuide />}
             />
 
