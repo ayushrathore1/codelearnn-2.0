@@ -1,33 +1,36 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faTimes, 
-  faPaperPlane, 
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTimes,
+  faPaperPlane,
   faSpinner,
-  faImage,
-  faUserSecret
-} from '@fortawesome/free-solid-svg-icons';
-import { POST_TYPES, POST_TAGS, charchaPostsAPI } from '../../services/charchaApi';
+  faUserSecret,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  POST_TYPES,
+  POST_TAGS,
+  charchaPostsAPI,
+} from "../../services/charchaApi";
 
 const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [postType, setPostType] = useState('POST');
-  const [tag, setTag] = useState('off-topic');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [postType, setPostType] = useState("POST");
+  const [tag, setTag] = useState("off-topic");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError('Title is required');
+      setError("Title is required");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       await charchaPostsAPI.createPost({
@@ -37,17 +40,17 @@ const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
         tag,
         isAnonymous,
       });
-      
-      setTitle('');
-      setContent('');
-      setPostType('POST');
-      setTag('off-topic');
+
+      setTitle("");
+      setContent("");
+      setPostType("POST");
+      setTag("off-topic");
       setIsAnonymous(false);
-      
+
       if (onSuccess) onSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create post');
+      setError(err.response?.data?.message || "Failed to create post");
     } finally {
       setLoading(false);
     }
@@ -55,7 +58,7 @@ const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleClose = () => {
     if (!loading) {
-      setError('');
+      setError("");
       onClose();
     }
   };
@@ -94,7 +97,10 @@ const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4">
+            <form
+              onSubmit={handleSubmit}
+              className="flex-1 overflow-y-auto p-4"
+            >
               {/* Error */}
               {error && (
                 <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
@@ -109,20 +115,22 @@ const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
                     Post Type
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {Object.entries(POST_TYPES).map(([key, { label, color }]) => (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setPostType(key)}
-                        className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-all ${
-                          postType === key 
-                            ? color 
-                            : 'text-text-muted border-border hover:border-text-dim'
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
+                    {Object.entries(POST_TYPES).map(
+                      ([key, { label, color }]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setPostType(key)}
+                          className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-all ${
+                            postType === key
+                              ? color
+                              : "text-text-muted border-border hover:border-text-dim"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ),
+                    )}
                   </div>
                 </div>
 
@@ -137,9 +145,9 @@ const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
                         type="button"
                         onClick={() => setTag(id)}
                         className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                          tag === id 
-                            ? 'bg-primary/10 text-primary border-primary/30' 
-                            : 'text-text-muted border-border hover:border-text-dim'
+                          tag === id
+                            ? "bg-primary/10 text-primary border-primary/30"
+                            : "text-text-muted border-border hover:border-text-dim"
                         }`}
                       >
                         {icon} {label}
@@ -184,9 +192,9 @@ const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
                   type="button"
                   onClick={() => setIsAnonymous(!isAnonymous)}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
-                    isAnonymous 
-                      ? 'bg-secondary/10 text-secondary border-secondary/30' 
-                      : 'text-text-muted border-border hover:border-text-dim'
+                    isAnonymous
+                      ? "bg-secondary/10 text-secondary border-secondary/30"
+                      : "text-text-muted border-border hover:border-text-dim"
                   }`}
                 >
                   <FontAwesomeIcon icon={faUserSecret} />
@@ -212,7 +220,10 @@ const CreatePostModal = ({ isOpen, onClose, onSuccess }) => {
               >
                 {loading ? (
                   <>
-                    <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+                    <FontAwesomeIcon
+                      icon={faSpinner}
+                      className="animate-spin"
+                    />
                     Posting...
                   </>
                 ) : (

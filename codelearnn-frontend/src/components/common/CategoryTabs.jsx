@@ -1,23 +1,22 @@
-import { motion } from 'framer-motion';
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 /**
  * CategoryTabs - Horizontal scrollable category tabs
  * @param {Object} props - Component props
  */
-const CategoryTabs = ({ 
-  categories = [], 
-  activeCategory = 'all',
+const CategoryTabs = ({
+  categories = [],
+  activeCategory = "all",
   onCategoryChange,
   showCounts = true,
-  loading = false
+  loading = false,
 }) => {
   // Default "All" tab
   const allTab = {
-    id: 'all',
-    name: 'All',
-    icon: '🎯',
-    count: categories.reduce((sum, cat) => sum + (cat.count || 0), 0)
+    id: "all",
+    name: "All",
+    icon: "🎯",
+    count: categories.reduce((sum, cat) => sum + (cat.count || 0), 0),
   };
 
   const tabs = [allTab, ...categories];
@@ -33,7 +32,7 @@ const CategoryTabs = ({
         <div className="flex gap-2 min-w-max">
           {tabs.map((category) => {
             const isActive = activeCategory === category.id;
-            
+
             return (
               <motion.button
                 key={category.id}
@@ -44,27 +43,29 @@ const CategoryTabs = ({
                 className={`
                   relative flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-sm
                   transition-all duration-200 whitespace-nowrap
-                  ${isActive 
-                    ? 'bg-green text-navy font-semibold' 
-                    : 'bg-light-navy border border-lightest-navy text-slate hover:border-green hover:text-green'
+                  ${
+                    isActive
+                      ? "bg-green text-navy font-semibold"
+                      : "bg-light-navy border border-lightest-navy text-slate hover:border-green hover:text-green"
                   }
-                  ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                  ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
                 `}
               >
                 {/* Icon */}
                 <span className="text-base">{category.icon}</span>
-                
+
                 {/* Name */}
                 <span>{category.name}</span>
-                
+
                 {/* Count badge */}
                 {showCounts && category.count > 0 && (
-                  <span 
+                  <span
                     className={`
                       text-xs px-1.5 py-0.5 rounded
-                      ${isActive 
-                        ? 'bg-navy/20 text-navy' 
-                        : 'bg-lightest-navy text-light-slate'
+                      ${
+                        isActive
+                          ? "bg-navy/20 text-navy"
+                          : "bg-lightest-navy text-light-slate"
                       }
                     `}
                   >
@@ -77,7 +78,7 @@ const CategoryTabs = ({
                   <motion.div
                     layoutId="activeTab"
                     className="absolute inset-0 rounded-lg bg-green -z-10"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
               </motion.button>
@@ -87,16 +88,21 @@ const CategoryTabs = ({
       </div>
 
       {/* Optional: Average score display */}
-      {activeCategory !== 'all' && (
+      {activeCategory !== "all" && (
         <div className="mt-4 flex items-center gap-4">
-          {categories.filter(c => c.id === activeCategory).map(cat => (
-            cat.avgScore > 0 && (
-              <p key={cat.id} className="text-slate text-xs font-mono">
-                Average CodeLearnn Score: 
-                <span className="text-green ml-1 font-semibold">{cat.avgScore}</span>
-              </p>
-            )
-          ))}
+          {categories
+            .filter((c) => c.id === activeCategory)
+            .map(
+              (cat) =>
+                cat.avgScore > 0 && (
+                  <p key={cat.id} className="text-slate text-xs font-mono">
+                    Average CodeLearnn Score:
+                    <span className="text-green ml-1 font-semibold">
+                      {cat.avgScore}
+                    </span>
+                  </p>
+                ),
+            )}
         </div>
       )}
     </div>
@@ -110,13 +116,13 @@ CategoryTabs.propTypes = {
       name: PropTypes.string.isRequired,
       icon: PropTypes.string,
       count: PropTypes.number,
-      avgScore: PropTypes.number
-    })
+      avgScore: PropTypes.number,
+    }),
   ),
   activeCategory: PropTypes.string,
   onCategoryChange: PropTypes.func,
   showCounts: PropTypes.bool,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
 };
 
 export default CategoryTabs;

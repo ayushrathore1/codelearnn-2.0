@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUser, 
-  faCog, 
-  faSignOutAlt, 
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faCog,
+  faSignOutAlt,
   faCamera,
   faEnvelope,
   faShieldAlt,
@@ -20,35 +20,35 @@ import {
   faCode,
   faTrophy,
   faSpinner,
-  faCalendarAlt
-} from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../context/AuthContext';
-import { authAPI, progressAPI } from '../services/api';
+  faCalendarAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../context/AuthContext";
+import { authAPI, progressAPI } from "../services/api";
 
 // Security Tab Component with Password Change
 const SecurityTab = ({ user }) => {
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     if (newPassword !== confirmPassword) {
-      setError('New passwords do not match');
+      setError("New passwords do not match");
       return;
     }
 
     if (newPassword.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
@@ -57,15 +57,15 @@ const SecurityTab = ({ user }) => {
     try {
       await authAPI.updatePassword({
         currentPassword,
-        newPassword
+        newPassword,
       });
-      setSuccess('Password updated successfully!');
+      setSuccess("Password updated successfully!");
       setShowChangePassword(false);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update password');
+      setError(err.response?.data?.message || "Failed to update password");
     } finally {
       setIsLoading(false);
     }
@@ -80,20 +80,25 @@ const SecurityTab = ({ user }) => {
       animate={{ opacity: 1 }}
       className="card-bento p-8"
     >
-      <h3 className="text-xl font-bold text-text-main mb-6">Security Settings</h3>
-      
+      <h3 className="text-xl font-bold text-text-main mb-6">
+        Security Settings
+      </h3>
+
       {isOAuthUser && !user?.hasPassword && (
         <div className="bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm p-4 rounded-lg mb-6">
           <FontAwesomeIcon icon={faShieldAlt} className="mr-2" />
-          You signed in with {user?.googleId ? 'Google' : 'GitHub'}. Password login is not available for OAuth accounts.
+          You signed in with {user?.googleId ? "Google" : "GitHub"}. Password
+          login is not available for OAuth accounts.
         </div>
       )}
 
       <div className="space-y-6 max-w-xl">
         {!showChangePassword ? (
           <>
-            <p className="text-sm text-text-muted">Manage your password and security preferences.</p>
-            <button 
+            <p className="text-sm text-text-muted">
+              Manage your password and security preferences.
+            </p>
+            <button
               onClick={() => setShowChangePassword(true)}
               className="btn-secondary px-6 py-2"
               disabled={isOAuthUser && !user?.hasPassword}
@@ -116,10 +121,12 @@ const SecurityTab = ({ user }) => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-text-muted mb-2">Current Password</label>
+              <label className="block text-sm font-medium text-text-muted mb-2">
+                Current Password
+              </label>
               <div className="relative">
-                <input 
-                  type={showCurrentPassword ? 'text' : 'password'}
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   className="w-full bg-bg-base border border-border rounded-lg px-4 py-3 pr-12 text-text-main focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -130,16 +137,20 @@ const SecurityTab = ({ user }) => {
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-text-dim hover:text-text-main"
                 >
-                  <FontAwesomeIcon icon={showCurrentPassword ? faEyeSlash : faEye} />
+                  <FontAwesomeIcon
+                    icon={showCurrentPassword ? faEyeSlash : faEye}
+                  />
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-muted mb-2">New Password</label>
+              <label className="block text-sm font-medium text-text-muted mb-2">
+                New Password
+              </label>
               <div className="relative">
-                <input 
-                  type={showNewPassword ? 'text' : 'password'}
+                <input
+                  type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   className="w-full bg-bg-base border border-border rounded-lg px-4 py-3 pr-12 text-text-main focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -151,15 +162,19 @@ const SecurityTab = ({ user }) => {
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-text-dim hover:text-text-main"
                 >
-                  <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
+                  <FontAwesomeIcon
+                    icon={showNewPassword ? faEyeSlash : faEye}
+                  />
                 </button>
               </div>
               <p className="text-xs text-text-dim mt-1">Minimum 6 characters</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-muted mb-2">Confirm New Password</label>
-              <input 
+              <label className="block text-sm font-medium text-text-muted mb-2">
+                Confirm New Password
+              </label>
+              <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -174,16 +189,16 @@ const SecurityTab = ({ user }) => {
                 disabled={isLoading}
                 className="btn-primary px-6 py-2 disabled:opacity-50"
               >
-                {isLoading ? 'Updating...' : 'Update Password'}
+                {isLoading ? "Updating..." : "Update Password"}
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setShowChangePassword(false);
-                  setError('');
-                  setCurrentPassword('');
-                  setNewPassword('');
-                  setConfirmPassword('');
+                  setError("");
+                  setCurrentPassword("");
+                  setNewPassword("");
+                  setConfirmPassword("");
                 }}
                 className="btn-secondary px-6 py-2"
               >
@@ -203,7 +218,10 @@ const SkillsCard = ({ skills, isLoading }) => {
     return (
       <motion.div className="card-bento p-6">
         <div className="flex items-center justify-center h-32">
-          <FontAwesomeIcon icon={faSpinner} className="text-2xl text-primary animate-spin" />
+          <FontAwesomeIcon
+            icon={faSpinner}
+            className="text-2xl text-primary animate-spin"
+          />
         </div>
       </motion.div>
     );
@@ -241,12 +259,16 @@ const SkillsCard = ({ skills, isLoading }) => {
         {skills.slice(0, 5).map((skill, i) => (
           <div key={skill.skillName || i}>
             <div className="flex justify-between items-center mb-1">
-              <span className="text-sm font-medium text-text-main">{skill.displayName || skill.skillName}</span>
-              <span className="text-xs text-primary capitalize">{skill.level}</span>
+              <span className="text-sm font-medium text-text-main">
+                {skill.displayName || skill.skillName}
+              </span>
+              <span className="text-xs text-primary capitalize">
+                {skill.level}
+              </span>
             </div>
             <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500" 
+              <div
+                className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500"
                 style={{ width: `${skill.score || 0}%` }}
               ></div>
             </div>
@@ -257,13 +279,16 @@ const SkillsCard = ({ skills, isLoading }) => {
   );
 };
 
-// Progress Card Component  
+// Progress Card Component
 const ProgressCard = ({ inProgress, isLoading }) => {
   if (isLoading) {
     return (
       <motion.div className="card-bento p-6">
         <div className="flex items-center justify-center h-32">
-          <FontAwesomeIcon icon={faSpinner} className="text-2xl text-primary animate-spin" />
+          <FontAwesomeIcon
+            icon={faSpinner}
+            className="text-2xl text-primary animate-spin"
+          />
         </div>
       </motion.div>
     );
@@ -299,26 +324,26 @@ const ProgressCard = ({ inProgress, isLoading }) => {
         <FontAwesomeIcon icon={faBookOpen} className="text-primary" />
         Current Progress
       </h3>
-      
+
       <div className="space-y-6">
         {inProgress.slice(0, 3).map((item, i) => {
           const resource = item.resource || {};
           const progressPercent = item.progress || 0;
-          
+
           return (
             <div key={item._id || i}>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-text-main truncate pr-4">
-                  {resource.title || 'Learning Resource'}
+                  {resource.title || "Learning Resource"}
                 </span>
                 <span className="text-xs text-primary flex-shrink-0">
                   {progressPercent}% Complete
                 </span>
               </div>
               <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden">
-                <div 
+                <div
                   className={`h-full rounded-full transition-all duration-500 ${
-                    i % 2 === 0 ? 'bg-primary' : 'bg-secondary'
+                    i % 2 === 0 ? "bg-primary" : "bg-secondary"
                   }`}
                   style={{ width: `${progressPercent}%` }}
                 ></div>
@@ -333,7 +358,7 @@ const ProgressCard = ({ inProgress, isLoading }) => {
 
 const ProfilePage = () => {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [progress, setProgress] = useState(null);
@@ -349,11 +374,11 @@ const ProfilePage = () => {
 
       try {
         setIsLoading(true);
-        
+
         // Fetch progress stats
         const [statsRes, progressRes] = await Promise.all([
           progressAPI.getStats().catch(() => ({ data: { data: null } })),
-          progressAPI.getMyProgress().catch(() => ({ data: { data: null } }))
+          progressAPI.getMyProgress().catch(() => ({ data: { data: null } })),
         ]);
 
         setStats(statsRes.data?.data);
@@ -361,22 +386,24 @@ const ProfilePage = () => {
 
         // Try to fetch skills (new API)
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/skills/top?limit=5`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json'
-            }
-          });
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/skills/top?limit=5`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+              },
+            },
+          );
           if (response.ok) {
             const skillsData = await response.json();
             setSkills(skillsData.data || []);
           }
-        } catch (skillErr) {
-          console.log('Skills API not available yet');
+        } catch (_skillErr) {
+          console.log("Skills API not available yet");
         }
-
       } catch (err) {
-        console.error('Error fetching user data:', err);
+        console.error("Error fetching user data:", err);
       } finally {
         setIsLoading(false);
       }
@@ -387,9 +414,9 @@ const ProfilePage = () => {
 
   // Format join date
   const formatJoinDate = (dateString) => {
-    if (!dateString) return 'Recently';
+    if (!dateString) return "Recently";
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   };
 
   // Calculate hours from minutes
@@ -399,22 +426,28 @@ const ProfilePage = () => {
   };
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: faChartLine },
-    { id: 'settings', label: 'Settings', icon: faCog },
-    { id: 'security', label: 'Security', icon: faShieldAlt },
+    { id: "overview", label: "Overview", icon: faChartLine },
+    { id: "settings", label: "Settings", icon: faCog },
+    { id: "security", label: "Security", icon: faShieldAlt },
   ];
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   // Use real data or defaults
   const displayStats = {
     xp: stats?.xp || progress?.stats?.xp || 0,
     streak: stats?.currentStreak || progress?.stats?.currentStreak || 0,
-    completedLessons: stats?.totalCompleted || progress?.stats?.totalCompleted || progress?.completedResources?.length || 0,
-    hoursLearning: formatHours(stats?.totalTimeSpent || progress?.stats?.totalTimeSpent || 0)
+    completedLessons:
+      stats?.totalCompleted ||
+      progress?.stats?.totalCompleted ||
+      progress?.completedResources?.length ||
+      0,
+    hoursLearning: formatHours(
+      stats?.totalTimeSpent || progress?.stats?.totalTimeSpent || 0,
+    ),
   };
 
   return (
@@ -431,24 +464,38 @@ const ProfilePage = () => {
             {/* Profile Card */}
             <div className="card-bento p-6 text-center relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-primary/20 to-secondary/20"></div>
-              
+
               <div className="relative z-10 mt-8">
                 <div className="w-24 h-24 rounded-full bg-bg-elevated border-4 border-bg-base mx-auto mb-4 flex items-center justify-center relative group cursor-pointer">
                   {user?.avatarUrl ? (
-                    <img src={user.avatarUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                    <img
+                      src={user.avatarUrl}
+                      alt="Profile"
+                      className="w-full h-full rounded-full object-cover"
+                    />
                   ) : (
-                    <FontAwesomeIcon icon={faUser} className="text-3xl text-text-dim" />
+                    <FontAwesomeIcon
+                      icon={faUser}
+                      className="text-3xl text-text-dim"
+                    />
                   )}
                   <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
                     <FontAwesomeIcon icon={faCamera} className="text-white" />
                   </div>
                 </div>
-                
-                <h2 className="text-xl font-bold text-text-main mb-1">{user?.name || 'User'}</h2>
-                <p className="text-sm text-text-muted mb-4">{user?.email || ''}</p>
-                
+
+                <h2 className="text-xl font-bold text-text-main mb-1">
+                  {user?.name || "User"}
+                </h2>
+                <p className="text-sm text-text-muted mb-4">
+                  {user?.email || ""}
+                </p>
+
                 <div className="flex items-center justify-center gap-2 text-xs text-text-dim mb-6">
-                  <FontAwesomeIcon icon={faCalendarAlt} className="text-primary" />
+                  <FontAwesomeIcon
+                    icon={faCalendarAlt}
+                    className="text-primary"
+                  />
                   <span>Joined {formatJoinDate(user?.createdAt)}</span>
                 </div>
 
@@ -461,15 +508,15 @@ const ProfilePage = () => {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all ${
                         activeTab === tab.id
-                          ? 'bg-primary/10 text-primary border border-primary/20'
-                          : 'text-text-muted hover:text-text-main hover:bg-bg-elevated'
+                          ? "bg-primary/10 text-primary border border-primary/20"
+                          : "text-text-muted hover:text-text-main hover:bg-bg-elevated"
                       }`}
                     >
                       <FontAwesomeIcon icon={tab.icon} />
                       {tab.label}
                     </button>
                   ))}
-                  
+
                   <button
                     onClick={logout}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-red hover:bg-red/10 border border-transparent hover:border-red/20 transition-all mt-4"
@@ -484,15 +531,39 @@ const ProfilePage = () => {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            {activeTab === 'overview' && (
+            {activeTab === "overview" && (
               <div className="space-y-6">
                 {/* Stats Grid */}
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
-                    { label: 'Total XP', value: displayStats.xp, icon: faAward, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
-                    { label: 'Day Streak', value: displayStats.streak, icon: faFire, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-                    { label: 'Completed', value: displayStats.completedLessons, icon: faCheckCircle, color: 'text-primary', bg: 'bg-primary/10' },
-                    { label: 'Hours', value: displayStats.hoursLearning, icon: faHistory, color: 'text-secondary', bg: 'bg-secondary/10' },
+                    {
+                      label: "Total XP",
+                      value: displayStats.xp,
+                      icon: faAward,
+                      color: "text-yellow-400",
+                      bg: "bg-yellow-400/10",
+                    },
+                    {
+                      label: "Day Streak",
+                      value: displayStats.streak,
+                      icon: faFire,
+                      color: "text-orange-500",
+                      bg: "bg-orange-500/10",
+                    },
+                    {
+                      label: "Completed",
+                      value: displayStats.completedLessons,
+                      icon: faCheckCircle,
+                      color: "text-primary",
+                      bg: "bg-primary/10",
+                    },
+                    {
+                      label: "Hours",
+                      value: displayStats.hoursLearning,
+                      icon: faHistory,
+                      color: "text-secondary",
+                      bg: "bg-secondary/10",
+                    },
                   ].map((stat, i) => (
                     <motion.div
                       key={i}
@@ -501,18 +572,25 @@ const ProfilePage = () => {
                       transition={{ delay: i * 0.1 }}
                       className="card-bento p-4 flex items-center gap-4"
                     >
-                      <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center text-xl`}>
+                      <div
+                        className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center text-xl`}
+                      >
                         <FontAwesomeIcon icon={stat.icon} />
                       </div>
                       <div>
                         <div className="text-2xl font-bold text-text-main">
                           {isLoading ? (
-                            <FontAwesomeIcon icon={faSpinner} className="text-lg animate-spin" />
+                            <FontAwesomeIcon
+                              icon={faSpinner}
+                              className="text-lg animate-spin"
+                            />
                           ) : (
                             stat.value
                           )}
                         </div>
-                        <div className="text-xs text-text-muted uppercase tracking-wider">{stat.label}</div>
+                        <div className="text-xs text-text-muted uppercase tracking-wider">
+                          {stat.label}
+                        </div>
                       </div>
                     </motion.div>
                   ))}
@@ -522,9 +600,9 @@ const ProfilePage = () => {
                 <SkillsCard skills={skills} isLoading={isLoading} />
 
                 {/* Progress Card */}
-                <ProgressCard 
-                  inProgress={progress?.inProgressResources} 
-                  isLoading={isLoading} 
+                <ProgressCard
+                  inProgress={progress?.inProgressResources}
+                  isLoading={isLoading}
                 />
 
                 {/* Recent Activity */}
@@ -536,74 +614,102 @@ const ProfilePage = () => {
                     className="card-bento p-6"
                   >
                     <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
-                      <FontAwesomeIcon icon={faTrophy} className="text-yellow-400" />
+                      <FontAwesomeIcon
+                        icon={faTrophy}
+                        className="text-yellow-400"
+                      />
                       Recently Completed
                     </h3>
                     <div className="space-y-3">
-                      {progress.completedResources.slice(0, 5).map((item, i) => {
-                        const resource = item.resource || {};
-                        return (
-                          <div key={item._id || i} className="flex items-center gap-3 p-3 bg-bg-elevated rounded-lg">
-                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                              <FontAwesomeIcon icon={faCheckCircle} className="text-primary" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-text-main truncate">
-                                {resource.title || 'Completed Resource'}
-                              </p>
-                              <p className="text-xs text-text-muted">
-                                {item.completedAt ? new Date(item.completedAt).toLocaleDateString() : 'Recently'}
-                              </p>
-                            </div>
-                            {item.rating && (
-                              <div className="text-yellow-400 text-sm">
-                                {'★'.repeat(item.rating)}
+                      {progress.completedResources
+                        .slice(0, 5)
+                        .map((item, i) => {
+                          const resource = item.resource || {};
+                          return (
+                            <div
+                              key={item._id || i}
+                              className="flex items-center gap-3 p-3 bg-bg-elevated rounded-lg"
+                            >
+                              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <FontAwesomeIcon
+                                  icon={faCheckCircle}
+                                  className="text-primary"
+                                />
                               </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-text-main truncate">
+                                  {resource.title || "Completed Resource"}
+                                </p>
+                                <p className="text-xs text-text-muted">
+                                  {item.completedAt
+                                    ? new Date(
+                                        item.completedAt,
+                                      ).toLocaleDateString()
+                                    : "Recently"}
+                                </p>
+                              </div>
+                              {item.rating && (
+                                <div className="text-yellow-400 text-sm">
+                                  {"★".repeat(item.rating)}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                     </div>
                   </motion.div>
                 )}
               </div>
             )}
 
-            {activeTab === 'settings' && (
+            {activeTab === "settings" && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="card-bento p-8"
               >
-                <h3 className="text-xl font-bold text-text-main mb-6">Account Settings</h3>
+                <h3 className="text-xl font-bold text-text-main mb-6">
+                  Account Settings
+                </h3>
                 <div className="space-y-6 max-w-xl">
                   <div>
-                    <label className="block text-sm font-medium text-text-muted mb-2">Display Name</label>
-                    <input 
-                      type="text" 
-                      defaultValue={user?.name || ''}
+                    <label className="block text-sm font-medium text-text-muted mb-2">
+                      Display Name
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={user?.name || ""}
                       className="w-full bg-bg-base border border-border rounded-lg px-4 py-3 text-text-main focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-text-muted mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-text-muted mb-2">
+                      Email Address
+                    </label>
                     <div className="w-full bg-bg-elevated border border-border rounded-lg px-4 py-3 text-text-dim flex items-center gap-2">
-                      <FontAwesomeIcon icon={faEnvelope} className="text-text-dim" />
-                      <span>{user?.email || ''}</span>
-                      <span className="ml-auto text-xs text-text-dim bg-bg-base px-2 py-1 rounded">Cannot be changed</span>
+                      <FontAwesomeIcon
+                        icon={faEnvelope}
+                        className="text-text-dim"
+                      />
+                      <span>{user?.email || ""}</span>
+                      <span className="ml-auto text-xs text-text-dim bg-bg-base px-2 py-1 rounded">
+                        Cannot be changed
+                      </span>
                     </div>
-                    <p className="text-xs text-text-dim mt-1">Email address cannot be changed for security reasons.</p>
+                    <p className="text-xs text-text-dim mt-1">
+                      Email address cannot be changed for security reasons.
+                    </p>
                   </div>
                   <div className="pt-4">
-                    <button className="btn-primary px-6 py-2">Save Changes</button>
+                    <button className="btn-primary px-6 py-2">
+                      Save Changes
+                    </button>
                   </div>
                 </div>
               </motion.div>
             )}
 
-            {activeTab === 'security' && (
-              <SecurityTab user={user} />
-            )}
+            {activeTab === "security" && <SecurityTab user={user} />}
           </div>
         </motion.div>
       </div>

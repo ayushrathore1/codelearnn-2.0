@@ -385,5 +385,191 @@ export const journeyAPI = {
   togglePause: () => api.post('/journey/toggle-pause')
 };
 
+// ============================================
+// NEW: Saved Videos API (User's saved analyzed videos)
+// ============================================
+export const savedVideosAPI = {
+  // Get all saved videos
+  getAll: (params = {}) => api.get('/saved-videos', { params }),
+  
+  // Get unassigned videos (not in any path)
+  getUnassigned: (limit = 10) => api.get('/saved-videos/unassigned', { params: { limit } }),
+  
+  // Check if video is saved
+  check: (videoId) => api.get(`/saved-videos/check/${videoId}`),
+  
+  // Get specific saved video with full analysis
+  getById: (videoId) => api.get(`/saved-videos/${videoId}`),
+  
+  // Save a video (after analysis)
+  save: (videoId) => api.post('/saved-videos', { videoId }),
+  
+  // Add video to a specific path
+  addToPath: (videoId, pathId) => api.put(`/saved-videos/${videoId}/add-to-path/${pathId}`),
+  
+  // Remove saved video (soft delete)
+  delete: (videoId) => api.delete(`/saved-videos/${videoId}`)
+};
+
+// ============================================
+// NEW: User Learning Paths API
+// ============================================
+export const userLearningPathsAPI = {
+  // Get all user's learning paths
+  getAll: (params = {}) => api.get('/user/learning-paths', { params }),
+  
+  // Get active learning path
+  getActive: () => api.get('/user/learning-paths/active'),
+  
+  // Get specific path by ID
+  getById: (id) => api.get(`/user/learning-paths/${id}`),
+  
+  // Create new learning path
+  create: (data) => api.post('/user/learning-paths', data),
+  
+  // Update learning path
+  update: (id, data) => api.put(`/user/learning-paths/${id}`, data),
+  
+  // Activate a path (set as current)
+  activate: (id) => api.put(`/user/learning-paths/${id}/activate`),
+  
+  // Add video to path
+  addVideo: (pathId, videoId, previousNodeId = null) => 
+    api.post(`/user/learning-paths/${pathId}/add-video`, { videoId, previousNodeId }),
+  
+  // Reorder nodes in path
+  reorder: (pathId, nodeOrder) => 
+    api.put(`/user/learning-paths/${pathId}/reorder`, { nodeOrder }),
+  
+  // Mark node as complete
+  completeNode: (pathId, nodeId) => 
+    api.put(`/user/learning-paths/${pathId}/complete-node/${nodeId}`),
+  
+  // Delete path (soft delete)
+  delete: (id) => api.delete(`/user/learning-paths/${id}`),
+  
+  // ===== Branching/Graph Operations =====
+  
+  // Remove a node from path (keeps video in library)
+  removeNode: (pathId, nodeId) => 
+    api.delete(`/user/learning-paths/${pathId}/remove-node/${nodeId}`),
+  
+  // Create a branch from an existing node
+  createBranch: (pathId, fromNodeId, videoId, edgeType = 'optional') =>
+    api.post(`/user/learning-paths/${pathId}/create-branch`, { fromNodeId, videoId, edgeType }),
+  
+  // Add an optional edge between existing nodes
+  addEdge: (pathId, fromNodeId, toNodeId) =>
+    api.post(`/user/learning-paths/${pathId}/add-edge`, { fromNodeId, toNodeId }),
+  
+  // Remove an edge between nodes
+  removeEdge: (pathId, fromNodeId, toNodeId) =>
+    api.delete(`/user/learning-paths/${pathId}/remove-edge`, { data: { fromNodeId, toNodeId } }),
+  
+  // Get nodes available to start next (prerequisites completed)
+  getNextAvailable: (pathId) => 
+    api.get(`/user/learning-paths/${pathId}/next-available`),
+  
+  // Check if path has branching structure
+  hasBranching: (pathId) => 
+    api.get(`/user/learning-paths/${pathId}/has-branching`),
+  
+  // ===== Visibility & Sharing =====
+  
+  // Toggle visibility (private/public)
+  setVisibility: (pathId, visibility) =>
+    api.put(`/user/learning-paths/${pathId}/visibility`, { visibility }),
+  
+  // Browse public paths
+  browsePublic: (params = {}) =>
+    api.get('/user/learning-paths/public/browse', { params }),
+  
+  // Get public path by slug
+  getPublicPath: (slug) =>
+    api.get(`/user/learning-paths/public/${slug}`),
+  
+  // Clone a public path
+  clonePath: (pathId) =>
+    api.post(`/user/learning-paths/clone/${pathId}`),
+  
+  // ===== Versioning Operations =====
+  
+  // Get version history for a path
+  getVersionHistory: (pathId, params = {}) =>
+    api.get(`/user/learning-paths/${pathId}/versions`, { params }),
+  
+  // Get a specific version
+  getVersion: (pathId, versionNumber) =>
+    api.get(`/user/learning-paths/${pathId}/versions/${versionNumber}`),
+  
+  // Compare two versions
+  compareVersions: (pathId, fromVersion, toVersion) =>
+    api.get(`/user/learning-paths/${pathId}/versions/compare`, { 
+      params: { from: fromVersion, to: toVersion } 
+    }),
+  
+  // Restore to a specific version
+  restoreVersion: (pathId, versionNumber) =>
+    api.post(`/user/learning-paths/${pathId}/versions/restore/${versionNumber}`),
+  
+  // Get AI suggestion stats
+  getAISuggestionStats: (days = 30) =>
+    api.get('/user/learning-paths/ai-suggestion-stats', { params: { days } })
+};
+
+// ============================================
+// AI Suggestions API
+// ============================================
+export const aiSuggestionsAPI = {
+  // Get pending suggestions for user
+  getAll: (params = {}) => api.get('/ai-suggestions', { params }),
+  
+  // Get pending suggestions for a path
+  getForPath: (pathId, params = {}) => 
+    api.get(`/ai-suggestions/path/${pathId}`, { params }),
+  
+  // Generate new suggestions for a path
+  generate: (pathId, trigger = 'user_requested', context = {}) =>
+    api.post(`/ai-suggestions/generate/${pathId}`, { trigger, context }),
+  
+  // Accept a suggestion
+  accept: (suggestionId, feedback = null) =>
+    api.put(`/ai-suggestions/${suggestionId}/accept`, { feedback }),
+  
+  // Reject a suggestion
+  reject: (suggestionId, feedback = null) =>
+    api.put(`/ai-suggestions/${suggestionId}/reject`, { feedback }),
+  
+  // Dismiss a suggestion
+  dismiss: (suggestionId) =>
+    api.put(`/ai-suggestions/${suggestionId}/dismiss`),
+  
+  // Get suggestion stats
+  getStats: (days = 30) =>
+    api.get('/ai-suggestions/stats', { params: { days } })
+};
+
+// ============================================
+// Career Readiness API
+// ============================================
+export const careerReadinessAPI = {
+  // Get readiness score
+  getReadiness: (careerId = null) =>
+    api.get('/readiness', { params: careerId ? { careerId } : {} }),
+  
+  // Get skills gap analysis
+  getSkillsGap: (careerId = null) =>
+    api.get('/readiness/skills-gap', { params: careerId ? { careerId } : {} }),
+  
+  // Refresh readiness for a path
+  refresh: (pathId) =>
+    api.put(`/readiness/refresh/${pathId}`)
+};
+
 export default api;
+
+
+
+
+
 

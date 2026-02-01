@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Link } from "react-router-dom";
 
 /**
  * Minimal header for production landing page
@@ -7,15 +6,15 @@ import { motion } from 'framer-motion';
  */
 const LandingHeader = () => {
   const scrollToWaitlist = () => {
-    document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-bg-base/80 backdrop-blur-xl border-b border-border/30">
       <div className="container mx-auto px-4 sm:px-6 h-16 sm:h-[72px] flex justify-between items-center">
         {/* Logo */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="font-heading font-bold text-xl sm:text-2xl text-text-main hover:text-primary transition-colors"
         >
           <span className="text-primary">&lt;</span>

@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
-  faImage,
   faTags,
   faCode,
   faGraduationCap,
@@ -16,51 +15,55 @@ import {
   faHeading,
   faLink,
   faQuoteLeft,
-  faSpinner
-} from '@fortawesome/free-solid-svg-icons';
-import { blogsAPI } from '../../services/api';
+  faSpinner,
+  faImage,
+} from "@fortawesome/free-solid-svg-icons";
+import { blogsAPI } from "../../services/api";
 
 const categories = [
-  { id: 'technology', label: 'Technology', icon: faCode },
-  { id: 'tutorial', label: 'Tutorial', icon: faGraduationCap },
-  { id: 'news', label: 'News', icon: faNewspaper },
-  { id: 'opinion', label: 'Opinion', icon: faLightbulb }
+  { id: "technology", label: "Technology", icon: faCode },
+  { id: "tutorial", label: "Tutorial", icon: faGraduationCap },
+  { id: "news", label: "News", icon: faNewspaper },
+  { id: "opinion", label: "Opinion", icon: faLightbulb },
 ];
 
 const CreateBlogModal = ({ onClose, onCreated, editBlog = null }) => {
-  const [title, setTitle] = useState(editBlog?.title || '');
-  const [content, setContent] = useState(editBlog?.content || '');
-  const [category, setCategory] = useState(editBlog?.category || 'technology');
-  const [coverImage, setCoverImage] = useState(editBlog?.coverImage || '');
-  const [tags, setTags] = useState(editBlog?.tags?.join(', ') || '');
-  const [status, setStatus] = useState(editBlog?.status || 'published');
+  const [title, setTitle] = useState(editBlog?.title || "");
+  const [content, setContent] = useState(editBlog?.content || "");
+  const [category, setCategory] = useState(editBlog?.category || "technology");
+  const [coverImage, setCoverImage] = useState(editBlog?.coverImage || "");
+  const [tags, setTags] = useState(editBlog?.tags?.join(", ") || "");
+  const [status, setStatus] = useState(editBlog?.status || "published");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
-      setError('Please add a title');
+      setError("Please add a title");
       return;
     }
-    
+
     if (!content.trim()) {
-      setError('Please add content');
+      setError("Please add content");
       return;
     }
 
     try {
       setLoading(true);
-      setError('');
+      setError("");
 
       const blogData = {
         title: title.trim(),
         content: content.trim(),
         category,
         coverImage: coverImage.trim(),
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-        status
+        tags: tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+        status,
       };
 
       if (editBlog) {
@@ -71,51 +74,52 @@ const CreateBlogModal = ({ onClose, onCreated, editBlog = null }) => {
 
       onCreated();
     } catch (err) {
-      console.error('Blog submit error:', err);
-      setError(err.response?.data?.message || 'Failed to save blog');
+      console.error("Blog submit error:", err);
+      setError(err.response?.data?.message || "Failed to save blog");
     } finally {
       setLoading(false);
     }
   };
 
   const insertFormatting = (tag) => {
-    const textarea = document.getElementById('blog-content');
+    const textarea = document.getElementById("blog-content");
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = content.substring(start, end);
-    
-    let newText = '';
-    
-    switch(tag) {
-      case 'bold':
-        newText = `<strong>${selectedText || 'text'}</strong>`;
+
+    let newText = "";
+
+    switch (tag) {
+      case "bold":
+        newText = `<strong>${selectedText || "text"}</strong>`;
         break;
-      case 'italic':
-        newText = `<em>${selectedText || 'text'}</em>`;
+      case "italic":
+        newText = `<em>${selectedText || "text"}</em>`;
         break;
-      case 'h2':
-        newText = `<h2>${selectedText || 'Heading'}</h2>`;
+      case "h2":
+        newText = `<h2>${selectedText || "Heading"}</h2>`;
         break;
-      case 'ul':
-        newText = `<ul>\n<li>${selectedText || 'Item 1'}</li>\n<li>Item 2</li>\n</ul>`;
+      case "ul":
+        newText = `<ul>\n<li>${selectedText || "Item 1"}</li>\n<li>Item 2</li>\n</ul>`;
         break;
-      case 'ol':
-        newText = `<ol>\n<li>${selectedText || 'Item 1'}</li>\n<li>Item 2</li>\n</ol>`;
+      case "ol":
+        newText = `<ol>\n<li>${selectedText || "Item 1"}</li>\n<li>Item 2</li>\n</ol>`;
         break;
-      case 'link':
-        newText = `<a href="url">${selectedText || 'link text'}</a>`;
+      case "link":
+        newText = `<a href="url">${selectedText || "link text"}</a>`;
         break;
-      case 'quote':
-        newText = `<blockquote>${selectedText || 'Quote'}</blockquote>`;
+      case "quote":
+        newText = `<blockquote>${selectedText || "Quote"}</blockquote>`;
         break;
-      case 'code':
-        newText = `<pre><code>${selectedText || 'code here'}</code></pre>`;
+      case "code":
+        newText = `<pre><code>${selectedText || "code here"}</code></pre>`;
         break;
       default:
         return;
     }
-    
-    const newContent = content.substring(0, start) + newText + content.substring(end);
+
+    const newContent =
+      content.substring(0, start) + newText + content.substring(end);
     setContent(newContent);
   };
 
@@ -138,7 +142,7 @@ const CreateBlogModal = ({ onClose, onCreated, editBlog = null }) => {
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-bg-elevated border-b border-border">
             <h2 className="font-heading text-xl font-semibold text-text-main">
-              {editBlog ? 'Edit Blog' : 'Write a Blog'}
+              {editBlog ? "Edit Blog" : "Write a Blog"}
             </h2>
             <button
               onClick={onClose}
@@ -183,8 +187,8 @@ const CreateBlogModal = ({ onClose, onCreated, editBlog = null }) => {
                     onClick={() => setCategory(cat.id)}
                     className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                       category === cat.id
-                        ? 'bg-gradient-to-r from-primary to-secondary text-bg-base'
-                        : 'bg-bg-base border border-border text-text-muted hover:text-primary hover:border-primary/50'
+                        ? "bg-gradient-to-r from-primary to-secondary text-bg-base"
+                        : "bg-bg-base border border-border text-text-muted hover:text-primary hover:border-primary/50"
                     }`}
                   >
                     <FontAwesomeIcon icon={cat.icon} />
@@ -214,33 +218,73 @@ const CreateBlogModal = ({ onClose, onCreated, editBlog = null }) => {
               <label className="block text-text-muted text-sm font-medium mb-2">
                 Content *
               </label>
-              
+
               {/* Toolbar */}
               <div className="flex flex-wrap gap-1 p-2 rounded-t-xl bg-bg-base border border-border border-b-0">
-                <button type="button" onClick={() => insertFormatting('bold')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Bold">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("bold")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Bold"
+                >
                   <FontAwesomeIcon icon={faBold} />
                 </button>
-                <button type="button" onClick={() => insertFormatting('italic')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Italic">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("italic")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Italic"
+                >
                   <FontAwesomeIcon icon={faItalic} />
                 </button>
-                <button type="button" onClick={() => insertFormatting('h2')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Heading">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("h2")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Heading"
+                >
                   <FontAwesomeIcon icon={faHeading} />
                 </button>
                 <div className="w-px h-6 bg-border mx-1 self-center" />
-                <button type="button" onClick={() => insertFormatting('ul')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Bullet List">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("ul")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Bullet List"
+                >
                   <FontAwesomeIcon icon={faListUl} />
                 </button>
-                <button type="button" onClick={() => insertFormatting('ol')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Numbered List">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("ol")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Numbered List"
+                >
                   <FontAwesomeIcon icon={faListOl} />
                 </button>
                 <div className="w-px h-6 bg-border mx-1 self-center" />
-                <button type="button" onClick={() => insertFormatting('link')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Link">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("link")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Link"
+                >
                   <FontAwesomeIcon icon={faLink} />
                 </button>
-                <button type="button" onClick={() => insertFormatting('quote')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Quote">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("quote")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Quote"
+                >
                   <FontAwesomeIcon icon={faQuoteLeft} />
                 </button>
-                <button type="button" onClick={() => insertFormatting('code')} className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors" title="Code">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting("code")}
+                  className="p-2 rounded hover:bg-bg-elevated text-text-muted hover:text-text-main transition-colors"
+                  title="Code"
+                >
                   <FontAwesomeIcon icon={faCode} />
                 </button>
               </div>
@@ -278,22 +322,22 @@ const CreateBlogModal = ({ onClose, onCreated, editBlog = null }) => {
               <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setStatus('published')}
+                  onClick={() => setStatus("published")}
                   className={`flex-1 py-3 rounded-xl font-medium transition-all ${
-                    status === 'published'
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
-                      : 'bg-bg-base border border-border text-text-muted hover:border-green-500'
+                    status === "published"
+                      ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white"
+                      : "bg-bg-base border border-border text-text-muted hover:border-green-500"
                   }`}
                 >
                   Publish Now
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStatus('draft')}
+                  onClick={() => setStatus("draft")}
                   className={`flex-1 py-3 rounded-xl font-medium transition-all ${
-                    status === 'draft'
-                      ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
-                      : 'bg-bg-base border border-border text-text-muted hover:border-yellow-500'
+                    status === "draft"
+                      ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white"
+                      : "bg-bg-base border border-border text-text-muted hover:border-yellow-500"
                   }`}
                 >
                   Save as Draft
@@ -309,11 +353,18 @@ const CreateBlogModal = ({ onClose, onCreated, editBlog = null }) => {
             >
               {loading ? (
                 <>
-                  <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
-                  {editBlog ? 'Updating...' : 'Publishing...'}
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    className="animate-spin mr-2"
+                  />
+                  {editBlog ? "Updating..." : "Publishing..."}
                 </>
+              ) : editBlog ? (
+                "Update Blog"
+              ) : status === "draft" ? (
+                "Save Draft"
               ) : (
-                editBlog ? 'Update Blog' : (status === 'draft' ? 'Save Draft' : 'Publish Blog')
+                "Publish Blog"
               )}
             </button>
           </form>

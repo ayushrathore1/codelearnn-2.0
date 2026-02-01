@@ -162,23 +162,32 @@ courseSchema.statics.search = function(query, options = {}) {
 courseSchema.methods.updateStats = async function() {
   const FreeResource = mongoose.model('FreeResource');
   
-  const stats = await FreeResource.aggregate([
-    { $match: { courseId: this._id, isActive: true } },
-    {
-      $group: {
-        _id: null,
-        count: { $sum: 1 },
-        avgScore: { $avg: '$codeLearnnScore' },
-        totalMinutes: { $sum: { $toInt: '$durationMinutes' } }
+  // Get all lectures for this course
+  const lectures = await FreeResource.find({ courseId: this._id, isActive: true })
+    .select('codeLearnnScore duration');
+  
+  if (lectures.length > 0) {
+    this.lectureCount = lectures.length;
+    
+    // Calculate average score
+    const totalScore = lectures.reduce((sum, l) => sum + (l.codeLearnnScore || 0), 0);
+    this.averageScore = Math.round(totalScore / lectures.length);
+    
+    // Parse duration strings and calculate total minutes
+    let totalMinutes = 0;
+    for (const lecture of lectures) {
+      if (lecture.duration) {
+        // Parse duration string like "3h 27m" or "45m" or "1h 5m"
+        const hoursMatch = lecture.duration.match(/(\d+)h/);
+        const minutesMatch = lecture.duration.match(/(\d+)m/);
+        
+        const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
+        const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
+        
+        totalMinutes += (hours * 60) + minutes;
       }
     }
-  ]);
-
-  if (stats.length > 0) {
-    this.lectureCount = stats[0].count;
-    this.averageScore = Math.round(stats[0].avgScore || 0);
     
-    const totalMinutes = stats[0].totalMinutes || 0;
     const hours = Math.floor(totalMinutes / 60);
     const mins = totalMinutes % 60;
     this.totalDuration = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;

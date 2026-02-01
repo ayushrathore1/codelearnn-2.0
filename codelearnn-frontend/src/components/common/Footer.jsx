@@ -1,58 +1,82 @@
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import { faTwitter, faInstagram, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTwitter,
+  faInstagram,
+  faGithub,
+  faLinkedin,
+} from "@fortawesome/free-brands-svg-icons";
 
 // Check if we're in development mode
-const isDevelopment = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' ||
-                       import.meta.env.DEV === true;
+const isDevelopment =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1" ||
+  import.meta.env.DEV === true;
 
 const Footer = () => {
-
   const productLinks = [
-    { label: 'Vault', path: '/vault' },
-    { label: 'Visualizations', path: '/visualizations' },
-    { label: 'Analyzer', path: '/analyzer' },
-    { label: 'Career', path: '/career' },
+    { label: "Careers", path: "/career" },
+    { label: "Learning Paths", path: "/learning-paths" },
+    { label: "Vault", path: "/vault" },
+    { label: "Charcha", path: "/charcha" },
   ];
 
+  // Utility tools accessible from footer
+  const toolLinks = [{ label: "Analyzer", path: "/analyzer" }];
+
   const companyLinks = [
-    { label: 'About', path: '/about' },
-    { label: 'Contact', path: '/contact' },
-    { label: 'Privacy Policy', path: '/privacy-policy' },
-    { label: 'Terms & Conditions', path: '/terms' },
-    { label: 'Cookie Policy', path: '/cookie-policy' },
+    { label: "About", path: "/about" },
+    { label: "Contact", path: "/contact" },
+    { label: "Privacy Policy", path: "/privacy-policy" },
+    { label: "Terms & Conditions", path: "/terms" },
+    { label: "Cookie Policy", path: "/cookie-policy" },
   ];
 
   const otherProductsLinks = [
-    { label: 'Medha Revision', href: 'https://medha-revision.vercel.app/' },
+    { label: "Medha Revision", href: "https://medha-revision.vercel.app/" },
   ];
 
   const resourceLinks = [
-    { label: 'Blogs', path: '/blogs' },
-    { label: 'Opportunities', path: '/opportunities' },
+    { label: "Blogs", path: "/blogs" },
+    { label: "Opportunities", path: "/opportunities" },
   ];
 
   const socialLinks = [
-    { icon: faTwitter, href: 'https://x.com/ayushrathore_27', label: 'Twitter' },
-    { icon: faInstagram, href: 'https://www.instagram.com/ayush.rathore27', label: 'Instagram' },
-    { icon: faGithub, href: 'https://github.com/ayushrathore1', label: 'GitHub' },
-    { icon: faLinkedin, href: 'https://www.linkedin.com/in/ayushrathore1', label: 'LinkedIn' },
+    {
+      icon: faTwitter,
+      href: "https://x.com/ayushrathore_27",
+      label: "Twitter",
+    },
+    {
+      icon: faInstagram,
+      href: "https://www.instagram.com/ayush.rathore27",
+      label: "Instagram",
+    },
+    {
+      icon: faGithub,
+      href: "https://github.com/ayushrathore1",
+      label: "GitHub",
+    },
+    {
+      icon: faLinkedin,
+      href: "https://www.linkedin.com/in/ayushrathore1",
+      label: "LinkedIn",
+    },
   ];
 
   // Scroll to waitlist section
   const scrollToWaitlist = (e) => {
     e.preventDefault();
-    document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
 
   // Get link props - in production, redirect to waitlist for product links
-  const getProductLinkProps = (path) => {
+  const _getProductLinkProps = (path) => {
     if (isDevelopment) {
       return { as: Link, to: path };
     }
-    return { as: 'a', href: '#waitlist', onClick: scrollToWaitlist };
+    return { as: "a", href: "#waitlist", onClick: scrollToWaitlist };
   };
 
   return (
@@ -61,13 +85,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-16">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link to="/" className="font-heading font-bold text-xl text-text-main inline-block mb-4">
+            <Link
+              to="/"
+              className="font-heading font-bold text-xl text-text-main inline-block mb-4"
+            >
               <span className="text-primary">&lt;</span>
               <span className="text-metallic">CodeLearnn</span>
               <span className="text-secondary">/&gt;</span>
             </Link>
             <p className="text-text-muted text-sm leading-relaxed mb-6 max-w-sm">
-              The Learning Operating System for developers. Structure your learning, understand deeply, build your career.
+              The Learning Operating System for developers. Structure your
+              learning, understand deeply, build your career.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => (
@@ -91,7 +119,7 @@ const Footer = () => {
               Product
             </h4>
             <div className="space-y-3">
-              {productLinks.map((link, index) => (
+              {productLinks.map((link, index) =>
                 isDevelopment ? (
                   <Link
                     key={index}
@@ -109,8 +137,37 @@ const Footer = () => {
                   >
                     {link.label}
                   </a>
-                )
-              ))}
+                ),
+              )}
+            </div>
+          </div>
+
+          {/* Tools Links - Utility tools like Analyzer */}
+          <div>
+            <h4 className="font-heading font-semibold text-text-main text-sm uppercase tracking-wider mb-4">
+              Tools
+            </h4>
+            <div className="space-y-3">
+              {toolLinks.map((link, index) =>
+                isDevelopment ? (
+                  <Link
+                    key={index}
+                    to={link.path}
+                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={index}
+                    href="#waitlist"
+                    onClick={scrollToWaitlist}
+                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
+                  >
+                    {link.label}
+                  </a>
+                ),
+              )}
             </div>
           </div>
 
@@ -138,7 +195,7 @@ const Footer = () => {
               Resources
             </h4>
             <div className="space-y-3">
-              {resourceLinks.map((link, index) => (
+              {resourceLinks.map((link, index) =>
                 isDevelopment ? (
                   <Link
                     key={index}
@@ -156,28 +213,27 @@ const Footer = () => {
                   >
                     {link.label}
                   </a>
-                )
-              ))}
-              
+                ),
+              )}
+
               <h4 className="font-heading font-semibold text-text-main text-sm uppercase tracking-wider mt-6 mb-4">
-               Other
+                Other
               </h4>
-               <div className="space-y-3">
-              {otherProductsLinks.map((link, index) => (
-                <a
-                  key={index}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
+              <div className="space-y-3">
+                {otherProductsLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-text-muted text-sm hover:text-primary transition-colors duration-200"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
-
 
           {/* Newsletter */}
           <div>
@@ -188,11 +244,14 @@ const Footer = () => {
               <p className="text-text-muted text-sm mb-4">
                 Get updates on new paths.
               </p>
-              <form 
+              <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   const email = e.target.email.value;
-                  window.open(`https://supascribe.com/subscribe/HZMknBal8Ccqxhli1c2yImX8PDb2?email=${encodeURIComponent(email)}`, '_blank');
+                  window.open(
+                    `https://supascribe.com/subscribe/HZMknBal8Ccqxhli1c2yImX8PDb2?email=${encodeURIComponent(email)}`,
+                    "_blank",
+                  );
                 }}
                 className="flex flex-col gap-3"
               >
@@ -220,7 +279,10 @@ const Footer = () => {
             © {new Date().getFullYear()} CodeLearnn. Built by Elytron.
           </p>
           <div className="flex items-center gap-6 text-text-dim text-xs font-mono">
-            <a href="mailto:engineeratcodelearnn@gmail.com" className="hover:text-primary transition-colors flex items-center gap-2">
+            <a
+              href="mailto:engineeratcodelearnn@gmail.com"
+              className="hover:text-primary transition-colors flex items-center gap-2"
+            >
               <FontAwesomeIcon icon={faEnvelope} />
               engineeratcodelearnn@gmail.com
             </a>

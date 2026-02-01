@@ -6,7 +6,7 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
-const cacheService = require('./services/CacheService');
+const caches = require('./services/CacheService');
 
 // Load env vars
 dotenv.config();
@@ -14,14 +14,11 @@ dotenv.config();
 // Connect to database
 connectDB();
 
-// Initialize cache service (Redis via Upstash)
-cacheService.initialize().then(connected => {
-  if (connected) {
-    console.log('🚀 Cache layer ready');
-  }
-});
+// Cache service is ready immediately (in-memory)
+console.log('🚀 Cache layer ready (in-memory)');
 
 const app = express();
+
 
 // Check if production environment
 const isProduction = process.env.NODE_ENV === 'production';
@@ -132,6 +129,10 @@ const opportunityRoutes = require('./routes/opportunities');
 const skillsRoutes = require('./routes/skills');
 const eventsRoutes = require('./routes/events');
 const journeyRoutes = require('./routes/journey');
+const savedVideosRoutes = require('./routes/savedVideos');
+const userLearningPathsRoutes = require('./routes/userLearningPaths');
+const learningPathVersionsRoutes = require('./routes/learningPathVersions');
+const aiSuggestionsRoutes = require('./routes/aiSuggestions');
 
 // Mount routers
 app.use('/api/auth', authRoutes);
@@ -149,6 +150,22 @@ app.use('/api/opportunities', opportunityRoutes);
 app.use('/api/skills', skillsRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/journey', journeyRoutes);
+app.use('/api/saved-videos', savedVideosRoutes);
+app.use('/api/user/learning-paths', userLearningPathsRoutes);
+app.use('/api/user/learning-paths', learningPathVersionsRoutes); // Version routes
+app.use('/api/ai-suggestions', aiSuggestionsRoutes);
+
+// Career Readiness Routes
+const careerReadinessRoutes = require('./routes/careerReadiness');
+app.use('/api/readiness', careerReadinessRoutes);
+
+// Admin Routes (system stats, cache management)
+const adminRoutes = require('./routes/admin');
+app.use('/api/admin', adminRoutes);
+
+// Initialize background workers
+const { initializeWorkers } = require('./services/BackgroundWorkers');
+initializeWorkers();
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

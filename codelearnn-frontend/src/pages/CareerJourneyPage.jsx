@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
   faRocket,
   faChartLine,
   faCheckCircle,
@@ -11,8 +11,6 @@ import {
   faBook,
   faCode,
   faFire,
-  faClock,
-  faArrowRight,
   faChevronDown,
   faChevronUp,
   faTrophy,
@@ -23,23 +21,31 @@ import {
   faCalendarAlt,
   faLayerGroup,
   faAngleRight,
-  faExclamationTriangle
-} from '@fortawesome/free-solid-svg-icons';
-import { useCareerJourney } from '../context/CareerJourneyContext';
-import { useAuth } from '../context/AuthContext';
+} from "@fortawesome/free-solid-svg-icons";
+import { useCareerJourney } from "../context/CareerJourneyContext";
 
 // Phase Status Badge
 const PhaseStatusBadge = ({ status }) => {
   const statusConfig = {
-    'in_progress': { bg: 'bg-primary/20', text: 'text-primary', label: 'In Progress' },
-    'completed': { bg: 'bg-green-500/20', text: 'text-green-400', label: 'Completed' },
-    'locked': { bg: 'bg-gray-500/20', text: 'text-gray-400', label: 'Locked' },
+    in_progress: {
+      bg: "bg-primary/20",
+      text: "text-primary",
+      label: "In Progress",
+    },
+    completed: {
+      bg: "bg-green-500/20",
+      text: "text-green-400",
+      label: "Completed",
+    },
+    locked: { bg: "bg-gray-500/20", text: "text-gray-400", label: "Locked" },
   };
-  
-  const config = statusConfig[status] || statusConfig['locked'];
-  
+
+  const config = statusConfig[status] || statusConfig["locked"];
+
   return (
-    <span className={`px-2 py-0.5 rounded text-xs font-mono ${config.bg} ${config.text}`}>
+    <span
+      className={`px-2 py-0.5 rounded text-xs font-mono ${config.bg} ${config.text}`}
+    >
       {config.label}
     </span>
   );
@@ -50,7 +56,7 @@ const ProgressRing = ({ progress, size = 120, strokeWidth = 8 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
-  
+
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg className="transform -rotate-90" width={size} height={size}>
@@ -85,19 +91,19 @@ const ProgressRing = ({ progress, size = 120, strokeWidth = 8 }) => {
 
 // Phase Card Component
 const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
-  const isLocked = phase.status === 'locked';
-  const isActive = phase.status === 'in_progress';
-  const isCompleted = phase.status === 'completed';
-  
+  const isLocked = phase.status === "locked";
+  const isActive = phase.status === "in_progress";
+  const isCompleted = phase.status === "completed";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={`
         rounded-xl border transition-all duration-300
-        ${isActive ? 'bg-bg-surface border-primary/50 shadow-lg shadow-primary/10' : ''}
-        ${isCompleted ? 'bg-bg-surface border-green-500/30' : ''}
-        ${isLocked ? 'bg-bg-surface/50 border-border opacity-60' : ''}
+        ${isActive ? "bg-bg-surface border-primary/50 shadow-lg shadow-primary/10" : ""}
+        ${isCompleted ? "bg-bg-surface border-green-500/30" : ""}
+        ${isLocked ? "bg-bg-surface/50 border-border opacity-60" : ""}
       `}
     >
       {/* Phase Header */}
@@ -106,17 +112,19 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
         disabled={isLocked}
         className={`
           w-full p-5 flex items-center justify-between text-left
-          ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-bg-elevated/50'}
+          ${isLocked ? "cursor-not-allowed" : "cursor-pointer hover:bg-bg-elevated/50"}
           transition-colors rounded-xl
         `}
       >
         <div className="flex items-center gap-4">
-          <div className={`
+          <div
+            className={`
             w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold
-            ${isActive ? 'bg-primary/20 text-primary' : ''}
-            ${isCompleted ? 'bg-green-500/20 text-green-400' : ''}
-            ${isLocked ? 'bg-bg-elevated text-text-dim' : ''}
-          `}>
+            ${isActive ? "bg-primary/20 text-primary" : ""}
+            ${isCompleted ? "bg-green-500/20 text-green-400" : ""}
+            ${isLocked ? "bg-bg-elevated text-text-dim" : ""}
+          `}
+          >
             {isCompleted ? (
               <FontAwesomeIcon icon={faCheckCircle} />
             ) : isLocked ? (
@@ -125,40 +133,44 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
               phase.phaseNumber
             )}
           </div>
-          
+
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h3 className="text-lg font-bold text-text-main">{phase.title}</h3>
+              <h3 className="text-lg font-bold text-text-main">
+                {phase.title}
+              </h3>
               <PhaseStatusBadge status={phase.status} />
             </div>
             <p className="text-sm text-text-muted">{phase.description}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-4">
           {/* Progress indicator */}
           {!isLocked && (
             <div className="text-right">
-              <div className="text-sm font-bold text-text-main">{phase.progress || 0}%</div>
+              <div className="text-sm font-bold text-text-main">
+                {phase.progress || 0}%
+              </div>
               <div className="text-xs text-text-muted">Complete</div>
             </div>
           )}
-          
+
           {!isLocked && (
-            <FontAwesomeIcon 
-              icon={isExpanded ? faChevronUp : faChevronDown} 
+            <FontAwesomeIcon
+              icon={isExpanded ? faChevronUp : faChevronDown}
               className="text-text-dim"
             />
           )}
         </div>
       </button>
-      
+
       {/* Expanded Content */}
       <AnimatePresence>
         {isExpanded && !isLocked && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
@@ -166,27 +178,36 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
               {/* Skills */}
               <div className="mb-6">
                 <h4 className="text-sm font-bold text-text-muted mb-3 flex items-center gap-2">
-                  <FontAwesomeIcon icon={faLightbulb} className="text-yellow-400" />
+                  <FontAwesomeIcon
+                    icon={faLightbulb}
+                    className="text-yellow-400"
+                  />
                   Skills to Master
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {phase.skills?.map((skill, idx) => (
                     <div key={idx} className="bg-bg-elevated rounded-lg p-3">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-text-main">{skill.skillName}</span>
-                        <span className="text-xs text-primary">{skill.currentScore}/{skill.targetScore}</span>
+                        <span className="text-sm font-medium text-text-main">
+                          {skill.skillName}
+                        </span>
+                        <span className="text-xs text-primary">
+                          {skill.currentScore}/{skill.targetScore}
+                        </span>
                       </div>
                       <div className="w-full h-1.5 bg-bg-base rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-primary rounded-full transition-all"
-                          style={{ width: `${(skill.currentScore / skill.targetScore) * 100}%` }}
+                          style={{
+                            width: `${(skill.currentScore / skill.targetScore) * 100}%`,
+                          }}
                         />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-              
+
               {/* Resources */}
               <div className="mb-6">
                 <h4 className="text-sm font-bold text-text-muted mb-3 flex items-center gap-2">
@@ -195,33 +216,44 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
                 </h4>
                 <div className="space-y-2">
                   {phase.resources?.map((resource, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       className={`
                         flex items-center justify-between p-3 rounded-lg border
-                        ${resource.isCompleted 
-                          ? 'bg-green-500/10 border-green-500/30' 
-                          : 'bg-bg-elevated border-border hover:border-primary/50'}
+                        ${
+                          resource.isCompleted
+                            ? "bg-green-500/10 border-green-500/30"
+                            : "bg-bg-elevated border-border hover:border-primary/50"
+                        }
                         transition-colors cursor-pointer
                       `}
-                      onClick={() => onResourceComplete(phase.phaseId, resource.resourceId)}
+                      onClick={() =>
+                        onResourceComplete(phase.phaseId, resource.resourceId)
+                      }
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`
+                        <div
+                          className={`
                           w-8 h-8 rounded flex items-center justify-center text-xs
-                          ${resource.isCompleted ? 'bg-green-500/20 text-green-400' : 'bg-bg-base text-text-muted'}
-                        `}>
+                          ${resource.isCompleted ? "bg-green-500/20 text-green-400" : "bg-bg-base text-text-muted"}
+                        `}
+                        >
                           {resource.isCompleted ? (
                             <FontAwesomeIcon icon={faCheckCircle} />
+                          ) : resource.type === "video" ? (
+                            <FontAwesomeIcon icon={faPlay} />
+                          ) : resource.type === "quiz" ? (
+                            <FontAwesomeIcon icon={faGraduationCap} />
+                          ) : resource.type === "practice" ? (
+                            <FontAwesomeIcon icon={faCode} />
                           ) : (
-                            resource.type === 'video' ? <FontAwesomeIcon icon={faPlay} /> :
-                            resource.type === 'quiz' ? <FontAwesomeIcon icon={faGraduationCap} /> :
-                            resource.type === 'practice' ? <FontAwesomeIcon icon={faCode} /> :
                             <FontAwesomeIcon icon={faBook} />
                           )}
                         </div>
                         <div>
-                          <span className={`text-sm font-medium ${resource.isCompleted ? 'text-green-400 line-through' : 'text-text-main'}`}>
+                          <span
+                            className={`text-sm font-medium ${resource.isCompleted ? "text-green-400 line-through" : "text-text-main"}`}
+                          >
                             {resource.title}
                           </span>
                           <div className="text-xs text-text-muted flex items-center gap-2">
@@ -231,7 +263,7 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {!resource.isCompleted && (
                         <button className="px-3 py-1.5 bg-primary/10 text-primary text-xs rounded hover:bg-primary/20 transition-colors">
                           Start
@@ -241,7 +273,7 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
                   ))}
                 </div>
               </div>
-              
+
               {/* Projects */}
               {phase.projects && phase.projects.length > 0 && (
                 <div>
@@ -251,22 +283,31 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {phase.projects.map((project, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className={`
                           p-4 rounded-lg border
-                          ${project.isCompleted 
-                            ? 'bg-green-500/10 border-green-500/30' 
-                            : 'bg-bg-elevated border-border'}
+                          ${
+                            project.isCompleted
+                              ? "bg-green-500/10 border-green-500/30"
+                              : "bg-bg-elevated border-border"
+                          }
                         `}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-text-main">{project.title}</span>
+                          <span className="font-medium text-text-main">
+                            {project.title}
+                          </span>
                           {project.isCompleted ? (
-                            <FontAwesomeIcon icon={faCheckCircle} className="text-green-400" />
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="text-green-400"
+                            />
                           ) : (
                             <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">
-                              {phase.progress >= 50 ? 'Ready' : `Unlocks at 50%`}
+                              {phase.progress >= 50
+                                ? "Ready"
+                                : `Unlocks at 50%`}
                             </span>
                           )}
                         </div>
@@ -291,7 +332,7 @@ const PhaseCard = ({ phase, isExpanded, onToggle, onResourceComplete }) => {
 // Next Actions Component
 const NextActionsCard = ({ actions, onAction }) => {
   if (!actions || actions.length === 0) return null;
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -304,32 +345,41 @@ const NextActionsCard = ({ actions, onAction }) => {
         </div>
         <div>
           <h3 className="text-lg font-bold text-text-main">What to Do Next</h3>
-          <p className="text-xs text-text-muted">Recommended actions to keep progressing</p>
+          <p className="text-xs text-text-muted">
+            Recommended actions to keep progressing
+          </p>
         </div>
       </div>
-      
+
       <div className="space-y-3">
         {actions.map((action, idx) => (
-          <div 
+          <div
             key={idx}
             className="flex items-center justify-between p-3 bg-bg-elevated rounded-lg hover:bg-bg-base transition-colors cursor-pointer group"
             onClick={() => onAction(action)}
           >
             <div className="flex items-center gap-3">
-              <div className={`
+              <div
+                className={`
                 w-8 h-8 rounded flex items-center justify-center
-                ${idx === 0 ? 'bg-primary/20 text-primary' : 'bg-bg-base text-text-muted'}
-              `}>
+                ${idx === 0 ? "bg-primary/20 text-primary" : "bg-bg-base text-text-muted"}
+              `}
+              >
                 {idx + 1}
               </div>
               <div>
                 <span className="text-sm font-medium text-text-main group-hover:text-primary transition-colors">
                   {action.title}
                 </span>
-                <div className="text-xs text-text-muted">{action.description}</div>
+                <div className="text-xs text-text-muted">
+                  {action.description}
+                </div>
               </div>
             </div>
-            <FontAwesomeIcon icon={faAngleRight} className="text-text-dim group-hover:text-primary transition-colors" />
+            <FontAwesomeIcon
+              icon={faAngleRight}
+              className="text-text-dim group-hover:text-primary transition-colors"
+            />
           </div>
         ))}
       </div>
@@ -338,89 +388,100 @@ const NextActionsCard = ({ actions, onAction }) => {
 };
 
 // Stats Card
-const StatsCard = ({ icon, label, value, trend, color = 'primary' }) => (
+const StatsCard = ({ icon, label, value, trend, color = "primary" }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
     className="bg-bg-surface border border-border rounded-xl p-4 flex items-center gap-4"
   >
-    <div className={`w-12 h-12 rounded-xl bg-${color}/10 text-${color} flex items-center justify-center text-xl`}>
+    <div
+      className={`w-12 h-12 rounded-xl bg-${color}/10 text-${color} flex items-center justify-center text-xl`}
+    >
       <FontAwesomeIcon icon={icon} />
     </div>
     <div>
       <div className="text-2xl font-bold text-text-main">{value}</div>
       <div className="text-xs text-text-muted">{label}</div>
     </div>
-    {trend && (
-      <div className="ml-auto text-xs text-green-400">+{trend}</div>
-    )}
+    {trend && <div className="ml-auto text-xs text-green-400">+{trend}</div>}
   </motion.div>
 );
 
 // Main Career Journey Page
 const CareerJourneyPage = () => {
-  const { journey, isLoading, updateProgress, getNextActions, resetJourney } = useCareerJourney();
-  const { user } = useAuth();
+  const { journey, isLoading, updateProgress, getNextActions } =
+    useCareerJourney();
   const navigate = useNavigate();
-  const [expandedPhase, setExpandedPhase] = useState(null);
-  
+
+  // Initialize expandedPhase from journey's current phase
+  const initialPhaseId = journey?.currentPhase?.phaseId || null;
+  const [expandedPhase, setExpandedPhase] = useState(initialPhaseId);
+
   // Redirect if no journey
   useEffect(() => {
     if (!isLoading && !journey) {
       // No active journey, redirect to career explorer
-      navigate('/career-explorer');
+      navigate("/career-explorer");
     }
   }, [isLoading, journey, navigate]);
-  
-  // Auto-expand current phase
+
+  // Sync expanded phase when journey changes (memoized to avoid state-in-effect)
+  const currentPhaseId = journey?.currentPhase?.phaseId;
   useEffect(() => {
-    if (journey?.currentPhase?.phaseId) {
-      setExpandedPhase(journey.currentPhase.phaseId);
+    if (currentPhaseId && expandedPhase !== currentPhaseId) {
+      setExpandedPhase(currentPhaseId);
     }
-  }, [journey?.currentPhase?.phaseId]);
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPhaseId]);
+
   if (isLoading) {
     return (
       <main className="min-h-screen pt-28 pb-16 bg-bg-base flex items-center justify-center">
         <div className="text-center">
-          <FontAwesomeIcon icon={faSpinner} spin className="text-4xl text-primary mb-4" />
+          <FontAwesomeIcon
+            icon={faSpinner}
+            spin
+            className="text-4xl text-primary mb-4"
+          />
           <p className="text-text-muted font-mono">Loading your journey...</p>
         </div>
       </main>
     );
   }
-  
+
   if (!journey) {
     return null; // Will redirect
   }
-  
-  const { career, roadmap, currentPhase, stats, preferences } = journey;
+
+  const { career, roadmap, stats, currentPhase, preferences } = journey;
   const nextActions = getNextActions();
-  
+
   const handleResourceComplete = (phaseId, resourceId) => {
     updateProgress(phaseId, resourceId, { completed: true });
   };
-  
+
   const handleNextAction = (action) => {
     // Navigate or trigger action
-    if (action.type === 'resource') {
+    if (action.type === "resource") {
       // Scroll to phase or navigate to resource
       setExpandedPhase(action.phaseId);
-    } else if (action.type === 'project') {
+    } else if (action.type === "project") {
       // Navigate to project guide
       // navigate(`/project/${action.projectId}`);
     }
   };
-  
+
   // Calculate time estimates
   const estimatedWeeks = roadmap?.estimatedWeeks || 20;
-  const weeksCompleted = Math.round((stats.overallProgress / 100) * estimatedWeeks);
-  
+  const weeksCompleted = Math.round(
+    (stats.overallProgress / 100) * estimatedWeeks,
+  );
+
   return (
     <main className="min-h-screen pt-28 pb-16 bg-bg-base relative overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 pointer-events-none bg-grid-pattern opacity-30 z-0"></div>
-      
+
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <motion.div
@@ -432,92 +493,115 @@ const CareerJourneyPage = () => {
             <FontAwesomeIcon icon={faRocket} />
             <span>CAREER_JOURNEY_ACTIVE</span>
           </div>
-          
+
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-4">
-                <span className="text-4xl">{career.icon || '🎯'}</span>
+                <span className="text-4xl">{career.icon || "🎯"}</span>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold text-text-main mb-1">
                     {career.title}
                   </h1>
-                  <p className="text-text-muted">Your personalized learning roadmap</p>
+                  <p className="text-text-muted">
+                    Your personalized learning roadmap
+                  </p>
                 </div>
               </div>
-              
+
               {/* Progress bar */}
               <div className="mb-4">
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-text-muted">Overall Progress</span>
-                  <span className="font-bold text-primary">{stats.overallProgress}%</span>
+                  <span className="font-bold text-primary">
+                    {stats.overallProgress}%
+                  </span>
                 </div>
                 <div className="w-full h-3 bg-bg-elevated rounded-full overflow-hidden">
-                  <motion.div 
+                  <motion.div
                     className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${stats.overallProgress}%` }}
-                    transition={{ duration: 1, ease: 'easeOut' }}
+                    transition={{ duration: 1, ease: "easeOut" }}
                   />
                 </div>
               </div>
-              
+
               {/* Current phase info */}
               <div className="flex flex-wrap items-center gap-4 text-sm">
                 <div className="flex items-center gap-2 text-text-muted">
-                  <FontAwesomeIcon icon={faLayerGroup} className="text-primary" />
-                  <span>Phase {currentPhase.phaseNumber} of {roadmap.phases?.length || 5}</span>
+                  <FontAwesomeIcon
+                    icon={faLayerGroup}
+                    className="text-primary"
+                  />
+                  <span>
+                    Phase {currentPhase.phaseNumber} of{" "}
+                    {roadmap.phases?.length || 5}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-text-muted">
-                  <FontAwesomeIcon icon={faCalendarAlt} className="text-secondary" />
-                  <span>~{estimatedWeeks - weeksCompleted} weeks remaining</span>
+                  <FontAwesomeIcon
+                    icon={faCalendarAlt}
+                    className="text-secondary"
+                  />
+                  <span>
+                    ~{estimatedWeeks - weeksCompleted} weeks remaining
+                  </span>
                 </div>
-                <div className={`flex items-center gap-2 px-2 py-1 rounded text-xs ${
-                  stats.onTrackStatus === 'ahead' ? 'bg-green-500/10 text-green-400' :
-                  stats.onTrackStatus === 'behind' ? 'bg-red-500/10 text-red-400' :
-                  'bg-primary/10 text-primary'
-                }`}>
-                  {stats.onTrackStatus === 'ahead' && '⚡ Ahead of Schedule'}
-                  {stats.onTrackStatus === 'on_track' && '✓ On Track'}
-                  {stats.onTrackStatus === 'behind' && '⚠ Behind Schedule'}
+                <div
+                  className={`flex items-center gap-2 px-2 py-1 rounded text-xs ${
+                    stats.onTrackStatus === "ahead"
+                      ? "bg-green-500/10 text-green-400"
+                      : stats.onTrackStatus === "behind"
+                        ? "bg-red-500/10 text-red-400"
+                        : "bg-primary/10 text-primary"
+                  }`}
+                >
+                  {stats.onTrackStatus === "ahead" && "⚡ Ahead of Schedule"}
+                  {stats.onTrackStatus === "on_track" && "✓ On Track"}
+                  {stats.onTrackStatus === "behind" && "⚠ Behind Schedule"}
                 </div>
               </div>
             </div>
-            
+
             {/* Progress Ring */}
             <div className="flex-shrink-0">
-              <ProgressRing progress={stats.overallProgress} size={140} strokeWidth={10} />
+              <ProgressRing
+                progress={stats.overallProgress}
+                size={140}
+                strokeWidth={10}
+              />
             </div>
           </div>
         </motion.div>
-        
+
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-          <StatsCard 
-            icon={faTrophy} 
-            label="Phases Completed" 
+          <StatsCard
+            icon={faTrophy}
+            label="Phases Completed"
             value={stats.phasesCompleted}
             color="yellow-400"
           />
-          <StatsCard 
-            icon={faCheckCircle} 
-            label="Resources Done" 
+          <StatsCard
+            icon={faCheckCircle}
+            label="Resources Done"
             value={stats.resourcesCompleted}
             color="primary"
           />
-          <StatsCard 
-            icon={faCode} 
-            label="Projects Built" 
+          <StatsCard
+            icon={faCode}
+            label="Projects Built"
             value={stats.projectsCompleted}
             color="accent"
           />
-          <StatsCard 
-            icon={faFire} 
-            label="Day Streak" 
+          <StatsCard
+            icon={faFire}
+            label="Day Streak"
             value={stats.currentStreak}
             color="orange-500"
           />
         </div>
-        
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content - Roadmap */}
           <div className="lg:col-span-2 space-y-4">
@@ -525,28 +609,30 @@ const CareerJourneyPage = () => {
               <FontAwesomeIcon icon={faChartLine} className="text-primary" />
               Your Learning Roadmap
             </h2>
-            
+
             {roadmap.phases?.map((phase) => (
               <PhaseCard
                 key={phase.phaseId}
                 phase={phase}
                 isExpanded={expandedPhase === phase.phaseId}
-                onToggle={() => setExpandedPhase(
-                  expandedPhase === phase.phaseId ? null : phase.phaseId
-                )}
+                onToggle={() =>
+                  setExpandedPhase(
+                    expandedPhase === phase.phaseId ? null : phase.phaseId,
+                  )
+                }
                 onResourceComplete={handleResourceComplete}
               />
             ))}
           </div>
-          
+
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Next Actions */}
-            <NextActionsCard 
-              actions={nextActions} 
+            <NextActionsCard
+              actions={nextActions}
               onAction={handleNextAction}
             />
-            
+
             {/* Weekly Goals */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -555,26 +641,33 @@ const CareerJourneyPage = () => {
               className="bg-bg-surface border border-border rounded-xl p-6"
             >
               <h3 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
-                <FontAwesomeIcon icon={faCalendarAlt} className="text-secondary" />
+                <FontAwesomeIcon
+                  icon={faCalendarAlt}
+                  className="text-secondary"
+                />
                 Weekly Commitment
               </h3>
-              
+
               <div className="text-center py-4">
                 <div className="text-4xl font-bold text-text-main mb-1">
                   {preferences.weeklyHours}
                 </div>
                 <div className="text-sm text-text-muted">hours per week</div>
               </div>
-              
+
               <div className="pt-4 border-t border-border">
-                <div className="text-xs text-text-muted mb-2">This week's progress</div>
+                <div className="text-xs text-text-muted mb-2">
+                  This week's progress
+                </div>
                 <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden">
                   <div className="w-1/3 h-full bg-secondary rounded-full" />
                 </div>
-                <div className="text-xs text-text-dim mt-1">4/{preferences.weeklyHours} hours</div>
+                <div className="text-xs text-text-dim mt-1">
+                  4/{preferences.weeklyHours} hours
+                </div>
               </div>
             </motion.div>
-            
+
             {/* Journey Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -582,8 +675,10 @@ const CareerJourneyPage = () => {
               transition={{ delay: 0.3 }}
               className="bg-bg-surface border border-border rounded-xl p-6"
             >
-              <h3 className="text-lg font-bold text-text-main mb-4">Journey Details</h3>
-              
+              <h3 className="text-lg font-bold text-text-main mb-4">
+                Journey Details
+              </h3>
+
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-text-muted">Started</span>
@@ -593,23 +688,33 @@ const CareerJourneyPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-text-muted">Experience Level</span>
-                  <span className="text-text-main capitalize">{preferences.experienceLevel}</span>
+                  <span className="text-text-main capitalize">
+                    {preferences.experienceLevel}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-text-muted">Learning Style</span>
-                  <span className="text-text-main capitalize">{preferences.learningStyle}</span>
+                  <span className="text-text-main capitalize">
+                    {preferences.learningStyle}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-text-muted">Total Phases</span>
-                  <span className="text-text-main">{roadmap.phases?.length || 5}</span>
+                  <span className="text-text-main">
+                    {roadmap.phases?.length || 5}
+                  </span>
                 </div>
               </div>
-              
+
               <div className="mt-6 pt-4 border-t border-border">
-                <button 
+                <button
                   onClick={() => {
-                    if (window.confirm('Are you sure you want to switch careers? Your current progress will be saved but you will start a new journey.')) {
-                      navigate('/career-explorer');
+                    if (
+                      window.confirm(
+                        "Are you sure you want to switch careers? Your current progress will be saved but you will start a new journey.",
+                      )
+                    ) {
+                      navigate("/career-explorer");
                     }
                   }}
                   className="w-full py-2 text-sm text-text-muted hover:text-text-main border border-border rounded hover:border-text-muted transition-colors"

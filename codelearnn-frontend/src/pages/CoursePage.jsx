@@ -1,21 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import { useState, useEffect, useRef } from "react";
+import { useParams, Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
   faArrowLeft,
   faPlay,
   faStar,
-  faClock,
-  faGraduationCap,
   faSpinner,
   faCheckCircle,
   faTag,
   faChevronRight,
   faChevronLeft,
-  faList
-} from '@fortawesome/free-solid-svg-icons';
-import { freeResourcesAPI } from '../services/api';
+  faList,
+} from "@fortawesome/free-solid-svg-icons";
+import { freeResourcesAPI } from "../services/api";
 
 const CoursePage = () => {
   const { slug } = useParams();
@@ -37,8 +34,8 @@ const CoursePage = () => {
           setLectures(response.data.data.lectures || []);
         }
       } catch (err) {
-        console.error('Failed to fetch course:', err);
-        setError('Failed to load course. Please try again.');
+        console.error("Failed to fetch course:", err);
+        setError("Failed to load course. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -50,13 +47,13 @@ const CoursePage = () => {
   // Scroll to player when changing lectures
   useEffect(() => {
     if (playerRef.current) {
-      playerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      playerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [currentLectureIndex]);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const currentLecture = lectures[currentLectureIndex];
@@ -65,13 +62,13 @@ const CoursePage = () => {
 
   const goToNext = () => {
     if (hasNext) {
-      setCurrentLectureIndex(prev => prev + 1);
+      setCurrentLectureIndex((prev) => prev + 1);
     }
   };
 
   const goToPrev = () => {
     if (hasPrev) {
-      setCurrentLectureIndex(prev => prev - 1);
+      setCurrentLectureIndex((prev) => prev - 1);
     }
   };
 
@@ -81,22 +78,22 @@ const CoursePage = () => {
 
   // Get score color
   const getScoreColor = (score) => {
-    if (score >= 80) return 'text-green-400';
-    if (score >= 60) return 'text-yellow-400';
-    if (score >= 40) return 'text-orange-400';
-    return 'text-red-400';
+    if (score >= 80) return "text-green-400";
+    if (score >= 60) return "text-yellow-400";
+    if (score >= 40) return "text-orange-400";
+    return "text-red-400";
   };
 
   // Get C relation badge
   const getCRelationBadge = (relation) => {
-    if (relation === 'specifically-for-c') {
+    if (relation === "specifically-for-c") {
       return (
         <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full font-medium">
           ⚡ For C
         </span>
       );
     }
-    if (relation === 'related-to-c') {
+    if (relation === "related-to-c") {
       return (
         <span className="px-2 py-0.5 bg-secondary/20 text-secondary text-xs rounded-full font-medium">
           🔗 Related
@@ -110,7 +107,10 @@ const CoursePage = () => {
     return (
       <main className="min-h-screen pt-28 pb-16 px-6 bg-bg-base">
         <div className="container mx-auto max-w-7xl text-center py-24">
-          <FontAwesomeIcon icon={faSpinner} className="text-4xl text-primary animate-spin mb-4" />
+          <FontAwesomeIcon
+            icon={faSpinner}
+            className="text-4xl text-primary animate-spin mb-4"
+          />
           <p className="text-text-muted font-mono">Loading course...</p>
         </div>
       </main>
@@ -121,7 +121,7 @@ const CoursePage = () => {
     return (
       <main className="min-h-screen pt-28 pb-16 px-6 bg-bg-base">
         <div className="container mx-auto max-w-7xl text-center py-24">
-          <p className="text-red-400 mb-4">{error || 'Course not found'}</p>
+          <p className="text-red-400 mb-4">{error || "Course not found"}</p>
           <Link to="/vault" className="text-primary hover:underline">
             ← Back to Vault
           </Link>
@@ -140,21 +140,26 @@ const CoursePage = () => {
           variants={fadeInUp}
           className="flex items-center justify-between mb-4"
         >
-          <Link 
-            to="/vault" 
+          <Link
+            to="/vault"
             className="inline-flex items-center gap-2 text-text-muted hover:text-primary transition-colors text-sm"
           >
             <FontAwesomeIcon icon={faArrowLeft} />
             <span>Back to Vault</span>
           </Link>
-          
+
           <div className="flex items-center gap-3">
             <span className="px-3 py-1 bg-primary/20 text-primary text-xs rounded-full font-medium">
               {course.provider}
             </span>
             {course.averageScore > 0 && (
-              <span className={`text-sm font-bold ${getScoreColor(course.averageScore)}`}>
-                <FontAwesomeIcon icon={faStar} className="mr-1 text-yellow-400" />
+              <span
+                className={`text-sm font-bold ${getScoreColor(course.averageScore)}`}
+              >
+                <FontAwesomeIcon
+                  icon={faStar}
+                  className="mr-1 text-yellow-400"
+                />
                 {course.averageScore}/100
               </span>
             )}
@@ -178,7 +183,7 @@ const CoursePage = () => {
             initial="hidden"
             animate="visible"
             variants={fadeInUp}
-            className={`${showPlaylist ? 'lg:w-2/3' : 'w-full'} transition-all duration-300`}
+            className={`${showPlaylist ? "lg:w-2/3" : "w-full"} transition-all duration-300`}
           >
             {currentLecture && (
               <>
@@ -199,9 +204,9 @@ const CoursePage = () => {
                     onClick={goToPrev}
                     disabled={!hasPrev}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                      hasPrev 
-                        ? 'bg-bg-surface border border-border text-text-main hover:border-primary/50' 
-                        : 'bg-bg-elevated text-text-dim cursor-not-allowed'
+                      hasPrev
+                        ? "bg-bg-surface border border-border text-text-main hover:border-primary/50"
+                        : "bg-bg-elevated text-text-dim cursor-not-allowed"
                     }`}
                   >
                     <FontAwesomeIcon icon={faChevronLeft} />
@@ -224,9 +229,9 @@ const CoursePage = () => {
                     onClick={goToNext}
                     disabled={!hasNext}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                      hasNext 
-                        ? 'bg-primary text-white hover:bg-primary/80' 
-                        : 'bg-bg-elevated text-text-dim cursor-not-allowed'
+                      hasNext
+                        ? "bg-primary text-white hover:bg-primary/80"
+                        : "bg-bg-elevated text-text-dim cursor-not-allowed"
                     }`}
                   >
                     <span className="hidden sm:inline">Next</span>
@@ -240,11 +245,14 @@ const CoursePage = () => {
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-text-dim text-sm font-mono">
-                          {currentLecture.lectureNumber || `Lecture ${currentLectureIndex + 1}`}
+                          {currentLecture.lectureNumber ||
+                            `Lecture ${currentLectureIndex + 1}`}
                         </span>
                         {getCRelationBadge(currentLecture.cRelation)}
                         {currentLecture.codeLearnnScore > 0 && (
-                          <span className={`text-sm font-bold ${getScoreColor(currentLecture.codeLearnnScore)}`}>
+                          <span
+                            className={`text-sm font-bold ${getScoreColor(currentLecture.codeLearnnScore)}`}
+                          >
                             CodeLearnn: {currentLecture.codeLearnnScore}
                           </span>
                         )}
@@ -264,18 +272,28 @@ const CoursePage = () => {
                       <p className="text-text-muted text-sm">
                         {currentLecture.aiAnalysis.summary}
                       </p>
-                      
+
                       {/* Strengths */}
                       {currentLecture.aiAnalysis?.strengths?.length > 0 && (
                         <div className="mt-3">
-                          <h4 className="text-xs font-semibold text-text-dim mb-1">Strengths</h4>
+                          <h4 className="text-xs font-semibold text-text-dim mb-1">
+                            Strengths
+                          </h4>
                           <ul className="space-y-1">
-                            {currentLecture.aiAnalysis.strengths.slice(0, 3).map((s, i) => (
-                              <li key={i} className="flex items-start gap-2 text-text-muted text-xs">
-                                <FontAwesomeIcon icon={faCheckCircle} className="text-green-400 mt-0.5" />
-                                {s}
-                              </li>
-                            ))}
+                            {currentLecture.aiAnalysis.strengths
+                              .slice(0, 3)
+                              .map((s, i) => (
+                                <li
+                                  key={i}
+                                  className="flex items-start gap-2 text-text-muted text-xs"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faCheckCircle}
+                                    className="text-green-400 mt-0.5"
+                                  />
+                                  {s}
+                                </li>
+                              ))}
                           </ul>
                         </div>
                       )}
@@ -286,8 +304,14 @@ const CoursePage = () => {
                   {currentLecture.tags?.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-4">
                       {currentLecture.tags.slice(0, 5).map((tag, index) => (
-                        <span key={index} className="px-2 py-0.5 bg-bg-elevated text-text-dim text-xs rounded-full">
-                          <FontAwesomeIcon icon={faTag} className="mr-1 text-text-dim/50" />
+                        <span
+                          key={index}
+                          className="px-2 py-0.5 bg-bg-elevated text-text-dim text-xs rounded-full"
+                        >
+                          <FontAwesomeIcon
+                            icon={faTag}
+                            className="mr-1 text-text-dim/50"
+                          />
                           {tag}
                         </span>
                       ))}
@@ -305,24 +329,32 @@ const CoursePage = () => {
                   >
                     <div className="flex items-center gap-4">
                       <div className="relative w-24 aspect-video flex-shrink-0 rounded-lg overflow-hidden bg-bg-elevated">
-                        <img 
-                          src={lectures[currentLectureIndex + 1].thumbnail} 
+                        <img
+                          src={lectures[currentLectureIndex + 1].thumbnail}
                           alt="Next video"
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-bg-base/40">
                           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <FontAwesomeIcon icon={faPlay} className="text-white text-xs ml-0.5" />
+                            <FontAwesomeIcon
+                              icon={faPlay}
+                              className="text-white text-xs ml-0.5"
+                            />
                           </div>
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <span className="text-xs text-primary font-semibold uppercase tracking-wider">Up Next</span>
+                        <span className="text-xs text-primary font-semibold uppercase tracking-wider">
+                          Up Next
+                        </span>
                         <h4 className="text-text-main font-medium line-clamp-1 group-hover:text-primary transition-colors">
                           {lectures[currentLectureIndex + 1].title}
                         </h4>
                       </div>
-                      <FontAwesomeIcon icon={faChevronRight} className="text-primary text-xl group-hover:translate-x-1 transition-transform" />
+                      <FontAwesomeIcon
+                        icon={faChevronRight}
+                        className="text-primary text-xl group-hover:translate-x-1 transition-transform"
+                      />
                     </div>
                   </motion.div>
                 )}
@@ -336,7 +368,7 @@ const CoursePage = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="lg:w-1/3 lg:sticky lg:top-20 bg-bg-surface border border-border rounded-2xl overflow-hidden flex flex-col"
-              style={{ height: 'calc(100vh - 140px)', maxHeight: '700px' }}
+              style={{ height: "calc(100vh - 140px)", maxHeight: "700px" }}
             >
               {/* Playlist Header */}
               <div className="p-4 border-b border-border bg-bg-elevated/50 flex-shrink-0">
@@ -352,28 +384,34 @@ const CoursePage = () => {
               </div>
 
               {/* Playlist Items - scrollable with isolated scroll */}
-              <div className="overflow-y-auto flex-1 overscroll-contain" style={{ scrollbarGutter: 'stable' }}>
+              <div
+                className="overflow-y-auto flex-1 overscroll-contain"
+                style={{ scrollbarGutter: "stable" }}
+              >
                 {lectures.map((lecture, index) => (
                   <div
                     key={lecture._id}
                     onClick={() => selectLecture(index)}
                     className={`flex gap-3 p-3 cursor-pointer transition-all border-b border-border/50 ${
-                      index === currentLectureIndex 
-                        ? 'bg-primary/10 border-l-2 border-l-primary' 
-                        : 'hover:bg-bg-elevated'
+                      index === currentLectureIndex
+                        ? "bg-primary/10 border-l-2 border-l-primary"
+                        : "hover:bg-bg-elevated"
                     }`}
                   >
                     {/* Thumbnail */}
                     <div className="relative w-28 aspect-video flex-shrink-0 rounded-lg overflow-hidden bg-bg-elevated">
-                      <img 
-                        src={lecture.thumbnail} 
+                      <img
+                        src={lecture.thumbnail}
                         alt={lecture.title}
                         className="w-full h-full object-cover"
                       />
                       {index === currentLectureIndex && (
                         <div className="absolute inset-0 flex items-center justify-center bg-bg-base/60">
                           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center animate-pulse">
-                            <FontAwesomeIcon icon={faPlay} className="text-white text-xs ml-0.5" />
+                            <FontAwesomeIcon
+                              icon={faPlay}
+                              className="text-white text-xs ml-0.5"
+                            />
                           </div>
                         </div>
                       )}
@@ -389,14 +427,20 @@ const CoursePage = () => {
                           {index + 1}.
                         </span>
                         {lecture.codeLearnnScore > 0 && (
-                          <span className={`text-xs font-bold ${getScoreColor(lecture.codeLearnnScore)}`}>
+                          <span
+                            className={`text-xs font-bold ${getScoreColor(lecture.codeLearnnScore)}`}
+                          >
                             {lecture.codeLearnnScore}
                           </span>
                         )}
                       </div>
-                      <h4 className={`text-sm font-medium line-clamp-2 ${
-                        index === currentLectureIndex ? 'text-primary' : 'text-text-main'
-                      }`}>
+                      <h4
+                        className={`text-sm font-medium line-clamp-2 ${
+                          index === currentLectureIndex
+                            ? "text-primary"
+                            : "text-text-main"
+                        }`}
+                      >
                         {lecture.title}
                       </h4>
                       <div className="flex items-center gap-2 mt-1">
@@ -415,7 +459,9 @@ const CoursePage = () => {
           onClick={() => setShowPlaylist(!showPlaylist)}
           className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-bg-surface border border-border text-text-muted hover:text-primary hover:border-primary/50 transition-all z-10"
         >
-          <FontAwesomeIcon icon={showPlaylist ? faChevronRight : faChevronLeft} />
+          <FontAwesomeIcon
+            icon={showPlaylist ? faChevronRight : faChevronLeft}
+          />
         </button>
       </div>
     </main>

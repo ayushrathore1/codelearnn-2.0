@@ -1,39 +1,39 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faTimes, 
-  faCheck, 
-  faCrown, 
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTimes,
+  faCrown,
   faRocket,
   faChartLine,
   faBrain,
   faCode,
-  faInfinity
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
 const ProModal = ({ isOpen, onClose }) => {
   const features = [
     {
       icon: faBrain,
-      title: 'Advanced AI Analysis',
-      description: 'Get deep insights into any coding tutorial with our advanced AI model.'
+      title: "Advanced AI Analysis",
+      description:
+        "Get deep insights into any coding tutorial with our advanced AI model.",
     },
     {
       icon: faChartLine,
-      title: 'Unlimited Career Paths',
-      description: 'Generate unlimited personalized learning paths for any tech role.'
+      title: "Unlimited Career Paths",
+      description:
+        "Generate unlimited personalized learning paths for any tech role.",
     },
     {
       icon: faCode,
-      title: 'Interactive Code Reviews',
-      description: 'Get instant feedback on your code from our AI mentor.'
+      title: "Interactive Code Reviews",
+      description: "Get instant feedback on your code from our AI mentor.",
     },
     {
       icon: faRocket,
-      title: 'Priority Access',
-      description: 'Early access to new features and priority support.'
-    }
+      title: "Priority Access",
+      description: "Early access to new features and priority support.",
+    },
   ];
 
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -81,21 +81,26 @@ const ProModal = ({ isOpen, onClose }) => {
                     </button>
 
                     <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl flex items-center justify-center mb-4 border border-primary/30 shadow-[0_0_30px_rgba(var(--color-primary-glow),0.3)]">
-                      <FontAwesomeIcon icon={faCrown} className="text-3xl text-gradient-primary" />
+                      <FontAwesomeIcon
+                        icon={faCrown}
+                        className="text-3xl text-gradient-primary"
+                      />
                     </div>
 
                     <h2 className="text-2xl font-heading font-bold mb-2">
-                      Upgrade to <span className="text-gradient-primary">Pro</span>
+                      Upgrade to{" "}
+                      <span className="text-gradient-primary">Pro</span>
                     </h2>
                     <p className="text-text-muted text-sm max-w-sm mx-auto">
-                      Supercharge your learning journey with advanced AI features and unlimited access.
+                      Supercharge your learning journey with advanced AI
+                      features and unlimited access.
                     </p>
                   </div>
 
                   {/* Features List */}
                   <div className="p-6 space-y-4">
                     {features.map((feature, index) => (
-                      <div 
+                      <div
                         key={index}
                         className="flex items-start gap-4 p-3 rounded-xl hover:bg-bg-elevated/50 transition-colors border border-transparent hover:border-border/50"
                       >
@@ -103,8 +108,12 @@ const ProModal = ({ isOpen, onClose }) => {
                           <FontAwesomeIcon icon={feature.icon} />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-text-main text-sm mb-1">{feature.title}</h3>
-                          <p className="text-xs text-text-muted leading-relaxed">{feature.description}</p>
+                          <h3 className="font-semibold text-text-main text-sm mb-1">
+                            {feature.title}
+                          </h3>
+                          <p className="text-xs text-text-muted leading-relaxed">
+                            {feature.description}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -114,8 +123,12 @@ const ProModal = ({ isOpen, onClose }) => {
                   <div className="p-6 pt-2 bg-gradient-to-b from-transparent to-bg-elevated/50">
                     <div className="flex items-center justify-between mb-6 px-2">
                       <div>
-                        <span className="text-sm text-text-muted line-through mr-2">₹499</span>
-                        <span className="text-2xl font-bold text-text-main">₹149</span>
+                        <span className="text-sm text-text-muted line-through mr-2">
+                          ₹499
+                        </span>
+                        <span className="text-2xl font-bold text-text-main">
+                          ₹149
+                        </span>
                         <span className="text-sm text-text-muted">/month</span>
                       </div>
                       <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
@@ -123,7 +136,7 @@ const ProModal = ({ isOpen, onClose }) => {
                       </div>
                     </div>
 
-                    <button 
+                    <button
                       onClick={() => setShowComingSoon(true)}
                       className="w-full btn-primary py-4 text-sm uppercase tracking-wide shadow-[0_0_20px_rgba(var(--color-primary-glow),0.4)] hover:shadow-[0_0_30px_rgba(var(--color-primary-glow),0.6)] group relative overflow-hidden"
                     >
@@ -133,7 +146,7 @@ const ProModal = ({ isOpen, onClose }) => {
                       </span>
                       <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     </button>
-                    
+
                     <p className="text-center text-[10px] text-text-dim mt-4">
                       Secure payment via Razorpay • Cancel anytime
                     </p>
@@ -155,20 +168,33 @@ const ProModal = ({ isOpen, onClose }) => {
                   </button>
 
                   <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full flex items-center justify-center mb-6 border border-primary/20 animate-pulse">
-                    <FontAwesomeIcon icon={faRocket} className="text-4xl text-primary" />
+                    <FontAwesomeIcon
+                      icon={faRocket}
+                      className="text-4xl text-primary"
+                    />
                   </div>
 
-                  <h3 className="text-2xl font-heading font-bold mb-4">Coming Soon!</h3>
+                  <h3 className="text-2xl font-heading font-bold mb-4">
+                    Coming Soon!
+                  </h3>
                   <p className="text-text-muted mb-8 max-w-xs mx-auto leading-relaxed">
-                    We're currently strictly integrating <span className="text-text-main font-semibold">Razorpay</span> to ensure 100% secure transactions.
+                    We're currently strictly integrating{" "}
+                    <span className="text-text-main font-semibold">
+                      Razorpay
+                    </span>{" "}
+                    to ensure 100% secure transactions.
                   </p>
 
                   <div className="w-full bg-bg-elevated/50 rounded-xl p-4 border border-border mb-6">
-                    <p className="text-sm text-text-main font-medium mb-1">Get Notified</p>
-                    <p className="text-xs text-text-muted">We'll alert you silently when payments are live.</p>
+                    <p className="text-sm text-text-main font-medium mb-1">
+                      Get Notified
+                    </p>
+                    <p className="text-xs text-text-muted">
+                      We'll alert you silently when payments are live.
+                    </p>
                   </div>
 
-                  <button 
+                  <button
                     onClick={() => setShowComingSoon(false)}
                     className="text-sm text-primary hover:text-primary/80 transition-colors font-medium flex items-center gap-2"
                   >

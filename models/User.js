@@ -82,6 +82,18 @@ const userSchema = new mongoose.Schema({
     }
   },
 
+  // Active Career & Learning State (for career-first architecture)
+  activeCareerId: {
+    type: String,  // Career domain ID (from CareerDomain collection)
+    index: true,
+    default: null
+  },
+  activeLearningPathId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserLearningPath',  // Reference to user's learning path
+    default: null
+  },
+
   // Profile Settings
   profile: {
     headline: String,           // e.g., "Aspiring Full Stack Developer"

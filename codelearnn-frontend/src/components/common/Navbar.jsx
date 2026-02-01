@@ -1,19 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faBars, 
-  faTimes, 
-  faUser, 
-  faCrown, 
-  faChevronDown,
+import { useState, useEffect, useRef } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faTimes,
+  faUser,
+  faCrown,
   faSignOutAlt,
-  faPalette 
-} from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import ProModal from '../modals/ProModal';
+} from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
+import ProModal from "../modals/ProModal";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,8 +28,8 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Close profile dropdown on click outside
@@ -41,49 +39,53 @@ const Navbar = () => {
         setIsProfileOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Main navigation links
+  // Main navigation links - Careers first, then Learning Paths, Vault, Charcha
+  // Note: Visualizations disabled, Analyzer moved to footer
   const mainNavLinks = [
-    { path: '/vault', label: 'Vault' },
-    { path: '/visualizations', label: 'Visualizations' },
-    { path: '/analyzer', label: 'Analyzer' },
-    { path: '/career', label: 'Career' },
-    { path: '/charcha', label: 'Charcha' },
+    { path: "/career", label: "Careers" },
+    { path: "/learning-paths", label: "Learning Paths" },
+    { path: "/vault", label: "Vault" },
+    { path: "/charcha", label: "Charcha" },
   ];
 
-  const navLinks = isAuthenticated 
-    ? [{ path: '/dashboard', label: 'Dashboard' }, ...mainNavLinks]
+  const navLinks = isAuthenticated
+    ? [{ path: "/dashboard", label: "Dashboard" }, ...mainNavLinks]
     : mainNavLinks;
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <>
-      <header 
+      <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-bg-base/90 backdrop-blur-xl border-b border-border/50' 
-            : 'bg-transparent'
+          isScrolled
+            ? "bg-bg-base/90 backdrop-blur-xl border-b border-border/50"
+            : "bg-transparent"
         }`}
       >
         <div className="container mx-auto px-6 h-[72px] flex justify-between items-center">
-          {/* Logo */}
+          {/* Logo - Links to dashboard when authenticated, home when not */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <Link 
-              to="/" 
+            <Link
+              to={isAuthenticated ? "/dashboard" : "/"}
               className="font-heading font-bold text-2xl text-text-main hover:text-primary transition-colors"
             >
               <span className="text-primary">&lt;</span>
               <span className="logo-text group">
-                <span className="text-metallic group-hover:text-text-main">Code</span>
-                <span className="text-metallic group-hover:text-primary">Learnn</span>
+                <span className="text-metallic group-hover:text-text-main">
+                  Code
+                </span>
+                <span className="text-metallic group-hover:text-primary">
+                  Learnn
+                </span>
               </span>
               <span className="text-secondary">/&gt;</span>
             </Link>
@@ -102,7 +104,7 @@ const Navbar = () => {
                   to={link.path}
                   className={({ isActive }) => `
                     nav-link relative font-medium text-sm tracking-wide
-                    ${isActive ? 'text-primary' : 'text-text-muted hover:text-text-main transition-colors'}
+                    ${isActive ? "text-primary" : "text-text-muted hover:text-text-main transition-colors"}
                   `}
                 >
                   {({ isActive }) => (
@@ -112,7 +114,11 @@ const Navbar = () => {
                         <motion.div
                           layoutId="navbar-indicator"
                           className="absolute -bottom-1 left-0 right-0 h-px bg-primary shadow-[0_0_10px_var(--primary-glow)]"
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 380,
+                            damping: 30,
+                          }}
                         />
                       )}
                     </>
@@ -132,7 +138,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <>
                 {/* Upgrade Button */}
-                {user?.plan !== 'pro' && (
+                {user?.plan !== "pro" && (
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -143,7 +149,7 @@ const Navbar = () => {
                     Pro
                   </motion.button>
                 )}
-                
+
                 {/* Profile Dropdown */}
                 <div className="relative" ref={profileRef}>
                   <motion.button
@@ -165,32 +171,40 @@ const Navbar = () => {
                         className="absolute right-0 mt-2 w-64 bg-bg-surface border border-border rounded-xl shadow-surface overflow-hidden py-2"
                       >
                         <div className="px-4 py-3 border-b border-border bg-bg-elevated/30">
-                          <p className="text-sm font-medium text-text-main truncate">{user?.name}</p>
-                          <p className="text-xs text-text-muted truncate">{user?.email}</p>
+                          <p className="text-sm font-medium text-text-main truncate">
+                            {user?.name}
+                          </p>
+                          <p className="text-xs text-text-muted truncate">
+                            {user?.email}
+                          </p>
                         </div>
 
                         <div className="py-2">
-                          <Link 
-                            to="/profile" 
+                          <Link
+                            to="/profile"
                             className="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:bg-bg-elevated hover:text-primary transition-colors"
                             onClick={() => setIsProfileOpen(false)}
                           >
-                            <div className="w-5 flex justify-center"><FontAwesomeIcon icon={faUser} /></div>
+                            <div className="w-5 flex justify-center">
+                              <FontAwesomeIcon icon={faUser} />
+                            </div>
                             Profile
                           </Link>
                         </div>
 
                         <div className="border-t border-border py-2 px-4">
-                          <p className="text-[10px] font-mono text-text-dim mb-2 uppercase tracking-wider">Theme</p>
+                          <p className="text-[10px] font-mono text-text-dim mb-2 uppercase tracking-wider">
+                            Theme
+                          </p>
                           <div className="space-y-1">
                             {themes.map((t) => (
                               <button
                                 key={t.id}
                                 onClick={() => setTheme(t.id)}
                                 className={`w-full flex items-center justify-between px-2 py-1.5 rounded text-sm transition-colors ${
-                                  theme === t.id 
-                                    ? 'bg-primary/10 text-primary border border-primary/20' 
-                                    : 'text-text-muted hover:bg-bg-elevated border border-transparent'
+                                  theme === t.id
+                                    ? "bg-primary/10 text-primary border border-primary/20"
+                                    : "text-text-muted hover:bg-bg-elevated border border-transparent"
                                 }`}
                               >
                                 <span className="flex items-center gap-2">
@@ -203,11 +217,13 @@ const Navbar = () => {
                         </div>
 
                         <div className="border-t border-border pt-2">
-                          <button 
+                          <button
                             onClick={logout}
                             className="w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
                           >
-                            <div className="w-5 flex justify-center"><FontAwesomeIcon icon={faSignOutAlt} /></div>
+                            <div className="w-5 flex justify-center">
+                              <FontAwesomeIcon icon={faSignOutAlt} />
+                            </div>
                             Sign Out
                           </button>
                         </div>
@@ -222,10 +238,12 @@ const Navbar = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
-                    if (location.pathname === '/') {
-                      document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+                    if (location.pathname === "/") {
+                      document
+                        .getElementById("waitlist")
+                        ?.scrollIntoView({ behavior: "smooth" });
                     } else {
-                      window.location.href = '/#waitlist';
+                      window.location.href = "/#waitlist";
                     }
                   }}
                   className="btn-primary text-sm h-10 px-6"
@@ -237,7 +255,7 @@ const Navbar = () => {
           </motion.div>
 
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             className="lg:hidden text-text-muted text-xl z-[101] cursor-pointer hover:text-primary transition-colors"
             onClick={toggleMenu}
           >
@@ -255,12 +273,12 @@ const Navbar = () => {
                   className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
                   onClick={() => setIsOpen(false)}
                 />
-                
+
                 <motion.nav
-                  initial={{ x: '100%' }}
+                  initial={{ x: "100%" }}
                   animate={{ x: 0 }}
-                  exit={{ x: '100%' }}
-                  transition={{ type: 'tween', duration: 0.3 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "tween", duration: 0.3 }}
                   className="fixed top-0 right-0 w-[min(85vw,360px)] h-screen bg-bg-surface border-l border-border z-50 lg:hidden flex flex-col shadow-2xl"
                 >
                   <div className="p-6 pt-24 flex flex-col gap-2 overflow-y-auto flex-1">
@@ -271,7 +289,7 @@ const Navbar = () => {
                         onClick={() => setIsOpen(false)}
                         className={({ isActive }) => `
                           block py-3 px-4 rounded-lg font-medium transition-all
-                          ${isActive ? 'bg-primary/10 text-primary border border-primary/20' : 'text-text-muted hover:bg-bg-elevated hover:text-text-main'}
+                          ${isActive ? "bg-primary/10 text-primary border border-primary/20" : "text-text-muted hover:bg-bg-elevated hover:text-text-main"}
                         `}
                       >
                         {link.label}
@@ -280,16 +298,18 @@ const Navbar = () => {
 
                     {/* Theme Switcher Mobile */}
                     <div className="mt-8 mb-6 p-4 bg-bg-elevated/50 rounded-xl border border-border">
-                      <p className="text-xs font-mono text-text-dim mb-3 uppercase tracking-wider">Appearance</p>
+                      <p className="text-xs font-mono text-text-dim mb-3 uppercase tracking-wider">
+                        Appearance
+                      </p>
                       <div className="grid grid-cols-3 gap-2">
                         {themes.map((t) => (
                           <button
                             key={t.id}
                             onClick={() => setTheme(t.id)}
                             className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${
-                              theme === t.id 
-                                ? 'bg-primary/10 border-primary/50 text-primary' 
-                                : 'border-transparent bg-bg-surface text-text-muted hover:text-text-main'
+                              theme === t.id
+                                ? "bg-primary/10 border-primary/50 text-primary"
+                                : "border-transparent bg-bg-surface text-text-muted hover:text-text-main"
                             }`}
                           >
                             <span className="text-xl">{t.icon}</span>
@@ -302,35 +322,50 @@ const Navbar = () => {
                   <div className="p-6 border-t border-border bg-bg-elevated/30">
                     {isAuthenticated ? (
                       <div className="flex flex-col gap-3">
-                        {user?.plan !== 'pro' && (
-                          <button 
+                        {user?.plan !== "pro" && (
+                          <button
                             onClick={() => {
                               setIsOpen(false);
                               setIsProModalOpen(true);
-                            }} 
+                            }}
                             className="btn-primary w-full text-center py-3"
                           >
-                            <FontAwesomeIcon icon={faCrown} className="mr-2" /> Upgrade to Pro
+                            <FontAwesomeIcon icon={faCrown} className="mr-2" />{" "}
+                            Upgrade to Pro
                           </button>
                         )}
-                        <Link to="/profile" onClick={() => setIsOpen(false)} className="btn-secondary w-full text-center py-3">
-                          <FontAwesomeIcon icon={faUser} className="mr-2" /> Profile
+                        <Link
+                          to="/profile"
+                          onClick={() => setIsOpen(false)}
+                          className="btn-secondary w-full text-center py-3"
+                        >
+                          <FontAwesomeIcon icon={faUser} className="mr-2" />{" "}
+                          Profile
                         </Link>
-                        <button onClick={logout} className="w-full text-center text-red-500 py-3 text-sm hover:bg-red-500/10 rounded-lg transition-colors">
+                        <button
+                          onClick={logout}
+                          className="w-full text-center text-red-500 py-3 text-sm hover:bg-red-500/10 rounded-lg transition-colors"
+                        >
                           Sign Out
                         </button>
                       </div>
                     ) : (
                       <div className="flex flex-col gap-3">
-                        <button 
+                        <button
                           onClick={() => {
                             setIsOpen(false);
-                            if (location.pathname === '/') {
-                              setTimeout(() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                            if (location.pathname === "/") {
+                              setTimeout(
+                                () =>
+                                  document
+                                    .getElementById("waitlist")
+                                    ?.scrollIntoView({ behavior: "smooth" }),
+                                100,
+                              );
                             } else {
-                              window.location.href = '/#waitlist';
+                              window.location.href = "/#waitlist";
                             }
-                          }} 
+                          }}
                           className="btn-primary w-full text-center py-3"
                         >
                           Join Waitlist
@@ -346,7 +381,10 @@ const Navbar = () => {
       </header>
 
       {/* Pro Modal */}
-      <ProModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      <ProModal
+        isOpen={isProModalOpen}
+        onClose={() => setIsProModalOpen(false)}
+      />
     </>
   );
 };

@@ -1,12 +1,11 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faBolt, 
-  faStar, 
-  faShieldAlt, 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBolt,
+  faStar,
+  faShieldAlt,
   faFire,
-  faArrowTrendUp
-} from '@fortawesome/free-solid-svg-icons';
-import { getLevelInfo } from '../../services/charchaApi';
+} from "@fortawesome/free-solid-svg-icons";
+import { getLevelInfo } from "../../services/charchaApi";
 
 const UserStatsBar = ({ user }) => {
   if (!user) return null;
@@ -32,7 +31,7 @@ const UserStatsBar = ({ user }) => {
               <div className="mt-1">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-24 h-1.5 bg-bg-elevated rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-primary rounded-full transition-all"
                       style={{ width: `${levelInfo.progress}%` }}
                     />
@@ -54,7 +53,9 @@ const UserStatsBar = ({ user }) => {
               <FontAwesomeIcon icon={faBolt} className="text-sm" />
               <span className="font-bold text-lg">{user.aura || 0}</span>
             </div>
-            <span className="text-[10px] uppercase tracking-wider text-text-dim">AURA</span>
+            <span className="text-[10px] uppercase tracking-wider text-text-dim">
+              AURA
+            </span>
           </div>
 
           {/* XP */}
@@ -63,16 +64,22 @@ const UserStatsBar = ({ user }) => {
               <FontAwesomeIcon icon={faStar} className="text-sm" />
               <span className="font-bold text-lg">{user.xp || 0}</span>
             </div>
-            <span className="text-[10px] uppercase tracking-wider text-text-dim">XP</span>
+            <span className="text-[10px] uppercase tracking-wider text-text-dim">
+              XP
+            </span>
           </div>
 
           {/* CRED */}
           <div className="text-center">
             <div className="flex items-center gap-1.5 text-cyan-400">
               <FontAwesomeIcon icon={faShieldAlt} className="text-sm" />
-              <span className="font-bold text-lg">{(user.cred || 0).toFixed(1)}</span>
+              <span className="font-bold text-lg">
+                {(user.cred || 0).toFixed(1)}
+              </span>
             </div>
-            <span className="text-[10px] uppercase tracking-wider text-text-dim">CRED</span>
+            <span className="text-[10px] uppercase tracking-wider text-text-dim">
+              CRED
+            </span>
           </div>
 
           {/* Streak */}
@@ -82,7 +89,9 @@ const UserStatsBar = ({ user }) => {
                 <FontAwesomeIcon icon={faFire} className="text-sm" />
                 <span className="font-bold text-lg">{user.streak}</span>
               </div>
-              <span className="text-[10px] uppercase tracking-wider text-text-dim">Streak</span>
+              <span className="text-[10px] uppercase tracking-wider text-text-dim">
+                Streak
+              </span>
             </div>
           )}
         </div>

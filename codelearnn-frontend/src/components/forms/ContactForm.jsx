@@ -1,41 +1,45 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { contactAPI } from '../../services/api';
+import { useState } from "react";
+import { contactAPI } from "../../services/api";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({ type: '', message: '' });
+  const [status, setStatus] = useState({ type: "", message: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus({ type: 'error', message: 'Please fill in all required fields.' });
+      setStatus({
+        type: "error",
+        message: "Please fill in all required fields.",
+      });
       return;
     }
 
     setLoading(true);
-    setStatus({ type: '', message: '' });
+    setStatus({ type: "", message: "" });
 
     try {
       const response = await contactAPI.submit(formData);
-      setStatus({ type: 'success', message: response.data.message });
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setStatus({ type: "success", message: response.data.message });
+      setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
-      setStatus({ 
-        type: 'error', 
-        message: error.response?.data?.message || 'Something went wrong. Please try again.' 
+      setStatus({
+        type: "error",
+        message:
+          error.response?.data?.message ||
+          "Something went wrong. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -45,7 +49,9 @@ const ContactForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-2">
-        <label htmlFor="name" className="text-slate text-sm font-mono block">Name *</label>
+        <label htmlFor="name" className="text-slate text-sm font-mono block">
+          Name *
+        </label>
         <input
           type="text"
           id="name"
@@ -60,7 +66,9 @@ const ContactForm = () => {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="email" className="text-slate text-sm font-mono block">Email *</label>
+        <label htmlFor="email" className="text-slate text-sm font-mono block">
+          Email *
+        </label>
         <input
           type="email"
           id="email"
@@ -75,7 +83,9 @@ const ContactForm = () => {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="subject" className="text-slate text-sm font-mono block">Subject</label>
+        <label htmlFor="subject" className="text-slate text-sm font-mono block">
+          Subject
+        </label>
         <input
           type="text"
           id="subject"
@@ -89,7 +99,9 @@ const ContactForm = () => {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="message" className="text-slate text-sm font-mono block">Message *</label>
+        <label htmlFor="message" className="text-slate text-sm font-mono block">
+          Message *
+        </label>
         <textarea
           id="message"
           name="message"
@@ -108,7 +120,9 @@ const ContactForm = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className={`p-4 rounded font-mono text-sm ${
-            status.type === 'error' ? 'bg-red-500/10 border border-red-500/30 text-red-400' : 'bg-green/10 border border-green/30 text-green'
+            status.type === "error"
+              ? "bg-red-500/10 border border-red-500/30 text-red-400"
+              : "bg-green/10 border border-green/30 text-green"
           }`}
         >
           {status.message}
@@ -122,7 +136,7 @@ const ContactForm = () => {
         disabled={loading}
         className="w-full py-4 bg-green text-navy font-mono font-semibold rounded transition-all hover:bg-accent-hover disabled:opacity-50"
       >
-        {loading ? 'Sending...' : 'Send Message'}
+        {loading ? "Sending..." : "Send Message"}
       </motion.button>
     </form>
   );

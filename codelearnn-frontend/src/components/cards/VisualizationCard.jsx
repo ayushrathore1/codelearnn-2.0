@@ -1,11 +1,15 @@
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faLock, faPlay, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+  faLock,
+  faPlay,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
 /**
  * VisualizationCard - Card for visualization gallery
- * 
+ *
  * @param {object} props
  * @param {string} props.id - Visualization ID for linking
  * @param {string} props.title - Title
@@ -22,23 +26,20 @@ const VisualizationCard = ({
   title,
   thumbnail,
   topic,
-  difficulty = 'Easy',
+  difficulty = "Easy",
   duration = 10,
   progress = 0,
   isPro = false,
   isCompleted = false,
 }) => {
   const difficultyColors = {
-    Easy: 'text-emerald',
-    Medium: 'text-amber',
-    Hard: 'text-red',
+    Easy: "text-emerald",
+    Medium: "text-amber",
+    Hard: "text-red",
   };
 
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
-    >
+    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
       <Link
         to={`/visualizations/${id}`}
         className="block rounded-xl bg-bg-surface border border-border hover:border-violet transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.1)] group overflow-hidden relative"
@@ -46,15 +47,18 @@ const VisualizationCard = ({
         {/* Thumbnail */}
         <div className="relative aspect-video bg-bg-elevated overflow-hidden">
           {thumbnail ? (
-            <img 
-              src={thumbnail} 
+            <img
+              src={thumbnail}
               alt={title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-16 h-16 rounded-full bg-violet/20 flex items-center justify-center">
-                <FontAwesomeIcon icon={faPlay} className="text-2xl text-violet" />
+                <FontAwesomeIcon
+                  icon={faPlay}
+                  className="text-2xl text-violet"
+                />
               </div>
             </div>
           )}
@@ -78,7 +82,10 @@ const VisualizationCard = ({
           {/* Play Overlay */}
           <div className="absolute inset-0 bg-bg-base/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
             <div className="w-14 h-14 rounded-full bg-violet flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
-              <FontAwesomeIcon icon={faPlay} className="text-xl text-white ml-1" />
+              <FontAwesomeIcon
+                icon={faPlay}
+                className="text-xl text-white ml-1"
+              />
             </div>
           </div>
         </div>
@@ -97,7 +104,9 @@ const VisualizationCard = ({
 
           {/* Meta */}
           <div className="flex items-center justify-between text-sm">
-            <span className={`font-mono ${difficultyColors[difficulty] || 'text-text-dim'}`}>
+            <span
+              className={`font-mono ${difficultyColors[difficulty] || "text-text-dim"}`}
+            >
               {difficulty}
             </span>
             <span className="text-text-dim flex items-center gap-1.5">
@@ -110,8 +119,8 @@ const VisualizationCard = ({
           {progress > 0 && !isCompleted && (
             <div className="mt-3">
               <div className="progress-bar">
-                <div 
-                  className="progress-bar-fill" 
+                <div
+                  className="progress-bar-fill"
                   style={{ width: `${progress}%` }}
                 />
               </div>

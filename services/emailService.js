@@ -391,6 +391,252 @@ const sendAdminNotification = async (userEmail) => {
 };
 
 /**
+ * Send early access invitation email
+ * @param {string} email - Recipient email
+ * @param {string} name - User's name (optional)
+ * @returns {Promise<boolean>} - Success status
+ */
+const sendEarlyAccessEmail = async (email, name = '') => {
+  const transporter = createTransporter();
+  
+  if (!transporter) {
+    console.warn('Email service not configured, skipping early access email');
+    return false;
+  }
+
+  const websiteUrl = 'https://codelearnn.com';
+  const loginUrl = `${websiteUrl}/login`;
+  const twitterUrl = 'https://x.com/ayushrathore_27';
+  const linkedinUrl = 'https://www.linkedin.com/in/ayushrathore1';
+  const feedbackEmail = 'rathoreayush512@gmail.com';
+  const greeting = name ? `Hey ${name}` : 'Hey there';
+  
+  // CodeLearnn Brand Colors (matching dashboard)
+  const brandLime = '#c8fa3c';      // Primary lime/yellow-green accent
+  const brandDark = '#0a0a0a';      // Deep dark background
+  const brandCardBg = '#111111';    // Card background
+  const brandBorder = '#1a1a1a';    // Subtle border
+  const brandText = '#e5e5e5';      // Primary text
+  const brandMuted = '#737373';     // Muted text
+  const brandTeal = '#2dd4bf';      // Secondary accent (teal)
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM || '"CodeLearnn" <noreply@codelearnn.com>',
+    to: email,
+    subject: "⚡ Your Early Access to CodeLearnn is Ready!",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="margin: 0; padding: 0; background-color: ${brandDark}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: ${brandDark};">
+          <tr>
+            <td align="center" style="padding: 40px 20px;">
+              <table role="presentation" width="100%" style="max-width: 600px; background-color: ${brandCardBg}; border-radius: 12px; border: 1px solid ${brandBorder};">
+                <tr>
+                  <td style="padding: 48px 40px;">
+                    <!-- Logo -->
+                    <div style="text-align: center; margin-bottom: 40px;">
+                      <span style="font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">
+                        <span style="color: ${brandLime};">&lt;</span>CodeLearnn<span style="color: ${brandLime};">/&gt;</span>
+                      </span>
+                    </div>
+                    
+                    <!-- Early Access Badge -->
+                    <div style="text-align: center; margin-bottom: 32px;">
+                      <span style="display: inline-block; background-color: rgba(200, 250, 60, 0.1); border: 1px solid rgba(200, 250, 60, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; color: ${brandLime}; text-transform: uppercase; letter-spacing: 1.5px;">
+                        ⚡ CodeLearnn OS 2.0 • Early Access Open
+                      </span>
+                    </div>
+                    
+                    <!-- Greeting -->
+                    <p style="color: ${brandText}; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+                      ${greeting}! 👋
+                    </p>
+                    
+                    <p style="color: ${brandText}; font-size: 16px; line-height: 1.7; margin: 0 0 16px 0;">
+                      <strong>Thank you for joining the CodeLearnn waitlist!</strong> We're thrilled to give you <span style="color: ${brandLime}; font-weight: 600;">exclusive early access</span> to our platform.
+                    </p>
+                    
+                    <p style="color: ${brandMuted}; font-size: 15px; line-height: 1.7; margin: 0 0 32px 0;">
+                      You're one of the first to experience CodeLearnn – the only learning OS that transforms scattered YouTube videos and courses into structured, career-ready roadmaps—validated by AI, built for engineering students.
+                    </p>
+                    
+                    <!-- CTA Button -->
+                    <div style="text-align: center; margin-bottom: 24px;">
+                      <a href="${loginUrl}" style="display: inline-block; background-color: ${brandLime}; color: #0a0a0a; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 600;">
+                        ⚡ Get Early Access →
+                      </a>
+                    </div>
+                    
+                    <p style="color: ${brandMuted}; font-size: 13px; text-align: center; margin: 0 0 40px 0;">
+                      Use OTP login with: <span style="color: ${brandText};">${email}</span>
+                    </p>
+                    
+                    <!-- Divider -->
+                    <div style="border-top: 1px solid ${brandBorder}; margin: 32px 0;"></div>
+                    
+                    <!-- Dashboard Preview Card -->
+                    <div style="background-color: ${brandDark}; border: 1px solid ${brandBorder}; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
+                      <div style="display: flex; margin-bottom: 16px;">
+                        <span style="color: ${brandMuted}; font-size: 12px; font-family: monospace;">● ● career_dashboard.tsx</span>
+                        <span style="color: ${brandTeal}; font-size: 12px; margin-left: auto;">v2.0</span>
+                      </div>
+                      <div style="color: ${brandText}; font-size: 14px; margin-bottom: 8px;">
+                        <span style="background-color: rgba(45, 212, 191, 0.1); color: ${brandTeal}; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 8px;">ACTIVE</span>
+                      </div>
+                      <p style="color: #ffffff; font-size: 18px; font-weight: 600; margin: 8px 0 4px 0;">Full Stack Dev</p>
+                      <p style="color: ${brandMuted}; font-size: 13px; margin: 0;">Your personalized learning path awaits</p>
+                    </div>
+                    
+                    <!-- Divider -->
+                    <div style="border-top: 1px solid ${brandBorder}; margin: 32px 0;"></div>
+                    
+                    <h2 style="color: #ffffff; font-size: 16px; font-weight: 600; margin: 0 0 20px 0; letter-spacing: 0.02em;">
+                      💡 We Need Your Feedback
+                    </h2>
+                    
+                    <p style="color: ${brandMuted}; font-size: 15px; line-height: 1.7; margin: 0 0 16px 0;">
+                      As an early access user, your feedback is <span style="color: ${brandText};">incredibly valuable</span> to us. Please explore the platform and share your thoughts:
+                    </p>
+                    
+                    <ul style="color: ${brandMuted}; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 24px 0;">
+                      <li style="margin-bottom: 6px;">What features you love</li>
+                      <li style="margin-bottom: 6px;">What could be improved</li>
+                      <li style="margin-bottom: 6px;">Any bugs you encounter</li>
+                      <li style="margin-bottom: 6px;">Features you'd like to see</li>
+                    </ul>
+                    
+                    <div style="background-color: rgba(200, 250, 60, 0.05); padding: 16px; border-left: 3px solid ${brandLime}; border-radius: 4px; margin-bottom: 32px;">
+                      <p style="color: ${brandText}; font-size: 14px; margin: 0;">
+                        📧 Send feedback to: <a href="mailto:${feedbackEmail}" style="color: ${brandLime}; text-decoration: none;">${feedbackEmail}</a>
+                      </p>
+                    </div>
+                    
+                    <!-- Divider -->
+                    <div style="border-top: 1px solid ${brandBorder}; margin: 32px 0;"></div>
+                    
+                    <h2 style="color: #ffffff; font-size: 16px; font-weight: 600; margin: 0 0 20px 0;">
+                      🎁 What You Get
+                    </h2>
+                    
+                    <div style="margin-bottom: 12px;">
+                      <span style="color: ${brandLime}; font-size: 14px;">●</span>
+                      <span style="color: ${brandText}; font-size: 14px; margin-left: 10px;">Free for first 500 students</span>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                      <span style="color: ${brandLime}; font-size: 14px;">●</span>
+                      <span style="color: ${brandText}; font-size: 14px; margin-left: 10px;">AI-curated learning paths</span>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                      <span style="color: ${brandLime}; font-size: 14px;">●</span>
+                      <span style="color: ${brandText}; font-size: 14px; margin-left: 10px;">Career-ready roadmaps</span>
+                    </div>
+                    <div style="margin-bottom: 32px;">
+                      <span style="color: ${brandLime}; font-size: 14px;">●</span>
+                      <span style="color: ${brandText}; font-size: 14px; margin-left: 10px;">Shape the future of the platform</span>
+                    </div>
+                    
+                    <!-- Signature -->
+                    <div style="margin-top: 40px;">
+                      <p style="color: ${brandMuted}; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">
+                        Thank you for being part of this journey!
+                      </p>
+                      <p style="color: #ffffff; font-weight: 600; margin: 0 0 4px 0;">– Team CodeLearnn</p>
+                      <p style="color: ${brandMuted}; font-size: 13px; margin: 0;">The Learning OS for Engineering Students</p>
+                    </div>
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="padding: 0 40px 40px 40px;">
+                    <div style="border-top: 1px solid ${brandBorder}; padding-top: 24px; text-align: center;">
+                      <p style="margin-bottom: 16px;">
+                        <a href="${websiteUrl}" style="color: ${brandMuted}; text-decoration: none; font-size: 13px; margin: 0 12px;">Website</a>
+                        <a href="${twitterUrl}" style="color: ${brandMuted}; text-decoration: none; font-size: 13px; margin: 0 12px;">Twitter</a>
+                        <a href="${linkedinUrl}" style="color: ${brandMuted}; text-decoration: none; font-size: 13px; margin: 0 12px;">LinkedIn</a>
+                      </p>
+                      <p style="color: #404040; font-size: 11px; margin: 0;">
+                        © ${new Date().getFullYear()} CodeLearnn. Learn like an engineer.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `,
+    text: `
+      <CodeLearnn/>
+      
+      CodeLearnn OS 2.0 • Early Access Open
+
+      ${greeting}! 👋
+
+      Thank you for joining the CodeLearnn waitlist! We're thrilled to give you exclusive early access to our platform.
+
+      You're one of the first to experience CodeLearnn – the only learning OS that transforms scattered YouTube videos and courses into structured, career-ready roadmaps—validated by AI, built for engineering students.
+
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      GET EARLY ACCESS
+
+      Visit: ${loginUrl}
+      Use OTP login with: ${email}
+
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      WE NEED YOUR FEEDBACK
+
+      As an early access user, your feedback is incredibly valuable to us. Please explore the platform and share:
+
+      • What features you love
+      • What could be improved
+      • Any bugs you encounter
+      • Features you'd like to see
+
+      Send feedback to: ${feedbackEmail}
+
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      WHAT YOU GET
+
+      ● Free for first 500 students
+      ● AI-curated learning paths
+      ● Career-ready roadmaps
+      ● Shape the future of the platform
+
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      Thank you for being part of this journey!
+
+      – Team CodeLearnn
+      The Learning OS for Engineering Students
+
+      Website: ${websiteUrl}
+      Twitter: ${twitterUrl}
+      LinkedIn: ${linkedinUrl}
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`✉️  Early access email sent to ${email}`);
+    return true;
+  } catch (error) {
+    console.error('Early access email send error:', error);
+    return false;
+  }
+};
+
+/**
  * Generate a 6-digit OTP
  * @returns {string} 6-digit OTP
  */
@@ -402,5 +648,6 @@ module.exports = {
   sendOTPEmail,
   sendWaitlistEmail,
   sendAdminNotification,
+  sendEarlyAccessEmail,
   generateOTP
 };

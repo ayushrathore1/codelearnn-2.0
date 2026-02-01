@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
-  faImage,
   faTags,
   faLink,
   faBuilding,
@@ -18,77 +17,93 @@ import {
   faGift,
   faRocket,
   faSpinner,
-  faStar
-} from '@fortawesome/free-solid-svg-icons';
-import { opportunitiesAPI } from '../../services/api';
+  faImage,
+} from "@fortawesome/free-solid-svg-icons";
+import { opportunitiesAPI } from "../../services/api";
 
 const types = [
-  { id: 'hackathon', label: 'Hackathon', icon: faCode },
-  { id: 'fellowship', label: 'Fellowship', icon: faGraduationCap },
-  { id: 'internship', label: 'Internship', icon: faBriefcase },
-  { id: 'job', label: 'Job', icon: faBriefcase },
-  { id: 'scholarship', label: 'Scholarship', icon: faGift },
-  { id: 'competition', label: 'Competition', icon: faTrophy },
-  { id: 'other', label: 'Other', icon: faRocket }
+  { id: "hackathon", label: "Hackathon", icon: faCode },
+  { id: "fellowship", label: "Fellowship", icon: faGraduationCap },
+  { id: "internship", label: "Internship", icon: faBriefcase },
+  { id: "job", label: "Job", icon: faBriefcase },
+  { id: "scholarship", label: "Scholarship", icon: faGift },
+  { id: "competition", label: "Competition", icon: faTrophy },
+  { id: "other", label: "Other", icon: faRocket },
 ];
 
-const CreateOpportunityModal = ({ onClose, onCreated, editOpportunity = null }) => {
+const CreateOpportunityModal = ({
+  onClose,
+  onCreated,
+  editOpportunity = null,
+}) => {
   const [formData, setFormData] = useState({
-    title: editOpportunity?.title || '',
-    description: editOpportunity?.description || '',
-    type: editOpportunity?.type || 'hackathon',
-    organization: editOpportunity?.organization || '',
-    link: editOpportunity?.link || '',
-    deadline: editOpportunity?.deadline ? new Date(editOpportunity.deadline).toISOString().split('T')[0] : '',
-    startDate: editOpportunity?.startDate ? new Date(editOpportunity.startDate).toISOString().split('T')[0] : '',
-    endDate: editOpportunity?.endDate ? new Date(editOpportunity.endDate).toISOString().split('T')[0] : '',
-    stipend: editOpportunity?.stipend || '',
-    location: editOpportunity?.location || 'Remote',
-    eligibility: editOpportunity?.eligibility?.join('\n') || '',
-    tags: editOpportunity?.tags?.join(', ') || '',
-    coverImage: editOpportunity?.coverImage || '',
-    featured: editOpportunity?.featured || false
+    title: editOpportunity?.title || "",
+    description: editOpportunity?.description || "",
+    type: editOpportunity?.type || "hackathon",
+    organization: editOpportunity?.organization || "",
+    link: editOpportunity?.link || "",
+    deadline: editOpportunity?.deadline
+      ? new Date(editOpportunity.deadline).toISOString().split("T")[0]
+      : "",
+    startDate: editOpportunity?.startDate
+      ? new Date(editOpportunity.startDate).toISOString().split("T")[0]
+      : "",
+    endDate: editOpportunity?.endDate
+      ? new Date(editOpportunity.endDate).toISOString().split("T")[0]
+      : "",
+    stipend: editOpportunity?.stipend || "",
+    location: editOpportunity?.location || "Remote",
+    eligibility: editOpportunity?.eligibility?.join("\n") || "",
+    tags: editOpportunity?.tags?.join(", ") || "",
+    coverImage: editOpportunity?.coverImage || "",
+    featured: editOpportunity?.featured || false,
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title.trim()) {
-      setError('Please add a title');
+      setError("Please add a title");
       return;
     }
-    
+
     if (!formData.description.trim()) {
-      setError('Please add a description');
+      setError("Please add a description");
       return;
     }
 
     if (!formData.link.trim()) {
-      setError('Please add an application link');
+      setError("Please add an application link");
       return;
     }
 
     try {
       setLoading(true);
-      setError('');
+      setError("");
 
       const data = {
         ...formData,
-        eligibility: formData.eligibility.split('\n').map(e => e.trim()).filter(Boolean),
-        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+        eligibility: formData.eligibility
+          .split("\n")
+          .map((e) => e.trim())
+          .filter(Boolean),
+        tags: formData.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
         deadline: formData.deadline || null,
         startDate: formData.startDate || null,
-        endDate: formData.endDate || null
+        endDate: formData.endDate || null,
       };
 
       if (editOpportunity) {
@@ -99,8 +114,8 @@ const CreateOpportunityModal = ({ onClose, onCreated, editOpportunity = null }) 
 
       onCreated();
     } catch (err) {
-      console.error('Opportunity submit error:', err);
-      setError(err.response?.data?.message || 'Failed to save opportunity');
+      console.error("Opportunity submit error:", err);
+      setError(err.response?.data?.message || "Failed to save opportunity");
     } finally {
       setLoading(false);
     }
@@ -125,7 +140,7 @@ const CreateOpportunityModal = ({ onClose, onCreated, editOpportunity = null }) 
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-bg-elevated border-b border-border">
             <h2 className="font-heading text-xl font-semibold text-text-main">
-              {editOpportunity ? 'Edit Opportunity' : 'Post an Opportunity'}
+              {editOpportunity ? "Edit Opportunity" : "Post an Opportunity"}
             </h2>
             <button
               onClick={onClose}
@@ -168,11 +183,13 @@ const CreateOpportunityModal = ({ onClose, onCreated, editOpportunity = null }) 
                   <button
                     key={type.id}
                     type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, type: type.id }))}
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, type: type.id }))
+                    }
                     className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-xs transition-all ${
                       formData.type === type.id
-                        ? 'bg-gradient-to-r from-secondary to-primary text-bg-base'
-                        : 'bg-bg-base border border-border text-text-muted hover:text-secondary hover:border-secondary/50'
+                        ? "bg-gradient-to-r from-secondary to-primary text-bg-base"
+                        : "bg-bg-base border border-border text-text-muted hover:text-secondary hover:border-secondary/50"
                     }`}
                   >
                     <FontAwesomeIcon icon={type.icon} />
@@ -358,11 +375,16 @@ const CreateOpportunityModal = ({ onClose, onCreated, editOpportunity = null }) 
             >
               {loading ? (
                 <>
-                  <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
-                  {editOpportunity ? 'Updating...' : 'Posting...'}
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    className="animate-spin mr-2"
+                  />
+                  {editOpportunity ? "Updating..." : "Posting..."}
                 </>
+              ) : editOpportunity ? (
+                "Update Opportunity"
               ) : (
-                editOpportunity ? 'Update Opportunity' : 'Post Opportunity'
+                "Post Opportunity"
               )}
             </button>
           </form>

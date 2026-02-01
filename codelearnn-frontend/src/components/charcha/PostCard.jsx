@@ -1,25 +1,24 @@
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faArrowUp, 
-  faArrowDown, 
-  faComment, 
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUp,
+  faArrowDown,
+  faComment,
   faBookmark,
   faUserSecret,
-  faEye
-} from '@fortawesome/free-solid-svg-icons';
-import { POST_TYPES, POST_TAGS } from '../../services/charchaApi';
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
+import { POST_TYPES, POST_TAGS } from "../../services/charchaApi";
 
-const PostCard = ({ 
-  post, 
-  userVote = 0, 
+const PostCard = ({
+  post,
+  userVote = 0,
   isBookmarked = false,
-  onVote, 
-  onBookmark 
+  onVote,
+  onBookmark,
 }) => {
   const postType = POST_TYPES[post.type] || POST_TYPES.POST;
-  const tag = POST_TAGS.find(t => t.id === post.tag);
+  const tag = POST_TAGS.find((t) => t.id === post.tag);
 
   const handleVote = (e, voteType) => {
     e.preventDefault();
@@ -60,25 +59,30 @@ const PostCard = ({
             <button
               onClick={(e) => handleVote(e, 1)}
               className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                userVote === 1 
-                  ? 'bg-primary/20 text-primary' 
-                  : 'hover:bg-bg-elevated text-text-dim hover:text-primary'
+                userVote === 1
+                  ? "bg-primary/20 text-primary"
+                  : "hover:bg-bg-elevated text-text-dim hover:text-primary"
               }`}
             >
               <FontAwesomeIcon icon={faArrowUp} className="text-sm" />
             </button>
-            <span className={`font-bold text-sm ${
-              post.voteScore > 0 ? 'text-primary' : 
-              post.voteScore < 0 ? 'text-red-400' : 'text-text-muted'
-            }`}>
+            <span
+              className={`font-bold text-sm ${
+                post.voteScore > 0
+                  ? "text-primary"
+                  : post.voteScore < 0
+                    ? "text-red-400"
+                    : "text-text-muted"
+              }`}
+            >
               {post.voteScore || 0}
             </span>
             <button
               onClick={(e) => handleVote(e, -1)}
               className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                userVote === -1 
-                  ? 'bg-red-500/20 text-red-400' 
-                  : 'hover:bg-bg-elevated text-text-dim hover:text-red-400'
+                userVote === -1
+                  ? "bg-red-500/20 text-red-400"
+                  : "hover:bg-bg-elevated text-text-dim hover:text-red-400"
               }`}
             >
               <FontAwesomeIcon icon={faArrowDown} className="text-sm" />
@@ -89,7 +93,9 @@ const PostCard = ({
           <div className="flex-1 min-w-0">
             {/* Header with type, tag, author */}
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${postType.color}`}>
+              <span
+                className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${postType.color}`}
+              >
                 {postType.label}
               </span>
               {tag && (
@@ -106,15 +112,21 @@ const PostCard = ({
                   </>
                 ) : (
                   <>
-                    <span className="text-primary">@{post.author?.username || 'user'}</span>
+                    <span className="text-primary">
+                      @{post.author?.username || "user"}
+                    </span>
                     {post.author?.level && (
-                      <span className="text-text-dim ml-1">Lv.{post.author.level}</span>
+                      <span className="text-text-dim ml-1">
+                        Lv.{post.author.level}
+                      </span>
                     )}
                   </>
                 )}
               </span>
               <span className="text-text-dim">•</span>
-              <span className="text-xs text-text-dim">{formatDate(post.createdAt)}</span>
+              <span className="text-xs text-text-dim">
+                {formatDate(post.createdAt)}
+              </span>
             </div>
 
             {/* Title */}
@@ -125,7 +137,7 @@ const PostCard = ({
             {/* Content Preview */}
             {post.content && (
               <p className="text-sm text-text-muted line-clamp-2 mb-3">
-                {post.content.replace(/[#*`]/g, '').slice(0, 200)}
+                {post.content.replace(/[#*`]/g, "").slice(0, 200)}
               </p>
             )}
 
@@ -133,19 +145,23 @@ const PostCard = ({
             {post.mediaUrls && post.mediaUrls.length > 0 && (
               <div className="flex gap-2 mb-3 overflow-hidden">
                 {post.mediaUrls.slice(0, 3).map((media, idx) => (
-                  <div 
+                  <div
                     key={idx}
                     className="w-16 h-16 rounded-lg bg-bg-elevated border border-border overflow-hidden"
                   >
-                    {media.type === 'image' && (
-                      <img src={media.url} alt="" className="w-full h-full object-cover" />
+                    {media.type === "image" && (
+                      <img
+                        src={media.url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
                     )}
-                    {media.type === 'video' && (
+                    {media.type === "video" && (
                       <div className="w-full h-full flex items-center justify-center text-text-dim">
                         ▶
                       </div>
                     )}
-                    {media.type === 'pdf' && (
+                    {media.type === "pdf" && (
                       <div className="w-full h-full flex items-center justify-center text-text-dim text-xs">
                         PDF
                       </div>
@@ -169,11 +185,11 @@ const PostCard = ({
               <button
                 onClick={handleBookmark}
                 className={`flex items-center gap-1.5 text-xs transition-colors ${
-                  isBookmarked ? 'text-primary' : 'hover:text-primary'
+                  isBookmarked ? "text-primary" : "hover:text-primary"
                 }`}
               >
                 <FontAwesomeIcon icon={faBookmark} />
-                {isBookmarked ? 'Saved' : 'Save'}
+                {isBookmarked ? "Saved" : "Save"}
               </button>
               {post.viewCount > 0 && (
                 <span className="flex items-center gap-1.5 text-xs">

@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faSearch, 
+import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSearch,
   faHistory,
   faBookmark,
   faExternalLinkAlt,
@@ -12,18 +11,17 @@ import {
   faList,
   faGraduationCap,
   faUser,
-  faClock,
-  faSpinner
-} from '@fortawesome/free-solid-svg-icons';
-import { faYoutube } from '@fortawesome/free-brands-svg-icons';
-import ScoreCircle from '../components/common/ScoreCircle';
-import InsightCard from '../components/cards/InsightCard';
-import { freeResourcesAPI, progressAPI } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
+import { faYoutube } from "@fortawesome/free-brands-svg-icons";
+import ScoreCircle from "../components/common/ScoreCircle";
+import InsightCard from "../components/cards/InsightCard";
+import { freeResourcesAPI, progressAPI } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const AnalyzerPage = () => {
   const { user } = useAuth();
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -37,14 +35,14 @@ const AnalyzerPage = () => {
     const fetchHistory = async () => {
       try {
         // Get recent analyzed videos from the database
-        const response = await freeResourcesAPI.getAll({ 
-          limit: 5, 
-          sortBy: 'createdAt', 
-          sortOrder: 'desc' 
+        const response = await freeResourcesAPI.getAll({
+          limit: 5,
+          sortBy: "createdAt",
+          sortOrder: "desc",
         });
         setHistory(response.data.data || []);
       } catch (err) {
-        console.error('Failed to fetch history:', err);
+        console.error("Failed to fetch history:", err);
       } finally {
         setLoadingHistory(false);
       }
@@ -54,28 +52,33 @@ const AnalyzerPage = () => {
 
   const handleAnalyze = async () => {
     if (!url) return;
-    
+
     setIsAnalyzing(true);
     setError(null);
     setResult(null);
-    
+
     try {
       const response = await freeResourcesAPI.analyzeVideo(url);
-      
+
       if (response.data.success) {
         // The analyze endpoint returns videoData and evaluation at the top level
         const analysisData = response.data;
         const videoInfo = analysisData.videoData || {};
         const evaluation = analysisData.evaluation || {};
-        
+
         setResult({
-          title: videoInfo.title || 'Unknown Title',
-          channel: videoInfo.channelName || videoInfo.channelTitle || 'Unknown Channel',
+          title: videoInfo.title || "Unknown Title",
+          channel:
+            videoInfo.channelName ||
+            videoInfo.channelTitle ||
+            "Unknown Channel",
           score: evaluation.codeLearnnScore || evaluation.overallScore || 0,
           thumbnail: videoInfo.thumbnail || videoInfo.thumbnails?.high?.url,
-          videoUrl: videoInfo.youtubeId ? `https://www.youtube.com/watch?v=${videoInfo.youtubeId}` : url,
-          qualityTier: evaluation.qualityTier || 'average',
-          recommendation: evaluation.recommendation || 'neutral',
+          videoUrl: videoInfo.youtubeId
+            ? `https://www.youtube.com/watch?v=${videoInfo.youtubeId}`
+            : url,
+          qualityTier: evaluation.qualityTier || "average",
+          recommendation: evaluation.recommendation || "neutral",
           insights: {
             // Strengths as what you'll learn
             strengths: evaluation.strengths || [],
@@ -84,43 +87,52 @@ const AnalyzerPage = () => {
             // Red flags if any
             redFlags: evaluation.redFlags || [],
             // Experience level derived from recommendedFor
-            level: evaluation.recommendedFor ? (
-                evaluation.recommendedFor.toLowerCase().includes('beginner') ? 'Beginner' :
-                evaluation.recommendedFor.toLowerCase().includes('advanced') ? 'Advanced' :
-                evaluation.recommendedFor.toLowerCase().includes('intermediate') ? 'Intermediate' : 'General'
-            ) : 'General',
+            level: evaluation.recommendedFor
+              ? evaluation.recommendedFor.toLowerCase().includes("beginner")
+                ? "Beginner"
+                : evaluation.recommendedFor.toLowerCase().includes("advanced")
+                  ? "Advanced"
+                  : evaluation.recommendedFor
+                        .toLowerCase()
+                        .includes("intermediate")
+                    ? "Intermediate"
+                    : "General"
+              : "General",
             // Full summary/verdict
-            verdict: evaluation.summary || '',
+            verdict: evaluation.summary || "",
             // Who should watch
-            recommendedFor: evaluation.recommendedFor || '',
+            recommendedFor: evaluation.recommendedFor || "",
             // Who should avoid
-            notRecommendedFor: evaluation.notRecommendedFor || '',
+            notRecommendedFor: evaluation.notRecommendedFor || "",
             // Category detected
-            category: evaluation.detectedCategory || videoInfo.category || '',
+            category: evaluation.detectedCategory || videoInfo.category || "",
             // Score breakdown
-            breakdown: evaluation.breakdown || {}
-          }
+            breakdown: evaluation.breakdown || {},
+          },
         });
       } else {
-        setError(response.data.message || 'Analysis failed');
+        setError(response.data.message || "Analysis failed");
       }
     } catch (err) {
-      console.error('Analysis error:', err);
-      setError(err.response?.data?.message || 'Failed to analyze video. Please try again.');
+      console.error("Analysis error:", err);
+      setError(
+        err.response?.data?.message ||
+          "Failed to analyze video. Please try again.",
+      );
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  const getScoreVariant = (score) => {
-    if (score >= 70) return 'good';
-    if (score >= 40) return 'ok';
-    return 'bad';
+  const _getScoreVariant = (score) => {
+    if (score >= 70) return "good";
+    if (score >= 40) return "ok";
+    return "bad";
   };
 
   const handleSaveToLibrary = async () => {
     if (!user) {
-      setError('Please log in to save resources to your library');
+      setError("Please log in to save resources to your library");
       return;
     }
 
@@ -129,12 +141,12 @@ const AnalyzerPage = () => {
       // First, add the resource to the vault if it doesn't exist
       const resourceResponse = await freeResourcesAPI.addFromAnalysis(
         result,
-        result.insights.category || 'programming',
+        result.insights.category || "programming",
         {
-          domain: 'frontend', // Default domain
-          topic: result.insights.category || 'JavaScript',
-          level: result.insights.level?.toLowerCase() || 'beginner'
-        }
+          domain: "frontend", // Default domain
+          topic: result.insights.category || "JavaScript",
+          level: result.insights.level?.toLowerCase() || "beginner",
+        },
       );
 
       // Then save/bookmark it to user's progress
@@ -145,8 +157,8 @@ const AnalyzerPage = () => {
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-      console.error('Save error:', err);
-      setError('Failed to save to library. Please try again.');
+      console.error("Save error:", err);
+      setError("Failed to save to library. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -154,7 +166,7 @@ const AnalyzerPage = () => {
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
@@ -173,7 +185,8 @@ const AnalyzerPage = () => {
           </span>
           <h1 className="text-h1 text-text-main mb-4">YouTube Analyzer</h1>
           <p className="text-body-lg text-text-muted max-w-2xl mx-auto">
-            Evaluate any tutorial before you watch. Know exactly what you'll learn.
+            Evaluate any tutorial before you watch. Know exactly what you'll
+            learn.
           </p>
         </motion.div>
 
@@ -187,12 +200,12 @@ const AnalyzerPage = () => {
         >
           <div className="card-bento p-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-            
+
             <div className="flex flex-col sm:flex-row gap-4 relative z-10">
               <div className="relative flex-1 group">
-                <FontAwesomeIcon 
-                  icon={faYoutube} 
-                  className="absolute left-6 top-1/2 -translate-y-1/2 text-text-dim group-hover:text-red transition-colors text-xl" 
+                <FontAwesomeIcon
+                  icon={faYoutube}
+                  className="absolute left-6 top-1/2 -translate-y-1/2 text-text-dim group-hover:text-red transition-colors text-xl"
                 />
                 <input
                   type="text"
@@ -209,7 +222,10 @@ const AnalyzerPage = () => {
               >
                 {isAnalyzing ? (
                   <span className="flex items-center gap-3">
-                    <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+                    <FontAwesomeIcon
+                      icon={faSpinner}
+                      className="animate-spin"
+                    />
                     Analyzing...
                   </span>
                 ) : (
@@ -220,10 +236,8 @@ const AnalyzerPage = () => {
                 )}
               </button>
             </div>
-            
-            {error && (
-              <p className="mt-4 text-red-400 text-sm">{error}</p>
-            )}
+
+            {error && <p className="mt-4 text-red-400 text-sm">{error}</p>}
           </div>
         </motion.div>
 
@@ -241,35 +255,48 @@ const AnalyzerPage = () => {
                 {/* Thumbnail */}
                 {result.thumbnail && (
                   <div className="w-full md:w-64 flex-shrink-0">
-                    <img 
-                      src={result.thumbnail} 
+                    <img
+                      src={result.thumbnail}
                       alt={result.title}
                       className="w-full rounded-xl shadow-lg border border-border"
                     />
                   </div>
                 )}
-                
+
                 {/* Score and Info */}
                 <div className="flex-1 text-center md:text-left">
                   <div className="mb-6 flex justify-center md:justify-start">
                     <ScoreCircle score={result.score} size="lg" />
                   </div>
-                  <h2 className="text-h3 text-text-main mb-2">{result.title}</h2>
-                  <p className="text-text-muted mb-6">Channel: <span className="text-text-main font-medium">{result.channel}</span></p>
-                  
+                  <h2 className="text-h3 text-text-main mb-2">
+                    {result.title}
+                  </h2>
+                  <p className="text-text-muted mb-6">
+                    Channel:{" "}
+                    <span className="text-text-main font-medium">
+                      {result.channel}
+                    </span>
+                  </p>
+
                   {/* Action Buttons */}
                   <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                    <button 
+                    <button
                       onClick={handleSaveToLibrary}
                       disabled={isSaving || saveSuccess}
-                      className={`btn-secondary flex items-center gap-2 ${saveSuccess ? 'bg-primary/20 border-primary text-primary' : ''}`}
+                      className={`btn-secondary flex items-center gap-2 ${saveSuccess ? "bg-primary/20 border-primary text-primary" : ""}`}
                     >
-                      <FontAwesomeIcon icon={saveSuccess ? faCheckCircle : faBookmark} />
-                      {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save to Library'}
+                      <FontAwesomeIcon
+                        icon={saveSuccess ? faCheckCircle : faBookmark}
+                      />
+                      {isSaving
+                        ? "Saving..."
+                        : saveSuccess
+                          ? "Saved!"
+                          : "Save to Library"}
                     </button>
-                    <a 
-                      href={result.videoUrl} 
-                      target="_blank" 
+                    <a
+                      href={result.videoUrl}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="px-6 py-2 rounded-lg border border-border text-text-muted hover:text-text-main hover:bg-bg-elevated transition-colors flex items-center gap-2"
                     >
@@ -284,7 +311,9 @@ const AnalyzerPage = () => {
             {/* Verdict Summary */}
             {result.insights.verdict && (
               <div className="card-bento p-6 mb-6 border-l-4 border-primary bg-gradient-to-r from-primary/5 to-transparent">
-                <p className="text-text-main leading-relaxed">{result.insights.verdict}</p>
+                <p className="text-text-main leading-relaxed">
+                  {result.insights.verdict}
+                </p>
               </div>
             )}
 
@@ -298,8 +327,14 @@ const AnalyzerPage = () => {
                   content={
                     <ul className="space-y-2">
                       {result.insights.strengths.slice(0, 5).map((item, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-text-muted">
-                          <FontAwesomeIcon icon={faCheckCircle} className="text-primary mt-1 flex-shrink-0" />
+                        <li
+                          key={i}
+                          className="flex items-start gap-3 text-sm text-text-muted"
+                        >
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            className="text-primary mt-1 flex-shrink-0"
+                          />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -316,8 +351,14 @@ const AnalyzerPage = () => {
                   content={
                     <ul className="space-y-2">
                       {result.insights.weaknesses.slice(0, 4).map((item, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-text-muted">
-                          <FontAwesomeIcon icon={faExclamationTriangle} className="text-secondary mt-1 flex-shrink-0" />
+                        <li
+                          key={i}
+                          className="flex items-start gap-3 text-sm text-text-muted"
+                        >
+                          <FontAwesomeIcon
+                            icon={faExclamationTriangle}
+                            className="text-secondary mt-1 flex-shrink-0"
+                          />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -326,30 +367,39 @@ const AnalyzerPage = () => {
                 />
               )}
 
-              {result.insights.redFlags && result.insights.redFlags.length > 0 && (
-                <InsightCard
-                  icon={faExclamationTriangle}
-                  title="Red Flags"
-                  variant="bad"
-                  content={
-                    <ul className="space-y-2">
-                      {result.insights.redFlags.slice(0, 3).map((item, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-red-400">
-                          <FontAwesomeIcon icon={faExclamationTriangle} className="text-red-400 mt-1 flex-shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  }
-                />
-              )}
+              {result.insights.redFlags &&
+                result.insights.redFlags.length > 0 && (
+                  <InsightCard
+                    icon={faExclamationTriangle}
+                    title="Red Flags"
+                    variant="bad"
+                    content={
+                      <ul className="space-y-2">
+                        {result.insights.redFlags.slice(0, 3).map((item, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-3 text-sm text-red-400"
+                          >
+                            <FontAwesomeIcon
+                              icon={faExclamationTriangle}
+                              className="text-red-400 mt-1 flex-shrink-0"
+                            />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    }
+                  />
+                )}
 
               <InsightCard
                 icon={faGraduationCap}
                 title="Experience Level"
                 variant="default"
                 content={
-                  <p className="text-lg font-bold text-text-main">{result.insights.level}</p>
+                  <p className="text-lg font-bold text-text-main">
+                    {result.insights.level}
+                  </p>
                 }
               />
 
@@ -359,7 +409,9 @@ const AnalyzerPage = () => {
                   title="Best For"
                   variant="default"
                   content={
-                    <p className="text-sm text-text-muted leading-relaxed">{result.insights.recommendedFor}</p>
+                    <p className="text-sm text-text-muted leading-relaxed">
+                      {result.insights.recommendedFor}
+                    </p>
                   }
                 />
               )}
@@ -370,7 +422,9 @@ const AnalyzerPage = () => {
                   title="Not Recommended For"
                   variant="warning"
                   content={
-                    <p className="text-sm text-text-muted leading-relaxed">{result.insights.notRecommendedFor}</p>
+                    <p className="text-sm text-text-muted leading-relaxed">
+                      {result.insights.notRecommendedFor}
+                    </p>
                   }
                 />
               )}
@@ -389,25 +443,35 @@ const AnalyzerPage = () => {
               )}
 
               {/* CodeLearnn Score Breakdown */}
-              {result.insights.breakdown && Object.keys(result.insights.breakdown).length > 0 && (
-                <InsightCard
-                  icon={faList}
-                  title="CodeLearnn Score Breakdown"
-                  variant="default"
-                  content={
-                    <div className="space-y-2">
-                      {Object.entries(result.insights.breakdown).map(([key, value]) => (
-                        <div key={key} className="flex justify-between items-center text-sm">
-                          <span className="text-text-muted capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                          <span className={`font-mono font-bold ${value >= 7 ? 'text-primary' : value >= 5 ? 'text-secondary' : 'text-red-400'}`}>
-                            {value}/10
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  }
-                />
-              )}
+              {result.insights.breakdown &&
+                Object.keys(result.insights.breakdown).length > 0 && (
+                  <InsightCard
+                    icon={faList}
+                    title="CodeLearnn Score Breakdown"
+                    variant="default"
+                    content={
+                      <div className="space-y-2">
+                        {Object.entries(result.insights.breakdown).map(
+                          ([key, value]) => (
+                            <div
+                              key={key}
+                              className="flex justify-between items-center text-sm"
+                            >
+                              <span className="text-text-muted capitalize">
+                                {key.replace(/([A-Z])/g, " $1").trim()}
+                              </span>
+                              <span
+                                className={`font-mono font-bold ${value >= 7 ? "text-primary" : value >= 5 ? "text-secondary" : "text-red-400"}`}
+                              >
+                                {value}/10
+                              </span>
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    }
+                  />
+                )}
             </div>
           </motion.div>
         )}
@@ -422,16 +486,24 @@ const AnalyzerPage = () => {
           >
             <div className="flex items-center gap-3 mb-6">
               <FontAwesomeIcon icon={faHistory} className="text-text-dim" />
-              <h3 className="text-xl font-heading font-semibold text-text-main">Recent Analyses</h3>
+              <h3 className="text-xl font-heading font-semibold text-text-main">
+                Recent Analyses
+              </h3>
             </div>
 
             {loadingHistory ? (
               <div className="text-center py-12">
-                <FontAwesomeIcon icon={faSpinner} className="text-xl text-primary animate-spin" />
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  className="text-xl text-primary animate-spin"
+                />
               </div>
             ) : history.length === 0 ? (
               <div className="text-center py-12 text-text-muted">
-                <p>No analyzed videos yet. Paste a YouTube URL above to get started!</p>
+                <p>
+                  No analyzed videos yet. Paste a YouTube URL above to get
+                  started!
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -441,10 +513,12 @@ const AnalyzerPage = () => {
                     className="group bg-bg-surface border border-border rounded-xl p-5 flex items-center justify-between hover:border-primary/30 hover:bg-bg-elevated transition-all cursor-pointer"
                   >
                     <div className="flex items-center gap-5">
-                      <div className={`
+                      <div
+                        className={`
                         w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg shadow-inner
-                        ${(item.codeLearnnScore || 0) >= 70 ? 'bg-primary/10 text-primary border border-primary/20' : (item.codeLearnnScore || 0) >= 40 ? 'bg-secondary/10 text-secondary border border-secondary/20' : 'bg-red/10 text-red border border-red/20'}
-                      `}>
+                        ${(item.codeLearnnScore || 0) >= 70 ? "bg-primary/10 text-primary border border-primary/20" : (item.codeLearnnScore || 0) >= 40 ? "bg-secondary/10 text-secondary border border-secondary/20" : "bg-red/10 text-red border border-red/20"}
+                      `}
+                      >
                         {item.codeLearnnScore || 0}
                       </div>
                       <div>
@@ -456,13 +530,16 @@ const AnalyzerPage = () => {
                         </p>
                       </div>
                     </div>
-                    <a 
+                    <a
                       href={item.videoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-8 h-8 rounded-full bg-bg-base flex items-center justify-center text-text-dim opacity-0 group-hover:opacity-100 transition-all"
                     >
-                      <FontAwesomeIcon icon={faExternalLinkAlt} className="text-xs" />
+                      <FontAwesomeIcon
+                        icon={faExternalLinkAlt}
+                        className="text-xs"
+                      />
                     </a>
                   </div>
                 ))}

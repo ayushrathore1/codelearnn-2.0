@@ -1,46 +1,46 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faPlus, 
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
   faSpinner,
   faFire,
   faBolt,
   faTrophy,
   faStar,
-  faFilter
-} from '@fortawesome/free-solid-svg-icons';
-import { 
-  charchaPostsAPI, 
-  charchaVotesAPI, 
+  faFilter,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  charchaPostsAPI,
+  charchaVotesAPI,
   charchaAuthAPI,
-  SORT_OPTIONS, 
+  SORT_OPTIONS,
   POST_TYPES,
   POST_TAGS,
   getCharchaUser,
   setCharchaUser,
-  setCharchaToken
-} from '../services/charchaApi';
-import { useAuth } from '../context/AuthContext';
-import PostCard from '../components/charcha/PostCard';
-import UserStatsBar from '../components/charcha/UserStatsBar';
-import LeaderboardPanel from '../components/charcha/LeaderboardPanel';
-import CreatePostModal from '../components/charcha/CreatePostModal';
+  setCharchaToken,
+} from "../services/charchaApi";
+import { useAuth } from "../context/AuthContext";
+import PostCard from "../components/charcha/PostCard";
+import UserStatsBar from "../components/charcha/UserStatsBar";
+import LeaderboardPanel from "../components/charcha/LeaderboardPanel";
+import CreatePostModal from "../components/charcha/CreatePostModal";
 
 const CharchaPage = () => {
   const { user: mainUser, isAuthenticated } = useAuth();
-  
+
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [charchaUser, setCharchaUserState] = useState(null);
   const [charchaLoading, setCharchaLoading] = useState(true);
-  
+
   // Filters
-  const [sort, setSort] = useState('hot');
-  const [postType, setPostType] = useState('all');
-  const [tag, setTag] = useState('all');
+  const [sort, setSort] = useState("hot");
+  const [postType, setPostType] = useState("all");
+  const [tag, setTag] = useState("all");
   const [page, setPage] = useState(1);
-  
+
   // UI State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [userVotes, setUserVotes] = useState({});
@@ -66,7 +66,7 @@ const CharchaPage = () => {
         const meRes = await charchaAuthAPI.getMe();
         setCharchaUserState(meRes.data.user);
         setCharchaUser(meRes.data.user);
-      } catch (err) {
+      } catch (_) {
         // If not authenticated, try to register/login
         try {
           const registerRes = await charchaAuthAPI.register({
@@ -77,7 +77,7 @@ const CharchaPage = () => {
           setCharchaToken(registerRes.data.token);
           setCharchaUser(registerRes.data.user);
           setCharchaUserState(registerRes.data.user);
-        } catch (regErr) {
+        } catch (_regErr) {
           // Already registered, try login
           try {
             const loginRes = await charchaAuthAPI.login({
@@ -88,7 +88,7 @@ const CharchaPage = () => {
             setCharchaUser(loginRes.data.user);
             setCharchaUserState(loginRes.data.user);
           } catch (loginErr) {
-            console.error('Charcha auth failed:', loginErr);
+            console.error("Charcha auth failed:", loginErr);
           }
         }
       } finally {
@@ -109,8 +109,8 @@ const CharchaPage = () => {
           page,
           limit: 20,
         };
-        if (postType !== 'all') params.type = postType;
-        if (tag !== 'all') params.tag = tag;
+        if (postType !== "all") params.type = postType;
+        if (tag !== "all") params.tag = tag;
 
         const response = await charchaPostsAPI.getPosts(params);
         const postsData = response.data.posts || response.data.data || [];
@@ -118,12 +118,12 @@ const CharchaPage = () => {
 
         // Check user votes
         if (charchaUser && postsData.length > 0) {
-          const postIds = postsData.map(p => p._id);
-          const votesRes = await charchaVotesAPI.checkVotes('post', postIds);
+          const postIds = postsData.map((p) => p._id);
+          const votesRes = await charchaVotesAPI.checkVotes("post", postIds);
           setUserVotes(votesRes.data.votes || {});
         }
       } catch (err) {
-        console.error('Failed to fetch posts:', err);
+        console.error("Failed to fetch posts:", err);
       } finally {
         setLoading(false);
       }
@@ -136,23 +136,26 @@ const CharchaPage = () => {
     if (!charchaUser) return;
 
     try {
-      await charchaVotesAPI.vote('post', postId, voteType);
-      setUserVotes(prev => ({
+      await charchaVotesAPI.vote("post", postId, voteType);
+      setUserVotes((prev) => ({
         ...prev,
-        [postId]: prev[postId] === voteType ? 0 : voteType
+        [postId]: prev[postId] === voteType ? 0 : voteType,
       }));
-      
+
       // Update post score locally
-      setPosts(prev => prev.map(post => {
-        if (post._id === postId) {
-          const currentVote = userVotes[postId] || 0;
-          const scoreDiff = currentVote === voteType ? -voteType : voteType - currentVote;
-          return { ...post, voteScore: (post.voteScore || 0) + scoreDiff };
-        }
-        return post;
-      }));
+      setPosts((prev) =>
+        prev.map((post) => {
+          if (post._id === postId) {
+            const currentVote = userVotes[postId] || 0;
+            const scoreDiff =
+              currentVote === voteType ? -voteType : voteType - currentVote;
+            return { ...post, voteScore: (post.voteScore || 0) + scoreDiff };
+          }
+          return post;
+        }),
+      );
     } catch (err) {
-      console.error('Failed to vote:', err);
+      console.error("Failed to vote:", err);
     }
   };
 
@@ -162,23 +165,28 @@ const CharchaPage = () => {
     try {
       await charchaPostsAPI.bookmarkPost(postId);
     } catch (err) {
-      console.error('Failed to bookmark:', err);
+      console.error("Failed to bookmark:", err);
     }
   };
 
   const handlePostCreated = () => {
     // Refresh posts
     setPage(1);
-    setSort('new');
+    setSort("new");
   };
 
   const getSortIcon = (sortId) => {
     switch (sortId) {
-      case 'hot': return faFire;
-      case 'new': return faBolt;
-      case 'top': return faTrophy;
-      case 'quality': return faStar;
-      default: return faFire;
+      case "hot":
+        return faFire;
+      case "new":
+        return faBolt;
+      case "top":
+        return faTrophy;
+      case "quality":
+        return faStar;
+      default:
+        return faFire;
     }
   };
 
@@ -238,17 +246,20 @@ const CharchaPage = () => {
               <div className="flex items-center justify-between flex-wrap gap-3">
                 {/* Sort Tabs */}
                 <div className="flex items-center gap-1">
-                  {SORT_OPTIONS.map(option => (
+                  {SORT_OPTIONS.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => setSort(option.id)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                         sort === option.id
-                          ? 'bg-primary/20 text-primary'
-                          : 'text-text-muted hover:text-text-main hover:bg-bg-elevated'
+                          ? "bg-primary/20 text-primary"
+                          : "text-text-muted hover:text-text-main hover:bg-bg-elevated"
                       }`}
                     >
-                      <FontAwesomeIcon icon={getSortIcon(option.id)} className="text-xs" />
+                      <FontAwesomeIcon
+                        icon={getSortIcon(option.id)}
+                        className="text-xs"
+                      />
                       {option.label}
                     </button>
                   ))}
@@ -258,9 +269,9 @@ const CharchaPage = () => {
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all ${
-                    showFilters || postType !== 'all' || tag !== 'all'
-                      ? 'bg-secondary/20 text-secondary'
-                      : 'text-text-muted hover:text-text-main hover:bg-bg-elevated'
+                    showFilters || postType !== "all" || tag !== "all"
+                      ? "bg-secondary/20 text-secondary"
+                      : "text-text-muted hover:text-text-main hover:bg-bg-elevated"
                   }`}
                 >
                   <FontAwesomeIcon icon={faFilter} />
@@ -272,7 +283,7 @@ const CharchaPage = () => {
               {showFilters && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
+                  animate={{ height: "auto", opacity: 1 }}
                   className="mt-4 pt-4 border-t border-border space-y-4"
                 >
                   {/* Post Type Filter */}
@@ -282,26 +293,30 @@ const CharchaPage = () => {
                     </label>
                     <div className="flex flex-wrap gap-2">
                       <button
-                        onClick={() => setPostType('all')}
+                        onClick={() => setPostType("all")}
                         className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                          postType === 'all'
-                            ? 'bg-primary/10 text-primary border-primary/30'
-                            : 'text-text-muted border-border hover:border-text-dim'
+                          postType === "all"
+                            ? "bg-primary/10 text-primary border-primary/30"
+                            : "text-text-muted border-border hover:border-text-dim"
                         }`}
                       >
                         All
                       </button>
-                      {Object.entries(POST_TYPES).map(([key, { label, color }]) => (
-                        <button
-                          key={key}
-                          onClick={() => setPostType(key)}
-                          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                            postType === key ? color : 'text-text-muted border-border hover:border-text-dim'
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
+                      {Object.entries(POST_TYPES).map(
+                        ([key, { label, color }]) => (
+                          <button
+                            key={key}
+                            onClick={() => setPostType(key)}
+                            className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
+                              postType === key
+                                ? color
+                                : "text-text-muted border-border hover:border-text-dim"
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        ),
+                      )}
                     </div>
                   </div>
 
@@ -312,11 +327,11 @@ const CharchaPage = () => {
                     </label>
                     <div className="flex flex-wrap gap-2">
                       <button
-                        onClick={() => setTag('all')}
+                        onClick={() => setTag("all")}
                         className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                          tag === 'all'
-                            ? 'bg-primary/10 text-primary border-primary/30'
-                            : 'text-text-muted border-border hover:border-text-dim'
+                          tag === "all"
+                            ? "bg-primary/10 text-primary border-primary/30"
+                            : "text-text-muted border-border hover:border-text-dim"
                         }`}
                       >
                         All
@@ -327,8 +342,8 @@ const CharchaPage = () => {
                           onClick={() => setTag(id)}
                           className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
                             tag === id
-                              ? 'bg-primary/10 text-primary border-primary/30'
-                              : 'text-text-muted border-border hover:border-text-dim'
+                              ? "bg-primary/10 text-primary border-primary/30"
+                              : "text-text-muted border-border hover:border-text-dim"
                           }`}
                         >
                           {icon} {label}
@@ -343,7 +358,10 @@ const CharchaPage = () => {
             {/* Posts List */}
             {loading ? (
               <div className="flex justify-center py-16">
-                <FontAwesomeIcon icon={faSpinner} className="text-2xl text-primary animate-spin" />
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  className="text-2xl text-primary animate-spin"
+                />
               </div>
             ) : posts.length === 0 ? (
               <div className="card-bento p-12 text-center">
@@ -381,7 +399,7 @@ const CharchaPage = () => {
             {posts.length >= 20 && (
               <div className="text-center mt-6">
                 <button
-                  onClick={() => setPage(prev => prev + 1)}
+                  onClick={() => setPage((prev) => prev + 1)}
                   className="btn-secondary"
                 >
                   Load More
