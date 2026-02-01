@@ -799,7 +799,7 @@ const JaipurInternshipsGuide = () => {
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-bg-elevated z-50">
         <div
-          className="h-full bg-gradient-to-r from-secondary to-primary transition-[width] duration-100"
+          className="h-full bg-linear-to-r from-secondary to-primary transition-[width] duration-100"
           style={{ width: `${readingProgress}%` }}
         />
       </div>
