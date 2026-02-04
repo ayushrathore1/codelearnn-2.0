@@ -66,10 +66,12 @@ export const CareerJourneyProvider = ({ children }) => {
               return;
             }
           } catch (apiError) {
-            // API error (404 means no journey, other errors fall through)
+            // API error (404 means no journey exists - this is expected behavior)
+            // Only log actual errors, not expected 404s
             if (apiError.response?.status !== 404) {
               console.error("Backend journey fetch failed:", apiError);
             }
+            // 404 is silently handled - user simply has no journey yet
           }
         }
 

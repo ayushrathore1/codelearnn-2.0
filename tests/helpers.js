@@ -155,6 +155,115 @@ const createTestAISuggestion = (pathId, userId, overrides = {}) => ({
   ...overrides
 });
 
+/**
+ * Create a test career journey
+ */
+const createTestCareerJourney = (userId, overrides = {}) => ({
+  _id: new mongoose.Types.ObjectId(),
+  user: userId,
+  career: {
+    careerId: 'frontend-developer',
+    title: 'Frontend Developer',
+    description: 'Build beautiful web interfaces',
+    icon: '💻',
+    demandLevel: 'high',
+    avgSalary: 85000,
+    growthRate: '15%'
+  },
+  status: 'active',
+  preferences: {
+    weeklyHours: 10,
+    experienceLevel: 'beginner',
+    learningStyle: 'mixed',
+    notificationFrequency: 'weekly'
+  },
+  roadmap: {
+    phases: [
+      {
+        phaseId: 'phase-1',
+        phaseNumber: 1,
+        title: 'Fundamentals & Setup',
+        description: 'Build foundational knowledge',
+        status: 'in_progress',
+        progress: 0,
+        priority: 'critical',
+        startedAt: new Date(),
+        durationWeeks: 3,
+        skills: [
+          { skillName: 'Programming Basics', targetScore: 80, currentScore: 0 }
+        ],
+        resources: [
+          { 
+            resourceId: new mongoose.Types.ObjectId(), 
+            type: 'video', 
+            title: 'Intro to Programming', 
+            duration: 60,
+            isCompleted: false,
+            progress: 0,
+            order: 1
+          },
+          {
+            resourceId: new mongoose.Types.ObjectId(),
+            type: 'article',
+            title: 'Getting Started Guide',
+            duration: 20,
+            isCompleted: false,
+            progress: 0,
+            order: 2
+          }
+        ],
+        projects: [
+          { projectId: 'p1-1', title: 'Setup Portfolio', difficulty: 'beginner', isStarted: false, isCompleted: false }
+        ],
+        milestones: [
+          { milestoneId: 'm1-1', title: 'Complete fundamentals', xpReward: 50, isAchieved: false }
+        ]
+      },
+      {
+        phaseId: 'phase-2',
+        phaseNumber: 2,
+        title: 'Core Skills',
+        description: 'Master essential skills',
+        status: 'locked',
+        progress: 0,
+        priority: 'critical',
+        durationWeeks: 4,
+        skills: [
+          { skillName: 'JavaScript', targetScore: 85, currentScore: 0 }
+        ],
+        resources: [],
+        projects: [],
+        milestones: []
+      }
+    ],
+    currentPhaseId: 'phase-1',
+    currentPhaseNumber: 1,
+    estimatedWeeks: 20,
+    generatedAt: new Date(),
+    generatedBy: 'default'
+  },
+  stats: {
+    overallProgress: 0,
+    phasesCompleted: 0,
+    resourcesCompleted: 0,
+    projectsCompleted: 0,
+    skillsAcquired: 0,
+    totalLearningMinutes: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    xpEarned: 0,
+    onTrackStatus: 'on_track'
+  },
+  history: [{
+    eventType: 'JOURNEY_STARTED',
+    eventData: { career: 'Frontend Developer' },
+    timestamp: new Date()
+  }],
+  startedAt: new Date(),
+  createdAt: new Date(),
+  ...overrides
+});
+
 module.exports = {
   createMockUser,
   generateTestToken,
@@ -163,5 +272,6 @@ module.exports = {
   mockNext,
   createTestLearningPath,
   createTestSavedVideo,
-  createTestAISuggestion
+  createTestAISuggestion,
+  createTestCareerJourney
 };

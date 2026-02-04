@@ -1,0 +1,427 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "<CodeLearnn/>" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - text: <
+        - generic [ref=e8]: CodeLearnn
+        - text: />
+      - navigation [ref=e9]:
+        - link "Careers" [ref=e11] [cursor=pointer]:
+          - /url: /career
+        - link "Learning Paths" [ref=e13] [cursor=pointer]:
+          - /url: /learning-paths
+        - link "Vault" [ref=e15] [cursor=pointer]:
+          - /url: /vault
+        - link "Charcha" [ref=e17] [cursor=pointer]:
+          - /url: /charcha
+      - button "Join Waitlist" [ref=e20]
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic: LinkedIn
+        - generic:
+          - img
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - generic [ref=e27]:
+            - img [ref=e28]
+            - generic [ref=e30]: CodeLearnn OS 2.0 • Early Access Open
+          - heading "Stop Learning Random Tutorials. Start Building a Real Engineering Career." [level=1] [ref=e31]:
+            - text: Stop Learning Random Tutorials.
+            - text: Start Building a Real Engineering Career.
+          - paragraph [ref=e32]: The only learning OS that transforms scattered YouTube videos and courses into structured, career-ready roadmaps—validated by AI, built for engineering students.
+          - generic [ref=e33]:
+            - button "Get Early Access →" [ref=e34]:
+              - img [ref=e35]
+              - text: Get Early Access →
+            - button "Explore Platform (Dev)" [ref=e37]:
+              - img [ref=e38]
+              - text: Explore Platform (Dev)
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - img [ref=e42]
+              - text: Free for first 500 students
+            - generic [ref=e44]:
+              - img [ref=e45]
+              - text: Launching Feb 2026
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e55]: career_dashboard.tsx
+            - generic [ref=e56]: v2.0
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - img [ref=e61]
+                - generic [ref=e63]: Active
+              - generic [ref=e64]: Full Stack Dev
+              - generic [ref=e67]: 67% Complete
+            - generic [ref=e68]:
+              - generic [ref=e69]: XP GAINED
+              - generic [ref=e70]: 2,450
+              - generic [ref=e71]:
+                - img [ref=e72]
+                - generic [ref=e74]: +12% this week
+            - generic [ref=e75]:
+              - img [ref=e77]
+              - generic [ref=e79]:
+                - generic [ref=e80]: NEXT LESSON
+                - generic [ref=e81]: System Design Patterns
+              - img [ref=e83]
+    - generic [ref=e88]:
+      - heading "You're Not Lazy. The System Is Broken." [level=2] [ref=e89]:
+        - text: You're Not Lazy.
+        - text: The System Is Broken.
+      - generic [ref=e90]:
+        - paragraph [ref=e91]: You watch tutorials. Bookmark courses. Follow roadmaps. But six months later, you still can't build the projects companies want to see.
+        - paragraph [ref=e92]: Why? Because content ≠ competence.
+      - generic [ref=e93]:
+        - paragraph [ref=e94]: "CodeLearnn isn't another learning platform. It's the operating system that finally connects:"
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - img [ref=e97]
+            - generic [ref=e99]:
+              - generic [ref=e100]: What to learn
+              - generic [ref=e101]: Curated paths aligned with real job roles
+          - generic [ref=e102]:
+            - img [ref=e103]
+            - generic [ref=e105]:
+              - generic [ref=e106]: How to learn it
+              - generic [ref=e107]: Visual understanding, not rote memorization
+          - generic [ref=e108]:
+            - img [ref=e109]
+            - generic [ref=e111]:
+              - generic [ref=e112]: Proof you learned it
+              - generic [ref=e113]: Validated projects, not certificates
+    - generic [ref=e115]:
+      - heading "One System. Four Superpowers." [level=2] [ref=e117]:
+        - text: One System.
+        - text: Four Superpowers.
+      - generic [ref=e118]:
+        - generic [ref=e119]:
+          - heading "🗂️ Learning Vault" [level=3] [ref=e120]
+          - paragraph [ref=e121]: Structured learning paths that engineering recruiters actually respect.
+          - generic [ref=e122]:
+            - generic [ref=e123]:
+              - generic [ref=e124]: "Instead of:"
+              - list [ref=e125]:
+                - listitem [ref=e126]:
+                  - img [ref=e127]
+                  - generic [ref=e129]: 147 bookmarked YouTube videos you'll never watch
+                - listitem [ref=e130]:
+                  - img [ref=e131]
+                  - generic [ref=e133]: 12 half-finished Udemy courses
+                - listitem [ref=e134]:
+                  - img [ref=e135]
+                  - generic [ref=e137]: Zero idea what to learn next
+            - generic [ref=e138]:
+              - generic [ref=e139]: "You get:"
+              - list [ref=e140]:
+                - listitem [ref=e141]:
+                  - img [ref=e142]
+                  - generic [ref=e144]: Step-by-step roadmaps validated by industry professionals
+                - listitem [ref=e145]:
+                  - img [ref=e146]
+                  - generic [ref=e148]: No duplicated or outdated content—AI filters the noise
+                - listitem [ref=e149]:
+                  - img [ref=e150]
+                  - generic [ref=e152]: Clear progression from "complete beginner" to "hire-ready"
+          - generic [ref=e153]:
+            - generic [ref=e154]: "REAL OUTCOME:"
+            - paragraph [ref=e155]: Know exactly what to learn today to land your dream role tomorrow.
+        - generic [ref=e156]:
+          - heading "🧠 Visual Learning Engine" [level=3] [ref=e157]
+          - paragraph [ref=e158]: Understand complex engineering concepts in minutes, not months.
+          - generic [ref=e159]:
+            - generic [ref=e160]:
+              - generic [ref=e161]: "Instead of:"
+              - list [ref=e162]:
+                - listitem [ref=e163]:
+                  - img [ref=e164]
+                  - generic [ref=e166]: Confusing text-heavy documentation
+                - listitem [ref=e167]:
+                  - img [ref=e168]
+                  - generic [ref=e170]: Abstract jargon that makes no sense
+                - listitem [ref=e171]:
+                  - img [ref=e172]
+                  - generic [ref=e174]: Copy-paste without understanding
+            - generic [ref=e175]:
+              - generic [ref=e176]: "You get:"
+              - list [ref=e177]:
+                - listitem [ref=e178]:
+                  - img [ref=e179]
+                  - generic [ref=e181]: The mental models behind the code
+                - listitem [ref=e182]:
+                  - img [ref=e183]
+                  - generic [ref=e185]: How systems connect and communicate
+                - listitem [ref=e186]:
+                  - img [ref=e187]
+                  - generic [ref=e189]: Why things work, not just how to copy-paste
+          - generic [ref=e190]:
+            - generic [ref=e191]: "REAL OUTCOME:"
+            - paragraph [ref=e192]: Ace technical interviews by understanding fundamentals deeply.
+        - generic [ref=e193]:
+          - heading "🎯 AI Tutorial Evaluator" [level=3] [ref=e194]
+          - paragraph [ref=e195]: Stop wasting 40 hours on outdated tutorials.
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - generic [ref=e198]: "Instead of:"
+              - list [ref=e199]:
+                - listitem [ref=e200]:
+                  - img [ref=e201]
+                  - generic [ref=e203]: Guessing if a tutorial is worth your time
+                - listitem [ref=e204]:
+                  - img [ref=e205]
+                  - generic [ref=e207]: Watching 3 hours to realize it's outdated
+                - listitem [ref=e208]:
+                  - img [ref=e209]
+                  - generic [ref=e211]: No idea about prerequisites
+            - generic [ref=e212]:
+              - generic [ref=e213]: "You get:"
+              - list [ref=e214]:
+                - listitem [ref=e215]:
+                  - img [ref=e216]
+                  - generic [ref=e218]: Quality score (is this worth your time?)
+                - listitem [ref=e219]:
+                  - img [ref=e220]
+                  - generic [ref=e222]: Difficulty level & content freshness
+                - listitem [ref=e223]:
+                  - img [ref=e224]
+                  - generic [ref=e226]: Key topics covered & prerequisites needed
+          - generic [ref=e227]:
+            - generic [ref=e228]: "REAL OUTCOME:"
+            - paragraph [ref=e229]: Learn from the top 1% of content, skip the rest.
+        - generic [ref=e230]:
+          - heading "🚀 Career Intelligence System" [level=3] [ref=e231]
+          - paragraph [ref=e232]: From "I want to code" to "I got the offer."
+          - generic [ref=e233]:
+            - generic [ref=e234]:
+              - generic [ref=e235]: "Instead of:"
+              - list [ref=e236]:
+                - listitem [ref=e237]:
+                  - img [ref=e238]
+                  - generic [ref=e240]: No idea what roles exist
+                - listitem [ref=e241]:
+                  - img [ref=e242]
+                  - generic [ref=e244]: Learning random skills that don't matter
+                - listitem [ref=e245]:
+                  - img [ref=e246]
+                  - generic [ref=e248]: Confused about salary expectations
+            - generic [ref=e249]:
+              - generic [ref=e250]: "You get:"
+              - list [ref=e251]:
+                - listitem [ref=e252]:
+                  - img [ref=e253]
+                  - generic [ref=e255]: What roles exist and what each actually does
+                - listitem [ref=e256]:
+                  - img [ref=e257]
+                  - generic [ref=e259]: What skills you need for each role
+                - listitem [ref=e260]:
+                  - img [ref=e261]
+                  - generic [ref=e263]: What companies are hiring & salary to expect
+          - generic [ref=e264]:
+            - generic [ref=e265]: "REAL OUTCOME:"
+            - paragraph [ref=e266]: Learn skills that companies pay for, not just "resume fillers."
+    - generic [ref=e268]:
+      - heading "How CodeLearnn Actually Works" [level=2] [ref=e270]
+      - generic [ref=e273]:
+        - generic [ref=e274]:
+          - img [ref=e276]
+          - generic [ref=e278]: Step 01
+          - heading "Define Your Goal" [level=3] [ref=e279]
+          - paragraph [ref=e280]: Select a career path (Frontend, Backend, ML, DevOps, etc.) or analyze a specific resource you found online.
+        - generic [ref=e281]:
+          - img [ref=e283]
+          - generic [ref=e285]: Step 02
+          - heading "Learn Systematically" [level=3] [ref=e286]
+          - paragraph [ref=e287]: Follow structured learning sequences → Watch AI-validated tutorials → Understand concepts through visual stories → Track real progress.
+        - generic [ref=e288]:
+          - img [ref=e290]
+          - generic [ref=e292]: Step 03
+          - heading "Prove Your Skills" [level=3] [ref=e293]
+          - paragraph [ref=e294]: Build portfolio projects that demonstrate mastery → Get feedback → Show proof-of-work to recruiters → Land interviews.
+    - generic [ref=e296]:
+      - heading "Built by Students, For Students" [level=3] [ref=e298]
+      - generic [ref=e299]:
+        - generic [ref=e300]:
+          - generic [ref=e301]: 120+
+          - generic [ref=e302]: Career Paths Structured
+        - generic [ref=e303]:
+          - generic [ref=e304]: 10,000+
+          - generic [ref=e305]: Tutorials Validated
+        - generic [ref=e306]:
+          - generic [ref=e307]: 50+
+          - generic [ref=e308]: Visual Concept Lessons
+    - generic [ref=e310]:
+      - heading "Why Every Other Learning Platform Fails You" [level=2] [ref=e312]:
+        - text: Why Every Other Learning Platform
+        - text: Fails You
+      - generic [ref=e313]:
+        - generic [ref=e314]:
+          - generic [ref=e315]:
+            - generic [ref=e316]: Traditional Platforms
+            - generic [ref=e317]: CodeLearnn OS
+          - generic [ref=e318]:
+            - generic [ref=e319]:
+              - img [ref=e320]
+              - generic [ref=e322]: Random tutorials, no structure
+            - generic [ref=e323]:
+              - img [ref=e324]
+              - generic [ref=e326]: Career-aligned learning paths
+          - generic [ref=e327]:
+            - generic [ref=e328]:
+              - img [ref=e329]
+              - generic [ref=e331]: Certificates you can't use
+            - generic [ref=e332]:
+              - img [ref=e333]
+              - generic [ref=e335]: Projects that prove competence
+          - generic [ref=e336]:
+            - generic [ref=e337]:
+              - img [ref=e338]
+              - generic [ref=e340]: Learn alone, fail alone
+            - generic [ref=e341]:
+              - img [ref=e342]
+              - generic [ref=e344]: AI-guided, outcome-focused
+          - generic [ref=e345]:
+            - generic [ref=e346]:
+              - img [ref=e347]
+              - generic [ref=e349]: No idea if content is good
+            - generic [ref=e350]:
+              - img [ref=e351]
+              - generic [ref=e353]: Every resource AI-validated
+          - generic [ref=e354]:
+            - generic [ref=e355]:
+              - img [ref=e356]
+              - generic [ref=e358]: Confusing jargon everywhere
+            - generic [ref=e359]:
+              - img [ref=e360]
+              - generic [ref=e362]: Visual understanding first
+          - generic [ref=e363]:
+            - generic [ref=e364]:
+              - img [ref=e365]
+              - generic [ref=e367]: "\"Complete the course\""
+            - generic [ref=e368]:
+              - img [ref=e369]
+              - generic [ref=e371]: "\"Build something real\""
+        - generic [ref=e372]:
+          - paragraph [ref=e373]:
+            - text: Udemy gives you courses. YouTube gives you content. LinkedIn gives you job posts.
+            - text: Nobody connects them.
+          - paragraph [ref=e374]: This isn't education. It's career infrastructure.
+    - generic [ref=e376]:
+      - heading "Why Join the Waitlist?" [level=3] [ref=e378]
+      - generic [ref=e379]:
+        - generic [ref=e380]:
+          - img [ref=e382]
+          - paragraph [ref=e384]: First 500 students get lifetime free access to PRO features
+        - generic [ref=e385]:
+          - img [ref=e387]
+          - paragraph [ref=e389]: Early access users shape the product roadmap
+        - generic [ref=e390]:
+          - img [ref=e392]
+          - paragraph [ref=e394]: Your feedback = your name in our Hall of Builders
+        - generic [ref=e395]:
+          - img [ref=e397]
+          - paragraph [ref=e399]: Priority access to our hiring partner network (launching 2026)
+    - generic [ref=e403]:
+      - heading "Ready to Stop Wandering and Start Building?" [level=2] [ref=e404]:
+        - text: Ready to Stop Wandering and
+        - text: Start Building?
+      - paragraph [ref=e405]: Join engineering students who are done with random tutorials and ready for structured growth.
+      - generic [ref=e406]:
+        - textbox "your.email@college.edu" [ref=e407]
+        - button "Get Early Access →" [ref=e408]
+      - generic [ref=e409]:
+        - generic [ref=e410]:
+          - img [ref=e411]
+          - text: No spam, ever
+        - generic [ref=e413]:
+          - img [ref=e414]
+          - text: Free early access
+        - generic [ref=e416]:
+          - img [ref=e417]
+          - text: Cancel anytime
+  - contentinfo [ref=e419]:
+    - generic [ref=e420]:
+      - generic [ref=e421]:
+        - generic [ref=e422]:
+          - link "<CodeLearnn/>" [ref=e423] [cursor=pointer]:
+            - /url: /
+          - paragraph [ref=e424]: The Learning Operating System for developers. Structure your learning, understand deeply, build your career.
+          - generic [ref=e425]:
+            - link "Twitter" [ref=e426] [cursor=pointer]:
+              - /url: https://x.com/ayushrathore_27
+              - img [ref=e427]
+            - link "Instagram" [ref=e429] [cursor=pointer]:
+              - /url: https://www.instagram.com/ayush.rathore27
+              - img [ref=e430]
+            - link "GitHub" [ref=e432] [cursor=pointer]:
+              - /url: https://github.com/ayushrathore1
+              - img [ref=e433]
+            - link "LinkedIn" [ref=e435] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/ayushrathore1
+              - img [ref=e436]
+        - generic [ref=e438]:
+          - heading "Product" [level=4] [ref=e439]
+          - generic [ref=e440]:
+            - link "Careers" [ref=e441] [cursor=pointer]:
+              - /url: /career
+            - link "Learning Paths" [ref=e442] [cursor=pointer]:
+              - /url: /learning-paths
+            - link "Vault" [ref=e443] [cursor=pointer]:
+              - /url: /vault
+            - link "Charcha" [ref=e444] [cursor=pointer]:
+              - /url: /charcha
+        - generic [ref=e445]:
+          - heading "Tools" [level=4] [ref=e446]
+          - link "Analyzer" [ref=e448] [cursor=pointer]:
+            - /url: /analyzer
+        - generic [ref=e449]:
+          - heading "Company" [level=4] [ref=e450]
+          - generic [ref=e451]:
+            - link "About" [ref=e452] [cursor=pointer]:
+              - /url: /about
+            - link "Contact" [ref=e453] [cursor=pointer]:
+              - /url: /contact
+            - link "Privacy Policy" [ref=e454] [cursor=pointer]:
+              - /url: /privacy-policy
+            - link "Terms & Conditions" [ref=e455] [cursor=pointer]:
+              - /url: /terms
+            - link "Cookie Policy" [ref=e456] [cursor=pointer]:
+              - /url: /cookie-policy
+        - generic [ref=e457]:
+          - heading "Resources" [level=4] [ref=e458]
+          - generic [ref=e459]:
+            - link "Blogs" [ref=e460] [cursor=pointer]:
+              - /url: /blogs
+            - link "Opportunities" [ref=e461] [cursor=pointer]:
+              - /url: /opportunities
+            - link "Jaipur Internships Guide" [ref=e462] [cursor=pointer]:
+              - /url: /resources/jaipur-internships-guide
+            - heading "Other" [level=4] [ref=e463]
+            - link "Medha Revision" [ref=e465] [cursor=pointer]:
+              - /url: https://medha-revision.vercel.app/
+        - generic [ref=e466]:
+          - heading "Newsletter" [level=4] [ref=e467]
+          - generic [ref=e468]:
+            - paragraph [ref=e469]: Get updates on new paths.
+            - generic [ref=e470]:
+              - textbox "Enter email" [ref=e471]
+              - button "Subscribe" [ref=e472]
+      - generic [ref=e473]:
+        - paragraph [ref=e474]: © 2026 CodeLearnn. Built by Elytron.
+        - generic [ref=e475]:
+          - link "engineeratcodelearnn@gmail.com" [ref=e476] [cursor=pointer]:
+            - /url: mailto:engineeratcodelearnn@gmail.com
+            - img [ref=e477]
+            - text: engineeratcodelearnn@gmail.com
+          - generic [ref=e479]:
+            - img [ref=e480]
+            - text: Jaipur, India
+```

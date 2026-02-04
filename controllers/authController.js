@@ -1,14 +1,21 @@
-const User = require('../models/User');
-const Otp = require('../models/Otp');
-const asyncHandler = require('../middleware/async');
-const { sendOTPEmail, generateOTP } = require('../services/emailService');
-const { syncUserToCharcha, getCharchaToken, isCharchaConfigured } = require('../services/charchaService');
+const User = require("../models/User");
+const Otp = require("../models/Otp");
+const asyncHandler = require("../middleware/async");
+const { sendOTPEmail, generateOTP } = require("../services/emailService");
+const {
+  syncUserToCharcha,
+  getCharchaToken,
+  isCharchaConfigured,
+} = require("../services/charchaService");
 
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password, subscribedNewsletter } = req.body;
+
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+  const waitlistUrl = `${frontendUrl}/?waitlist_redirect=true#waitlist`;
 
   // Check if user exists with this email
   const existingUser = await User.findOne({ email });
@@ -17,41 +24,32 @@ exports.register = asyncHandler(async (req, res, next) => {
     if (existingUser.googleId) {
       return res.status(400).json({
         success: false,
-        message: 'An account with this email already exists. Please sign in with Google.',
-        authMethod: 'google'
+        message:
+          "An account with this email already exists. Please sign in with Google.",
+        authMethod: "google",
       });
     }
     if (existingUser.githubId) {
       return res.status(400).json({
         success: false,
-        message: 'An account with this email already exists. Please sign in with GitHub.',
-        authMethod: 'github'
+        message:
+          "An account with this email already exists. Please sign in with GitHub.",
+        authMethod: "github",
       });
     }
     return res.status(400).json({
       success: false,
-      message: 'User already exists with this email'
+      message: "User already exists with this email",
     });
   }
 
-  // Create user
-  const user = await User.create({
-    name,
-    email,
-    password,
-    subscribedNewsletter: subscribedNewsletter || false
+  // New user registrations are closed during waitlist phase
+  return res.status(403).json({
+    success: false,
+    message: "Sign ups are currently closed. Please join the waitlist.",
+    waitlistRedirect: true,
+    waitlistUrl,
   });
-
-  // Sync user to Charcha (SSO integration)
-  let charchaToken = null;
-  if (isCharchaConfigured()) {
-    const charchaResult = await syncUserToCharcha(user);
-    if (charchaResult.success) {
-      charchaToken = charchaResult.token;
-    }
-  }
-
-  sendTokenResponse(user, 201, res, charchaToken);
 });
 
 // @desc    Login user
@@ -60,21 +58,26 @@ exports.register = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+  const waitlistUrl = `${frontendUrl}/?waitlist_redirect=true#waitlist`;
+
   // Validate email & password
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide an email and password'
+      message: "Please provide an email and password",
     });
   }
 
   // Check for user
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return res.status(401).json({
+    return res.status(403).json({
       success: false,
-      message: 'Invalid credentials'
+      message: "Sign ups are currently closed. Please join the waitlist.",
+      waitlistRedirect: true,
+      waitlistUrl,
     });
   }
 
@@ -82,15 +85,17 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (user.googleId && !user.password) {
     return res.status(400).json({
       success: false,
-      message: 'This account was created with Google. Please sign in with Google.',
-      authMethod: 'google'
+      message:
+        "This account was created with Google. Please sign in with Google.",
+      authMethod: "google",
     });
   }
   if (user.githubId && !user.password) {
     return res.status(400).json({
       success: false,
-      message: 'This account was created with GitHub. Please sign in with GitHub.',
-      authMethod: 'github'
+      message:
+        "This account was created with GitHub. Please sign in with GitHub.",
+      authMethod: "github",
     });
   }
 
@@ -100,7 +105,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!isMatch) {
     return res.status(401).json({
       success: false,
-      message: 'Invalid credentials'
+      message: "Invalid credentials",
     });
   }
 
@@ -124,7 +129,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: user
+    data: user,
   });
 });
 
@@ -136,22 +141,22 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     avatarIndex: req.body.avatarIndex,
-    subscribedNewsletter: req.body.subscribedNewsletter
+    subscribedNewsletter: req.body.subscribedNewsletter,
   };
 
   // Remove undefined fields
   Object.keys(fieldsToUpdate).forEach(
-    key => fieldsToUpdate[key] === undefined && delete fieldsToUpdate[key]
+    (key) => fieldsToUpdate[key] === undefined && delete fieldsToUpdate[key],
   );
 
   const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   res.status(200).json({
     success: true,
-    data: user
+    data: user,
   });
 });
 
@@ -159,13 +164,13 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/auth/updatepassword
 // @access  Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id).select('+password');
+  const user = await User.findById(req.user.id).select("+password");
 
   // Check current password
   if (!(await user.matchPassword(req.body.currentPassword))) {
     return res.status(401).json({
       success: false,
-      message: 'Password is incorrect'
+      message: "Password is incorrect",
     });
   }
 
@@ -181,34 +186,41 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 exports.sendOTP = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
 
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+  const waitlistUrl = `${frontendUrl}/?waitlist_redirect=true#waitlist`;
+
   if (!email) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide an email'
+      message: "Please provide an email",
     });
   }
 
   // Check if user exists
   const user = await User.findOne({ email: email.toLowerCase() });
   if (!user) {
-    return res.status(404).json({
+    return res.status(403).json({
       success: false,
-      message: 'No account found with this email'
+      message: "Sign ups are currently closed. Please join the waitlist.",
+      waitlistRedirect: true,
+      waitlistUrl,
     });
   }
 
   // Rate limiting: Check if OTP was sent in last 60 seconds
   const recentOtp = await Otp.findOne({
     email: email.toLowerCase(),
-    createdAt: { $gt: new Date(Date.now() - 60000) } // Within last 60 seconds
+    createdAt: { $gt: new Date(Date.now() - 60000) }, // Within last 60 seconds
   });
 
   if (recentOtp) {
-    const waitTime = Math.ceil((60000 - (Date.now() - recentOtp.createdAt.getTime())) / 1000);
+    const waitTime = Math.ceil(
+      (60000 - (Date.now() - recentOtp.createdAt.getTime())) / 1000,
+    );
     return res.status(429).json({
       success: false,
       message: `Please wait ${waitTime} seconds before requesting another OTP`,
-      waitTime
+      waitTime,
     });
   }
 
@@ -221,25 +233,25 @@ exports.sendOTP = asyncHandler(async (req, res, next) => {
   // Store OTP in database
   await Otp.create({
     email: email.toLowerCase(),
-    otp
+    otp,
   });
 
   // Send OTP email
   try {
     await sendOTPEmail(email, otp);
-    
+
     res.status(200).json({
       success: true,
-      message: 'Verification code sent to your email',
-      email: email.toLowerCase()
+      message: "Verification code sent to your email",
+      email: email.toLowerCase(),
     });
   } catch (error) {
     // Delete OTP if email fails
     await Otp.deleteMany({ email: email.toLowerCase() });
-    
+
     return res.status(500).json({
       success: false,
-      message: 'Failed to send verification email. Please try again.'
+      message: "Failed to send verification email. Please try again.",
     });
   }
 });
@@ -250,10 +262,13 @@ exports.sendOTP = asyncHandler(async (req, res, next) => {
 exports.verifyOTP = asyncHandler(async (req, res, next) => {
   const { email, otp } = req.body;
 
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+  const waitlistUrl = `${frontendUrl}/?waitlist_redirect=true#waitlist`;
+
   if (!email || !otp) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide email and verification code'
+      message: "Please provide email and verification code",
     });
   }
 
@@ -263,7 +278,7 @@ exports.verifyOTP = asyncHandler(async (req, res, next) => {
   if (!otpRecord) {
     return res.status(400).json({
       success: false,
-      message: 'Verification code expired. Please request a new one.'
+      message: "Verification code expired. Please request a new one.",
     });
   }
 
@@ -272,7 +287,8 @@ exports.verifyOTP = asyncHandler(async (req, res, next) => {
     await Otp.deleteMany({ email: email.toLowerCase() });
     return res.status(429).json({
       success: false,
-      message: 'Too many failed attempts. Please request a new verification code.'
+      message:
+        "Too many failed attempts. Please request a new verification code.",
     });
   }
 
@@ -281,11 +297,11 @@ exports.verifyOTP = asyncHandler(async (req, res, next) => {
     // Increment attempts
     otpRecord.attempts += 1;
     await otpRecord.save();
-    
+
     return res.status(400).json({
       success: false,
-      message: 'Invalid verification code',
-      attemptsRemaining: 5 - otpRecord.attempts
+      message: "Invalid verification code",
+      attemptsRemaining: 5 - otpRecord.attempts,
     });
   }
 
@@ -294,11 +310,13 @@ exports.verifyOTP = asyncHandler(async (req, res, next) => {
 
   // Get user and generate token
   const user = await User.findOne({ email: email.toLowerCase() });
-  
+
   if (!user) {
-    return res.status(404).json({
+    return res.status(403).json({
       success: false,
-      message: 'User not found'
+      message: "Sign ups are currently closed. Please join the waitlist.",
+      waitlistRedirect: true,
+      waitlistUrl,
     });
   }
 
@@ -321,7 +339,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: {},
-    message: 'Logged out successfully'
+    message: "Logged out successfully",
   });
 });
 
@@ -338,8 +356,8 @@ const sendTokenResponse = (user, statusCode, res, charchaToken = null) => {
       name: user.name,
       email: user.email,
       avatarIndex: user.avatarIndex,
-      subscribedNewsletter: user.subscribedNewsletter
-    }
+      subscribedNewsletter: user.subscribedNewsletter,
+    },
   };
 
   // Include Charcha token if available

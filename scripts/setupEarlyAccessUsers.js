@@ -21,10 +21,17 @@ const User = require('../models/User');
 const { sendEarlyAccessEmail } = require('../services/emailService');
 
 // Early access users to add
+// Set sendEmail: true only for users who should receive the welcome email
 const EARLY_ACCESS_USERS = [
   {
     email: 'adityagour0841@gmail.com',
-    name: 'Aditya Gour'
+    name: 'Aditya Gour',
+    sendEmail: false  // Already invited
+  },
+  {
+    email: 'singharyan35764166@gmail.com',
+    name: 'Aryan Singh',
+    sendEmail: true   // New user - send email
   }
 ];
 
@@ -44,7 +51,7 @@ async function connectDB() {
 }
 
 async function setupUser(userData) {
-  const { email, name } = userData;
+  const { email, name, sendEmail } = userData;
   console.log(`\n📧 Processing: ${email}`);
   
   try {
@@ -68,14 +75,19 @@ async function setupUser(userData) {
       console.log(`   ✅ Created new user: ${name}`);
     }
     
-    // Send early access email
-    console.log(`   📤 Sending early access email...`);
-    const emailSent = await sendEarlyAccessEmail(email, name);
-    
-    if (emailSent) {
-      console.log(`   ✅ Early access email sent successfully!`);
+    // Send early access email only if sendEmail is true
+    let emailSent = false;
+    if (sendEmail) {
+      console.log(`   📤 Sending early access email...`);
+      emailSent = await sendEarlyAccessEmail(email, name);
+      
+      if (emailSent) {
+        console.log(`   ✅ Early access email sent successfully!`);
+      } else {
+        console.log(`   ⚠️  Failed to send email (check SMTP configuration)`);
+      }
     } else {
-      console.log(`   ⚠️  Failed to send email (check SMTP configuration)`);
+      console.log(`   ⏭️  Skipping email (sendEmail: false)`);
     }
     
     return { success: true, user, emailSent };
